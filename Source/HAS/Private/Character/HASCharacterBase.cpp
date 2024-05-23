@@ -11,6 +11,10 @@ UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AHASCharacterBase::InitializeStartAttributes()
+{
+}
+
 void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

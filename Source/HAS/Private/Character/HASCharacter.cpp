@@ -14,6 +14,7 @@ void AHASCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	InitAbilityActorInfo();
+
 }
 
 void AHASCharacter::OnRep_PlayerState()
@@ -21,6 +22,16 @@ void AHASCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
+
+}
+
+void AHASCharacter::InitializeStartAttributes()
+{
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	
+	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(StartVitalAttribute, 1.f, EffectContextHandle);
+
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
 void AHASCharacter::InitAbilityActorInfo()
@@ -31,8 +42,8 @@ void AHASCharacter::InitAbilityActorInfo()
 
 	HASPlayerState->AbilitySystemComponent->InitAbilityActorInfo(HASPlayerState, this);
 
-	AbilitySystemComponent = HASPlayerState->AbilitySystemComponent;
-	AttributeSet = HASPlayerState->AttributeSet;
+	AbilitySystemComponent = HASPlayerState->GetAbilitySystemComponent();
+	AttributeSet = HASPlayerState->GetAttributeSet();
 
 	if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
 	{
@@ -41,4 +52,6 @@ void AHASCharacter::InitAbilityActorInfo()
 			HASHUD->InitOverlay(HASPlayerController, HASPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
+
+	InitializeStartAttributes();
 }

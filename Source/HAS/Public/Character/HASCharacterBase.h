@@ -7,6 +7,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UGameplayEffect;
 
 UCLASS()
 class HAS_API AHASCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -21,11 +22,14 @@ public:
 
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> StartVitalAttribute;
+	
+	virtual void InitializeStartAttributes();
+
 protected:
 
 	virtual void BeginPlay() override;
-
-	/* Enemy¿ë ASC, AS */
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

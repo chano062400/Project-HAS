@@ -7,3 +7,11 @@ void UHASWidgetController::SetWidgetControllerParams(const FWidgetControllerPara
 	ASC = WCParams.ASC;
 	AS = WCParams.AS;
 }
+
+void UHASWidgetController::BroadcastInitialValues()
+{
+}
+
+void UHASWidgetController::BindCallBacks()
+{
+}

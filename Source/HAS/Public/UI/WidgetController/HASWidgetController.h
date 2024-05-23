@@ -18,16 +18,16 @@ struct FWidgetControllerParams
 		: PC(InPC), PS(InPS), ASC(InASC), AS(InAS) {}
 
 	UPROPERTY()
-	APlayerController* PC = nullptr;
+	TObjectPtr<APlayerController> PC = nullptr;
 
 	UPROPERTY()
-	APlayerState* PS = nullptr;
+	TObjectPtr<APlayerState> PS = nullptr;
 
 	UPROPERTY()
-	UAbilitySystemComponent* ASC = nullptr;
+	TObjectPtr<UAbilitySystemComponent> ASC = nullptr;
 
 	UPROPERTY()
-	UAttributeSet* AS = nullptr;
+	TObjectPtr<UAttributeSet> AS = nullptr;
 };
 
 /**
@@ -42,16 +42,20 @@ public:
 
 	void SetWidgetControllerParams(const FWidgetControllerParams& WCParams);
 
+	virtual void BroadcastInitialValues();
+
+	virtual void BindCallBacks();
+
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
-	APlayerController* PC;
+	TObjectPtr<APlayerController> PC;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
-	APlayerState* PS;
+	TObjectPtr<APlayerState> PS;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
-	UAbilitySystemComponent* ASC;
+	TObjectPtr<UAbilitySystemComponent> ASC;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
-	UAttributeSet* AS;	
+	TObjectPtr<UAttributeSet> AS;	
 
 };

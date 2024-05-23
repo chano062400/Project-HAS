@@ -17,3 +17,8 @@ UAbilitySystemComponent* AHASPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
+
+UAttributeSet* AHASPlayerState::GetAttributeSet() const
+{
+	return AttributeSet;
+}

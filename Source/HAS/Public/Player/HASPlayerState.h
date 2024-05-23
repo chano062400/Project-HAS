@@ -22,6 +22,8 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UAttributeSet* GetAttributeSet() const;
+
 public:
 
 	/* Player¿ë ASC, AS */
