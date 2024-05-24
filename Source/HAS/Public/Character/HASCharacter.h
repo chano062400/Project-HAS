@@ -4,6 +4,9 @@
 #include "Character/HASCharacterBase.h"
 #include "HASCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 /**
  * 
  */
@@ -22,7 +25,15 @@ public:
 	
 	virtual void InitializeStartAttributes() override;
 
+	virtual void InitAbilityActorInfo() override;
+
 private:
 
-	void InitAbilityActorInfo();
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> Camera;
+
+
 };

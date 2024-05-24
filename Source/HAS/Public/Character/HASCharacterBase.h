@@ -27,6 +27,8 @@ public:
 	
 	virtual void InitializeStartAttributes();
 
+	virtual void InitAbilityActorInfo();
+
 protected:
 
 	virtual void BeginPlay() override;

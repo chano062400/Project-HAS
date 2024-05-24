@@ -22,14 +22,10 @@ void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass);
 	OverlayWidget = Cast<UHASUserWidget>(Widget);
 
-	FWidgetControllerParams WCParams;
-	WCParams.PC = PC;
-	WCParams.PS = PS;
-	WCParams.ASC = ASC;
-	WCParams.AS = AS;
+	const FWidgetControllerParams WCParams(PC, PS, ASC, AS);
 
-	OverlayWidgetController = GetOverlayWidgetController(WCParams);
-	OverlayWidget->SetWidgetController(OverlayWidgetController);
+	UOverlayWidgetController* WidgetController = GetOverlayWidgetController(WCParams);
+	OverlayWidget->SetWidgetController(WidgetController);
 	OverlayWidgetController->BroadcastInitialValues();
 
 	Widget->AddToViewport();

@@ -12,6 +12,11 @@ AHASEnemy::AHASEnemy()
 	AttributeSet = CreateDefaultSubobject<UAttributeSet>(TEXT("AttributeSet"));
 }
 
+void AHASEnemy::InitAbilityActorInfo()
+{
+
+}
+
 void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();

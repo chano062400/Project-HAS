@@ -3,13 +3,15 @@
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
+	// 다운 캐스팅
+	// WidgetController - UAttributeSet
 	UHASAttributeSet* HASAttributeSet = CastChecked<UHASAttributeSet>(AS);
-
-	MaxHealthChanged.Broadcast(HASAttributeSet->GetMaxHealth());
-	HealthChanged.Broadcast(HASAttributeSet->GetHealth());
-	MaxManaChanged.Broadcast(HASAttributeSet->GetMaxMana());
-	ManaChanged.Broadcast(HASAttributeSet->GetMana());
-
+	{
+		MaxHealthChanged.Broadcast(HASAttributeSet->GetMaxHealth());
+		HealthChanged.Broadcast(HASAttributeSet->GetHealth());
+		MaxManaChanged.Broadcast(HASAttributeSet->GetMaxMana());
+		ManaChanged.Broadcast(HASAttributeSet->GetMana());
+	} 
 }
 
 void UOverlayWidgetController::BindCallBacks()

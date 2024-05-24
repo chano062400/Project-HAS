@@ -4,7 +4,7 @@
 
 UHASAttributeSet::UHASAttributeSet()
 {
-
+	
 }
 
 void UHASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -17,22 +17,22 @@ void UHASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 }
 
-void UHASAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
+void UHASAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Health, OldHealth);
 }
 
-void UHASAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth)
+void UHASAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Health, OldMaxHealth);
 }
 
-void UHASAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana)
+void UHASAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Health, OldMana);
 }
 
-void UHASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana)
+void UHASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Health, OldMaxMana);
 }

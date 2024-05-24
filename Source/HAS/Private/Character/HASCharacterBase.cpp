@@ -15,6 +15,10 @@ void AHASCharacterBase::InitializeStartAttributes()
 {
 }
 
+void AHASCharacterBase::InitAbilityActorInfo()
+{
+}
+
 void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

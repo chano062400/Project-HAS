@@ -6,11 +6,11 @@ AHASPlayerState::AHASPlayerState()
 {
 	NetUpdateFrequency = 100.f;
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UHASAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	AttributeSet = CreateDefaultSubobject<UAttributeSet>(TEXT("AttributeSet"));
+	AttributeSet = CreateDefaultSubobject<UHASAttributeSet>(TEXT("AttributeSet"));
 }
 
 UAbilitySystemComponent* AHASPlayerState::GetAbilitySystemComponent() const
