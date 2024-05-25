@@ -6,6 +6,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UGroomComponent;
 
 /**
  * 
@@ -34,6 +35,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UGroomComponent> Hair;
 
 
 };

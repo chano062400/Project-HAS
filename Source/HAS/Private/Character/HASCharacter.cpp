@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GroomComponent.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -14,7 +15,9 @@ AHASCharacter::AHASCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-
+	
+	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("HairGroom"));
+	Hair->SetupAttachment(GetMesh(), FName("HairGroom"));
 }
 
 void AHASCharacter::PossessedBy(AController* NewController)

@@ -38,9 +38,5 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> MoveAction;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "input")
-	TObjectPtr<UInputAction> LookAction;
-
 
 };

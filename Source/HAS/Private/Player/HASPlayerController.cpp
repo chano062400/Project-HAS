@@ -35,6 +35,10 @@ void AHASPlayerController::Move(const FInputActionValue& Value)
 
 void AHASPlayerController::Look(const FInputActionValue& Value)
 {
+	FVector2D LookVector = Value.Get<FVector2D>();
+
+	AddYawInput(LookVector.X);
+	AddPitchInput(LookVector.Y);
 }
 
 void AHASPlayerController::SetupInputComponent()
@@ -44,7 +48,6 @@ void AHASPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Look);
 	}
 
 }
