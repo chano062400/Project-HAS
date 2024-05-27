@@ -38,12 +38,11 @@ void AHASCharacter::OnRep_PlayerState()
 
 void AHASCharacter::InitializeStartAttributes()
 {
-	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
+	ApplyAttributes(StartVitalAttribute, this);
 
-	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(StartVitalAttribute, 1.f, EffectContextHandle);
+	ApplyAttributes(StartPrimrayAttribute, this);
 
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+	ApplyAttributes(StartSecondaryAttribute, this);
 }
 
 void AHASCharacter::InitAbilityActorInfo()

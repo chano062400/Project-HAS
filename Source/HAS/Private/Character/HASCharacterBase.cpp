@@ -1,4 +1,5 @@
 #include "Character/HASCharacterBase.h"
+#include "AbilitySystem/HASAbilitySystemComponent.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -17,6 +18,16 @@ void AHASCharacterBase::InitializeStartAttributes()
 
 void AHASCharacterBase::InitAbilityActorInfo()
 {
+}
+
+void AHASCharacterBase::ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject)
+{
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceObject);
+
+	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, EffectContextHandle);
+
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
 void AHASCharacterBase::BeginPlay()

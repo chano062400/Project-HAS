@@ -25,9 +25,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> StartVitalAttribute;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> StartPrimrayAttribute;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> StartSecondaryAttribute;
+	
 	virtual void InitializeStartAttributes();
 
 	virtual void InitAbilityActorInfo();
+
+	virtual void ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject);
 
 protected:
 

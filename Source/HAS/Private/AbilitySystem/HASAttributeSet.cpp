@@ -99,3 +99,24 @@ void UHASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) c
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, MaxMana, OldMaxMana);
 }
+
+void UHASAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OIdIntelligence)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdIntelligence);
+}
+
+void UHASAttributeSet::OnRep_Dexterity(const FGameplayAttributeData& OIdDexterity)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdDexterity);
+}
+
+void UHASAttributeSet::OnRep_CriticalChance(const FGameplayAttributeData& OIdCriticalChacne)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdCriticalChacne);
+}
+
+void UHASAttributeSet::OnRep_CriticalResistance(const FGameplayAttributeData& OIdCriticalResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdCriticalResistance);
+
+}
