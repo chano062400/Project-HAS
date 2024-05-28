@@ -1,6 +1,7 @@
 #include "Player/HASPlayerState.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/HASAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 AHASPlayerState::AHASPlayerState()
 {
@@ -18,7 +19,19 @@ UAbilitySystemComponent* AHASPlayerState::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AHASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(AHASPlayerState, Level, COND_None, REPNOTIFY_Always);
+}
+
 UAttributeSet* AHASPlayerState::GetAttributeSet() const
 {
 	return AttributeSet;
+}
+
+void AHASPlayerState::OnRep_Level(int32 OldLevel)
+{
+
 }

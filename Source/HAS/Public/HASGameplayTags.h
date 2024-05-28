@@ -14,12 +14,11 @@ public:
 	/* Vital Attributes */
 
 	FGameplayTag Attribute_Vital_Health;
-	FGameplayTag Attribute_Vital_MaxHealth;
 	FGameplayTag Attribute_Vital_Mana;
-	FGameplayTag Attribute_Vital_MaxMana;
 
 	/* Primary Attributes */
 
+	FGameplayTag Attribute_Primary_Vigor;
 	FGameplayTag Attribute_Primary_Intelligence;
 	FGameplayTag Attribute_Primary_Dexterity;
 
@@ -27,6 +26,8 @@ public:
 
 	FGameplayTag Attribute_Secondary_CriticalChance;
 	FGameplayTag Attribute_Secondary_CriticalResistance;
+	FGameplayTag Attribute_Secondary_MaxHealth;
+	FGameplayTag Attribute_Secondary_MaxMana;
 
 private:
 

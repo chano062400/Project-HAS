@@ -30,6 +30,11 @@ void AHASCharacterBase::ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass
 	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
+int32 AHASCharacterBase::GetLevel_Implementation()
+{
+	return 0;
+}
+
 void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

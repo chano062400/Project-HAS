@@ -28,6 +28,10 @@ public:
 
 	virtual void InitAbilityActorInfo() override;
 
+	/* Combat Interface */
+	
+	virtual int32 GetLevel_Implementation() override;
+
 private:
 
 	UPROPERTY(VisibleAnywhere)

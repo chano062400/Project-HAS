@@ -38,11 +38,11 @@ void AHASCharacter::OnRep_PlayerState()
 
 void AHASCharacter::InitializeStartAttributes()
 {
-	ApplyAttributes(StartVitalAttribute, this);
-
 	ApplyAttributes(StartPrimrayAttribute, this);
 
 	ApplyAttributes(StartSecondaryAttribute, this);
+
+	ApplyAttributes(StartVitalAttribute, this);
 }
 
 void AHASCharacter::InitAbilityActorInfo()
@@ -71,4 +71,12 @@ void AHASCharacter::InitAbilityActorInfo()
 		}
 	}
 
+}
+
+int32 AHASCharacter::GetLevel_Implementation()
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+	
+	return PS->GetLevel();
 }

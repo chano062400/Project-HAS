@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interfaces/HASCombatInterface.h"
 #include "HASCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -10,7 +11,7 @@ class UAttributeSet;
 class UGameplayEffect;
 
 UCLASS()
-class HAS_API AHASCharacterBase : public ACharacter, public IAbilitySystemInterface
+class HAS_API AHASCharacterBase : public ACharacter, public IAbilitySystemInterface, public IHASCombatInterface
 {
 	GENERATED_BODY()
 
@@ -36,6 +37,10 @@ public:
 	virtual void InitAbilityActorInfo();
 
 	virtual void ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject);
+
+	/* Combat Interface */
+
+	virtual int32 GetLevel_Implementation() override;
 
 protected:
 

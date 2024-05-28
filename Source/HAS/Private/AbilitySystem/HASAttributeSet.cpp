@@ -14,10 +14,24 @@ void UHASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	/* Vital Attribute */
+
 	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+
+	/* Primary Attribute */
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, Dexterity, COND_None, REPNOTIFY_Always);
+
+	/* Secondary Attribute */
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, CriticalChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, CriticalResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UHASAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
+
 }
 
 void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -30,13 +44,15 @@ void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, GetHealthAttribute().GetName());
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
-	
+
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Blue, GetManaAttribute().GetName());
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
-	
+
 }
 
 void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data, FEffectProperties& OutProps)
@@ -98,6 +114,11 @@ void UHASAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 void UHASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, MaxMana, OldMaxMana);
+}
+
+void UHASAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Vigor, OldVigor);
 }
 
 void UHASAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OIdIntelligence)
