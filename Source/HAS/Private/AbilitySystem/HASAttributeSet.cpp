@@ -4,10 +4,26 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
+#include "HASGameplayTags.h"
 
 UHASAttributeSet::UHASAttributeSet()
 {
-	
+	FHASGameplayTags Tag = FHASGameplayTags::Get();
+
+	/* Primary Attributes */
+	TagsToAttributes.Add( Tag.Attribute_Primary_Intelligence, GetIntelligenceAttribute() );
+	TagsToAttributes.Add( Tag.Attribute_Primary_Dexterity, GetDexterityAttribute() );
+	TagsToAttributes.Add( Tag.Attribute_Primary_Vigor, GetVigorAttribute() );
+
+	/* Secondary Attributes */
+	TagsToAttributes.Add( Tag.Attribute_Secondary_CriticalChance, GetCriticalChanceAttribute() );
+	TagsToAttributes.Add( Tag.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute() );
+	TagsToAttributes.Add( Tag.Attribute_Secondary_MaxMana, GetMaxManaAttribute() );
+
+	/* Vital Attributes */
+	TagsToAttributes.Add( Tag.Attribute_Vital_Health, GetHealthAttribute() );
+	TagsToAttributes.Add( Tag.Attribute_Vital_Mana, GetManaAttribute() );
+
 }
 
 void UHASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
