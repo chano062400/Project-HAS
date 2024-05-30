@@ -14,7 +14,7 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 		{
 			FHASAttributeInfo Info = AttributeInfo->FindAttributeInfoByTag(Pair.Key);
 			Info.AttributeValue = Pair.Value.GetNumericValue(HASAS);
-			StatChanged.Broadcast(Info.AttributeValue);
+			AttributeInfoDelegate.Broadcast(Info);
 		}
 
 		/*for (FHASAttributeInfo& Info : AttributeInfo->AttributeInformation)
@@ -35,9 +35,9 @@ void UAttributeMenuWidgetController::BindCallBacks()
 		for (auto& Pair : HASAS->TagsToAttributes)
 		{
 			ASC->GetGameplayAttributeValueChangeDelegate(Pair.Value).AddLambda(
-				[this](const FOnAttributeChangeData& NewValue)
+				[this, Pair](const FOnAttributeChangeData& NewValue)
 				{
-					StatChanged.Broadcast(NewValue.NewValue);
+					StatChangedDelegate.Broadcast(Pair.Key, NewValue.NewValue);
 				}
 			);
 		}

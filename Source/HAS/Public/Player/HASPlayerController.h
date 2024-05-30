@@ -33,10 +33,17 @@ private:
 	
 	void Look(const FInputActionValue& Value);
 
+	void OpenAttributeMenu();
+
+	bool bOpenedAttributeMenu = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> MoveAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UInputAction> AttributeMenuAction;
 
 };

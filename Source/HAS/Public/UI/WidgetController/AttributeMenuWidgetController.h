@@ -8,7 +8,8 @@
 
 class UAttributeInfoDataAsset;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStatChangedSignature, const FGameplayAttributeData&, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FHASAttributeInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStatChangedSignature, const FGameplayTag&, AttributeTag, const FGameplayAttributeData&, NewValue);
 
 /**
  * 
@@ -25,7 +26,10 @@ public:
 	virtual void BindCallBacks() override;
 
 	UPROPERTY(BlueprintAssignable)
-	FStatChangedSignature StatChanged;
+	FAttributeInfoSignature AttributeInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FStatChangedSignature StatChangedDelegate;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfoDataAsset> AttributeInfo;

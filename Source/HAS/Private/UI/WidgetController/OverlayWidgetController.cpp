@@ -21,7 +21,7 @@ void UOverlayWidgetController::BindCallBacks()
 		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetMaxHealthAttribute()).AddLambda(
 			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
 			{
-				HealthChanged.Broadcast(Data.NewValue);
+				MaxHealthChanged.Broadcast(Data.NewValue);
 			}
 		);
 
@@ -35,7 +35,7 @@ void UOverlayWidgetController::BindCallBacks()
 		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetMaxManaAttribute()).AddLambda(
 			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
 			{
-				ManaChanged.Broadcast(Data.NewValue);
+				MaxManaChanged.Broadcast(Data.NewValue);
 			}
 		);
 

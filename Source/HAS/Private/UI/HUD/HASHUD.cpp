@@ -40,5 +40,24 @@ void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 	OverlayWidget->SetWidgetController(WidgetController);
 	OverlayWidgetController->BroadcastInitialValues();
 
+	InitAttributeMenu(PC, PS, ASC, AS);
+	
 	Widget->AddToViewport();
+
+}
+
+void AHASHUD::InitAttributeMenu(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+{
+	check(AttributeMenuWidgetClass);
+	check(AttributeMenuWidgetControllerClass);
+
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), AttributeMenuWidgetClass);
+	AttributeMenuWidget = Cast<UHASUserWidget>(Widget);
+
+	const FWidgetControllerParams WCParams(PC, PS, ASC, AS);
+
+	UAttributeMenuWidgetController* WidgetController = GetAttributeMenuWidgetController(WCParams);
+	
+	AttributeMenuWidget->SetWidgetController(WidgetController);
+	AttributeMenuWidgetController->BroadcastInitialValues();
 }
