@@ -26,6 +26,8 @@ void AHASCharacter::PossessedBy(AController* NewController)
 
 	InitAbilityActorInfo();
 
+	AddStartAbilities();
+
 }
 
 void AHASCharacter::OnRep_PlayerState()

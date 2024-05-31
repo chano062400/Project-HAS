@@ -38,6 +38,8 @@ public:
 
 	virtual void ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject);
 
+	virtual	void AddStartAbilities();
+
 	/* Combat Interface */
 
 	virtual int32 GetLevel_Implementation() override;
@@ -51,4 +53,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 };

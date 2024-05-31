@@ -30,6 +30,15 @@ void AHASCharacterBase::ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass
 	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
+void AHASCharacterBase::AddStartAbilities()
+{
+	if (!HasAuthority()) return;
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		ASC->AddStartAbilities(StartAbilities);
+	}
+}
+
 int32 AHASCharacterBase::GetLevel_Implementation()
 {
 	return 0;

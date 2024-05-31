@@ -43,5 +43,4 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroomComponent> Hair;
 
-
 };

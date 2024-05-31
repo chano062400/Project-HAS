@@ -16,6 +16,14 @@ public:
 
 	void AbilityActorInfoSet();
 
+	void AddStartAbilities(TArray<TSubclassOf<UGameplayAbility>> StartAbilities);
+
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 };

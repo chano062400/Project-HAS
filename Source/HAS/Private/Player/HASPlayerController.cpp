@@ -3,6 +3,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "UI/HUD/HASHUD.h"
 #include "UI/Widget/HASUserWidget.h"
+#include "Input/HASEnhancedInputComponent.h"
+#include "AbilitySystem/HASAbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AHASPlayerController::AHASPlayerController()
 {
@@ -79,14 +82,40 @@ void AHASPlayerController::OpenAttributeMenu()
 	}
 }
 
+void AHASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn())))
+	{
+		ASC->AbilityInputTagPressed(InputTag);
+	}
+}
+
+void AHASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn())))
+	{
+		ASC->AbilityInputTagReleased(InputTag);
+	}
+}
+
+void AHASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn())))
+	{
+		ASC->AbilityInputTagHeld(InputTag);
+	}
+}
+
 void AHASPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+	check(InputInfo);
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	if (UHASEnhancedInputComponent* HASEnhancedInputComponent = Cast<UHASEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
-		EnhancedInputComponent->BindAction(AttributeMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenAttributeMenu);
+		HASEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
+		HASEnhancedInputComponent->BindAction(AttributeMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenAttributeMenu);
+		HASEnhancedInputComponent->BindAbilityAction(InputInfo, this, &AHASPlayerController::AbilityInputTagPressed, &AHASPlayerController::AbilityInputTagReleased, &AHASPlayerController::AbilityInputTagHeld);
 	}
 
 }

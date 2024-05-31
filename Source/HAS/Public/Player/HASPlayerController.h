@@ -6,6 +6,7 @@
 #include "HASPlayerController.generated.h"
 
 class UInputMappingContext;
+class UHASEnhancedInputComponent;
 
 /**
  * 
@@ -37,6 +38,12 @@ private:
 
 	bool bOpenedAttributeMenu = false;
 
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
 
@@ -46,4 +53,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> AttributeMenuAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UHASInputInfo> InputInfo;
 };

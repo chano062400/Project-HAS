@@ -56,4 +56,36 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("Max Mana Attribute")
 	);
 
+	/* Input Tag */
+
+	GameplayTags.Input_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.LMB"),
+		FString("LMB Input Tag")
+	);
+	
+	GameplayTags.Input_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.RMB"),
+		FString("RMB Input Tag")
+	);
+	
+	GameplayTags.Input_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.1"),
+		FString("1 Input Tag")
+	);
+	
+	GameplayTags.Input_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.2"),
+		FString("2 Input Tag")
+	);
+	
+	GameplayTags.Input_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.3"),
+		FString("3 Input Tag")
+	);
+	
+	GameplayTags.Input_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.4"),
+		FString("4 Input Tag")
+	);
+
 }
