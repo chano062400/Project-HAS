@@ -16,6 +16,7 @@ void UHASAbilitySystemComponent::AddStartAbilities(TArray<TSubclassOf<UGameplayA
 
 		if (UHASGameplayAbility* HASAbility = Cast<UHASGameplayAbility>(AbilitySpec.Ability))
 		{
+			//AbilitySpec에 InputTag를 추가.
 			AbilitySpec.DynamicAbilityTags.AddTag(HASAbility->InputTag);
 			GiveAbility(AbilitySpec);
 		}
@@ -26,17 +27,43 @@ void UHASAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 {
 	if (!InputTag.IsValid()) return;
 
+	// 모든 Ability를 탐색하는 동안 Ability를 삭제하지 못하도록 Lock
 	FScopedAbilityListLock ScopeAbilityListLcok(*this);
 
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
+			//Spec을 통해 GA에 입력을 전달해주는 함수
 			AbilitySpecInputPressed(AbilitySpec);
 
 			if (AbilitySpec.IsActive())
 			{
+				// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
 				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pressed")));
+		}
+	}
+}
+
+void UHASAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	// 모든 Ability를 탐색하는 동안 Ability를 삭제하지 못하도록 Lock
+	FScopedAbilityListLock ScopeAbilityListLcok(*this);
+
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			//Spec을 통해 GA에 입력을 전달해주는 함수
+			AbilitySpecInputPressed(AbilitySpec);
+
+			if (!AbilitySpec.IsActive())
+			{
+				TryActivateAbility(AbilitySpec.Handle);
 			}
 		}
 	}
@@ -46,36 +73,22 @@ void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 {
 	if (!InputTag.IsValid()) return;
 
+	// 모든 Ability를 탐색하는 동안 Ability를 삭제하지 못하도록 Lock
 	FScopedAbilityListLock ScopeAbilityListLcok(*this);
 
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
-			AbilitySpecInputPressed(AbilitySpec);
+			//Spec을 통해 GA에 입력을 전달해주는 함수
+			AbilitySpecInputReleased(AbilitySpec);
 
 			if (AbilitySpec.IsActive())
 			{
-				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+				// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Released")));
 			}
-		}
-	}
-
-}
-
-void UHASAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
-{
-	if (!InputTag.IsValid()) return;
-
-	FScopedAbilityListLock ScopeAbilityListLcok(*this);
-
-	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-		{
-			AbilitySpecInputReleased(AbilitySpec);
-
-			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
 		}
 	}
 }

@@ -30,6 +30,8 @@ inline void UHASEnhancedInputComponent::BindAbilityAction(const UHASInputInfo* I
 	{
 		if (Action.InputAction && Action.InputTag.IsValid())
 		{
+			// Callback함수와 매개변수(InputTag) 설정.
+
 			if (PressedFunc)
 			{
 				BindAction(Action.InputAction, ETriggerEvent::Started, Object, PressedFunc, Action.InputTag);
