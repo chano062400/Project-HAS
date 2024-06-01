@@ -5,6 +5,8 @@ AHASCharacterBase::AHASCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
 }
 
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
@@ -42,6 +44,27 @@ void AHASCharacterBase::AddStartAbilities()
 int32 AHASCharacterBase::GetLevel_Implementation()
 {
 	return 0;
+}
+
+void AHASCharacterBase::HighlightActor()
+{
+	if (Weapon && GetMesh())
+	{
+		GetMesh()->SetRenderCustomDepth(true);
+		GetMesh()->SetCustomDepthStencilValue(250);
+
+		Weapon->SetRenderCustomDepth(true);
+		Weapon->SetCustomDepthStencilValue(250);
+	}
+}
+
+void AHASCharacterBase::UnHighlightActor()
+{
+	if (Weapon && GetMesh())
+	{
+		GetMesh()->SetRenderCustomDepth(false);
+		Weapon->SetRenderCustomDepth(false);
+	}
 }
 
 void AHASCharacterBase::BeginPlay()

@@ -3,10 +3,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "InputAction.h"
+#include "Interfaces/HASCombatInterface.h"
 #include "HASPlayerController.generated.h"
 
 class UInputMappingContext;
 class UHASEnhancedInputComponent;
+class USplineComponent;
 
 /**
  * 
@@ -44,6 +46,10 @@ private:
 	
 	void AbilityInputTagHeld(FGameplayTag InputTag);
 
+	void CursorTrace();
+
+	void AutoRun();
+
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
 
@@ -55,4 +61,37 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UHASInputInfo> InputInfo;
+
+	FHitResult MouseCursorHitResult;
+
+	IHASCombatInterface* ThisActor;
+	
+	IHASCombatInterface* LastActor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat|Cursor")
+	TObjectPtr<UUserWidget> DefaultMouseCursorWidget;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Combat|Cursor")
+	TObjectPtr<UUserWidget> HighlightMouseCursorWidget;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	FVector CachedDestination = FVector();
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	TObjectPtr<USplineComponent> Spline;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	bool bTargeting = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	bool bAutoRun = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	float ElapsedTime = 0.f;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	float ShortPressThreshold = 0.5f;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
+	float AutoRunAcceptance = 50.f;
 };

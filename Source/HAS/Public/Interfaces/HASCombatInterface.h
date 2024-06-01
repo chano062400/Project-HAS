@@ -21,4 +21,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	int32 GetLevel();
+
+	virtual void HighlightActor() = 0;
+	virtual void UnHighlightActor() = 0 ;
 };

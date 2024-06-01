@@ -44,6 +44,10 @@ public:
 
 	virtual int32 GetLevel_Implementation() override;
 
+	virtual void HighlightActor() override;
+
+	virtual void UnHighlightActor() override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -53,6 +57,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
