@@ -99,6 +99,7 @@ void AHASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 	// Actor에게 커서가 있는지
 	bTargeting = ThisActor ? true : false;
+	bClicked = true;
 	bAutoRun = false;
 
 }
@@ -120,6 +121,7 @@ void AHASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		/* TODO 
 		Actor와의 거리가 스킬 사거리 이상이라면 사거리까지 자동 이동 후 Activate */
+
 		ASC->AbilityInputTagHeld(InputTag);
 	}
 	else
@@ -150,12 +152,14 @@ void AHASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	// LMB(이동)가 아니라면 
 	if (!InputTag.MatchesTagExact(FHASGameplayTags::Get().Input_LMB))
 	{
-		ASC->AbilityInputTagHeld(InputTag);
+		ASC->AbilityInputTagReleased(InputTag);
 		return;
 	}
 
 	ASC->AbilityInputTagReleased(InputTag);	
 	
+	bClicked = false;
+
 	if(!bTargeting)
 	{
 		APawn* ControlledPawn = GetPawn();
@@ -195,7 +199,7 @@ void AHASPlayerController::CursorTrace()
 
 	if(ThisActor)
 	{
-		CurrentMouseCursor = EMouseCursor::Hand;
+		CurrentMouseCursor = bClicked ? EMouseCursor::GrabHand : EMouseCursor::Hand;
 		// Actor에 커서가 있음. 
 		if (LastActor)
 		{

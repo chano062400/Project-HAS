@@ -32,6 +32,8 @@ public:
 	
 	virtual int32 GetLevel_Implementation() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsDodging = false;
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -42,5 +44,6 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroomComponent> Hair;
+
 
 };

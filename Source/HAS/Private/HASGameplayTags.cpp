@@ -67,6 +67,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Input.RMB"),
 		FString("RMB Input Tag")
 	);
+		
+	GameplayTags.Input_SpaceBar = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.SpaceBar"),
+		FString("SpaceBar Input Tag")
+	);
 	
 	GameplayTags.Input_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.1"),

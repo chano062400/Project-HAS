@@ -58,7 +58,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> AttributeMenuAction;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UHASInputInfo> InputInfo;
 
@@ -67,6 +67,9 @@ private:
 	IHASCombatInterface* ThisActor;
 	
 	IHASCombatInterface* LastActor;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Cursor")
+	bool bClicked = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat|Cursor")
 	TObjectPtr<UUserWidget> DefaultMouseCursorWidget;
