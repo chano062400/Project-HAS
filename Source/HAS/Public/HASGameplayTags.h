@@ -39,6 +39,10 @@ public:
 	FGameplayTag Input_3;
 	FGameplayTag Input_4;
 
+	/* WeaponSocket Tag */
+
+	FGameplayTag WeaponSocket_Staff;
+
 private:
 
 	static FHASGameplayTags GameplayTags;

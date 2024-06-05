@@ -116,8 +116,8 @@ void AHASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	// Actor에게 LMB했다면
-	if (bTargeting)
+	// Actor에게 LMB or Shift를 누르고 있다면
+	if (bTargeting || bShiftPressed)
 	{
 		/* TODO 
 		Actor와의 거리가 스킬 사거리 이상이라면 사거리까지 자동 이동 후 Activate */
@@ -174,7 +174,6 @@ void AHASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				for (const FVector& Point : Path->PathPoints)
 				{
 					Spline->AddSplinePoint(Point, ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(), Point, 12.f, 12, FColor::Red, false, 5.f);
 				}
 				// 목적지를 Path의 마지막 지점으로 설정하고 자동이동.
 				if (Path->PathPoints.Num() > 0)
@@ -255,6 +254,22 @@ void AHASPlayerController::AutoRun()
 	}
 }
 
+void AHASPlayerController::ShiftPressed()
+{
+	if (!bShiftPressed)
+	{
+		bShiftPressed = true;
+	}
+}
+
+void AHASPlayerController::ShiftReleased()
+{
+	if (bShiftPressed)
+	{
+		bShiftPressed = false;
+	}
+}
+
 void AHASPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -264,6 +279,8 @@ void AHASPlayerController::SetupInputComponent()
 	{
 		HASEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
 		HASEnhancedInputComponent->BindAction(AttributeMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenAttributeMenu);
+		HASEnhancedInputComponent->BindAction(ShiftPressedAction, ETriggerEvent::Started, this, &AHASPlayerController::ShiftPressed);
+		HASEnhancedInputComponent->BindAction(ShiftReleasedAction, ETriggerEvent::Completed, this, &AHASPlayerController::ShiftReleased);
 		HASEnhancedInputComponent->BindAbilityAction(InputInfo, this, &AHASPlayerController::AbilityInputTagPressed, &AHASPlayerController::AbilityInputTagReleased, &AHASPlayerController::AbilityInputTagHeld);
 	}
 

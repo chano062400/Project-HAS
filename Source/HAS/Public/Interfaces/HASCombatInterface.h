@@ -2,7 +2,26 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "GameplayTagContainer.h"
 #include "HASCombatInterface.generated.h"
+
+class UAnimMontage;
+
+USTRUCT(BlueprintType)
+struct FAttackMontage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag SocketTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag MontageTag;
+
+};
 
 UINTERFACE(MinimalAPI)
 class UHASCombatInterface : public UInterface
@@ -27,5 +46,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetMotionWarpingTarget(const FVector& TargetLocation);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetWeaponSocketLocation(const FGameplayTag& SocketTag);
 
 };

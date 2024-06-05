@@ -50,6 +50,10 @@ private:
 
 	void AutoRun();
 
+	void ShiftPressed();
+
+	void ShiftReleased();
+
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
 
@@ -58,6 +62,12 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> AttributeMenuAction;
+		
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UInputAction> ShiftPressedAction;
+		
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UInputAction> ShiftReleasedAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UHASInputInfo> InputInfo;
@@ -70,6 +80,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Combat|Cursor")
 	bool bClicked = false;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Combat|Cursor")
+	bool bShiftPressed = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat|Cursor")
 	TObjectPtr<UUserWidget> DefaultMouseCursorWidget;

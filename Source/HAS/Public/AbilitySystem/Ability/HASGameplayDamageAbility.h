@@ -4,6 +4,8 @@
 #include "AbilitySystem/Ability/HASGameplayAbility.h"
 #include "HASGameplayDamageAbility.generated.h"
 
+class AHASProjectile;
+
 /**
  * 
  */
@@ -14,5 +16,12 @@ class HAS_API UHASGameplayDamageAbility : public UHASGameplayAbility
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming);
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASProjectile> ProjectileClass;
 };

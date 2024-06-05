@@ -16,6 +16,8 @@ AHASCharacter::AHASCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
+
 	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("HairGroom"));
 	Hair->SetupAttachment(GetMesh(), FName("HairGroom"));
 }

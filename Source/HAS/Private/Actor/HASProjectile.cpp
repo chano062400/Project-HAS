@@ -5,6 +5,7 @@
 AHASProjectile::AHASProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 
 	SetRootComponent(Sphere);
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));

@@ -1,5 +1,6 @@
 #include "Character/HASCharacterBase.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
+#include "HASGameplayTags.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -67,9 +68,31 @@ void AHASCharacterBase::UnHighlightActor()
 	}
 }
 
+FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGameplayTag& SocketTag)
+{
+	if (SocketTag.MatchesTagExact(FHASGameplayTags::Get().WeaponSocket_Staff))
+	{
+		return Weapon->GetSocketLocation(FName("Staff"));
+	}
+	return FVector();
+}
+
 void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+FAttackMontage AHASCharacterBase::GetAttackMontageInfo(const FGameplayTag& MontageTag)
+{
+	for (FAttackMontage Info : AttackMontageInfo)
+	{
+		if (Info.MontageTag.MatchesTagExact(MontageTag))
+		{
+			return Info;
+		}
+	}
+
+	return FAttackMontage();
 }
 

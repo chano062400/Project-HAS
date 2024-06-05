@@ -48,6 +48,8 @@ public:
 
 	virtual void UnHighlightActor() override;
 
+	virtual FVector GetWeaponSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -63,4 +65,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montage")
+	TArray<FAttackMontage> AttackMontageInfo;
+
+	UFUNCTION(BlueprintCallable)
+	FAttackMontage GetAttackMontageInfo(const FGameplayTag& MontageTag);
+
 };
