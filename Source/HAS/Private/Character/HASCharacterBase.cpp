@@ -17,6 +17,11 @@ UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
 
 void AHASCharacterBase::InitializeStartAttributes()
 {
+	ApplyAttributes(StartPrimrayAttribute, this);
+
+	ApplyAttributes(StartSecondaryAttribute, this);
+
+	ApplyAttributes(StartVitalAttribute, this);
 }
 
 void AHASCharacterBase::InitAbilityActorInfo()

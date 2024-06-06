@@ -123,6 +123,9 @@ void AHASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		Actor와의 거리가 스킬 사거리 이상이라면 사거리까지 자동 이동 후 Activate */
 
 		ASC->AbilityInputTagHeld(InputTag);
+		
+		// 이동하다 Ability를 사용하면 멈추도록.
+		bAutoRun = false;
 	}
 	else
 	{
@@ -234,7 +237,11 @@ void AHASPlayerController::CursorTrace()
 
 void AHASPlayerController::AutoRun()
 {
-	if (!bAutoRun) return;
+	if (!bAutoRun)
+	{
+		StopMovement();
+		return;
+	}
 
 	if (APawn* ControlledPawn = GetPawn())
 	{

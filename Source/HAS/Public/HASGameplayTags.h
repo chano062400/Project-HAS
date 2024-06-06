@@ -43,6 +43,10 @@ public:
 
 	FGameplayTag WeaponSocket_Staff;
 
+	/* Ability Tag */
+
+	FGameplayTag Ability_Fire_FireBall;
+
 private:
 
 	static FHASGameplayTags GameplayTags;

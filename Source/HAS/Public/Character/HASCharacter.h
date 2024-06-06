@@ -24,8 +24,6 @@ public:
 
 	virtual void OnRep_PlayerState() override;
 	
-	virtual void InitializeStartAttributes() override;
-
 	virtual void InitAbilityActorInfo() override;
 
 	/* Combat Interface */

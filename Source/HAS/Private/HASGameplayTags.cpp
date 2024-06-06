@@ -92,5 +92,18 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Input.4"),
 		FString("4 Input Tag")
 	);
+	
+	/* WeaponSocket Tag */
 
+	GameplayTags.WeaponSocket_Staff = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("WeaponSocket.Starff"),
+		FString("Staff Socket Tag")
+	);
+
+	/* Ability Tag */
+
+	GameplayTags.Ability_Fire_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Fire.FireBall"),
+		FString("FireBall Ability Tag")
+	);
 }

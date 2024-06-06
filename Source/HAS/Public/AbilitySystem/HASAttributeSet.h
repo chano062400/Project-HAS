@@ -71,6 +71,8 @@ public:
 
 	void SetEffectProps(const FGameplayEffectModCallbackData& Data, FEffectProperties& OutProps);
 
+	void HandleIncomingDamage(FEffectProperties& Props);
+
 	/* Vital Attributes */
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
@@ -139,7 +141,13 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
 	
+	// Meta Attribute
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
+	FGameplayAttributeData InComingDamage;
+	ATTRIBUTE_ACCESSORS(UHASAttributeSet, InComingDamage);
+
 	UPROPERTY()
 	TMap<FGameplayTag, FGameplayAttribute> TagsToAttributes;
 };

@@ -62,7 +62,10 @@ void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, GetHealthAttribute().GetName());
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
-
+	if (Data.EvaluatedData.Attribute == GetInComingDamageAttribute())
+	{
+		HandleIncomingDamage(EffectProps);
+	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Blue, GetManaAttribute().GetName());
@@ -109,6 +112,17 @@ void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data
 		}
 
 		OutProps.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OutProps.TargetAvatarActor);
+	}
+}
+
+void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
+{
+	const float LocalIncomingDamage = GetInComingDamage();
+	SetInComingDamage(0.f);
+
+	if (LocalIncomingDamage > 0.f)
+	{
+		SetHealth(FMath::ClampAngle(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth()));
 	}
 }
 

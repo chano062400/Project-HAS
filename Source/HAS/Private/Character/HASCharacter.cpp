@@ -40,15 +40,6 @@ void AHASCharacter::OnRep_PlayerState()
 
 }
 
-void AHASCharacter::InitializeStartAttributes()
-{
-	ApplyAttributes(StartPrimrayAttribute, this);
-
-	ApplyAttributes(StartSecondaryAttribute, this);
-
-	ApplyAttributes(StartVitalAttribute, this);
-}
-
 void AHASCharacter::InitAbilityActorInfo()
 {
 	AHASPlayerState* HASPlayerState = GetPlayerState<AHASPlayerState>();
