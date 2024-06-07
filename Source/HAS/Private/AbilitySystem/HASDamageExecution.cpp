@@ -2,6 +2,7 @@
 #include "AbilitySystem/HASAttributeSet.h"
 #include "HASGameplayTags.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 //Raw Struct로 Blueprint나 Reflection System 어느 곳에도 노출시키지 않을 것이라서 F 안붙임.
 struct HASDamageStatics
@@ -27,7 +28,10 @@ static const HASDamageStatics& DamageStatics()
 
 UHASDamageExecution::UHASDamageExecution()
 {
-
+	/** Attributes to capture that are relevant to the calculation */
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().IntelligenceDef);
 }
 
 void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -69,7 +73,12 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 
 	float EffectiveCriticalChance = SourceCriticalChance - TargetCriticalResistance;
 	bool bIsCritical = EffectiveCriticalChance > FMath::RandRange(1, 100);
-	if (bIsCritical) BaseDamage *= 1.25f;
+	if (bIsCritical)
+	{
+		BaseDamage *= 1.25f;
+		FGameplayEffectContextHandle EffectContextHandle = Spec.GetEffectContext();
+		UHASAbilitySystemBlueprintLibrary::SetCriticalHit(EffectContextHandle, true);
+	}
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UHASAttributeSet::GetInComingDamageAttribute(), EGameplayModOp::Additive, BaseDamage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
