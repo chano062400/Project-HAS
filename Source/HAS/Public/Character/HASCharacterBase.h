@@ -21,7 +21,7 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+	UAttributeSet* GetAttributeSet() const { return AttributeSetComp; }
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> StartVitalAttribute;
@@ -40,6 +40,8 @@ public:
 
 	virtual	void AddStartAbilities();
 
+	virtual void AddHitReactAbility(TSubclassOf<UGameplayAbility> InHitReactAbility);
+
 	/* Combat Interface */
 
 	virtual int32 GetLevel_Implementation() override;
@@ -50,15 +52,34 @@ public:
 
 	virtual FVector GetWeaponSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 
+	void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
+
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDie();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDieEffect(int32 MaterialIndex);
+
 protected:
 
 	virtual void BeginPlay() override;
-	
+
+	UFUNCTION(BlueprintCallable)
+	virtual FMontageInfo GetMontageInfo_Implementation(const FGameplayTag& MontageTag);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montage")
+	TArray<FMontageInfo> MontageInformations;
+
+	UPROPERTY(EditAnywhere)
+	float BaseWalkSpeed = 250.f;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet;
+	TObjectPtr<UAttributeSet> AttributeSetComp;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
@@ -66,10 +87,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Montage")
-	TArray<FAttackMontage> AttackMontageInfo;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayAbility> HitReactAbility;
 
-	UFUNCTION(BlueprintCallable)
-	FAttackMontage GetAttackMontageInfo(const FGameplayTag& MontageTag);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DieEffectMI;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 DieEffectMaterialIndex;
 };

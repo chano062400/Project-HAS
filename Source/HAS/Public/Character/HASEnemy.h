@@ -31,6 +31,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedSignature HealthChangedDelegate;
 
+	virtual void Die() override;
+
 protected:
 
 	virtual void BeginPlay() override;

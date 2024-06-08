@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "HASGameplayTags.h"
+#include "Interfaces/HASCombatInterface.h"
 
 UHASAttributeSet::UHASAttributeSet()
 {
@@ -122,7 +123,26 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 	if (LocalIncomingDamage > 0.f)
 	{
-		SetHealth(FMath::ClampAngle(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth()));
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		const bool bFatal = NewHealth <= 0.f;
+		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+
+		if (bFatal)
+		{
+			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
+			{
+				Interface->Die();
+			}
+		}
+		// HitReact
+		else
+		{
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(FHASGameplayTags::Get().Ability_HitReact);
+			
+			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
+			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+		}		
 	}
 }
 

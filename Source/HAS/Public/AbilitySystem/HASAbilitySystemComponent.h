@@ -16,7 +16,9 @@ public:
 
 	void AbilityActorInfoSet();
 
-	void AddStartAbilities(TArray<TSubclassOf<UGameplayAbility>> StartAbilities);
+	void AddStartAbilitiesByInputTag(TArray<TSubclassOf<UGameplayAbility>> StartAbilities);
+
+	void AddHitReactAbility(TSubclassOf<UGameplayAbility> HitReactAbility);
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 

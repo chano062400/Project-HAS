@@ -1,5 +1,6 @@
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/HASGameplayAbility.h"
+#include "HASGameplayTags.h"
 
 void UHASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -8,7 +9,7 @@ void UHASAbilitySystemComponent::AbilityActorInfoSet()
 	/*OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UHASAbilitySystemComponent::ClientEffectApplied);*/
 }
 
-void UHASAbilitySystemComponent::AddStartAbilities(TArray<TSubclassOf<UGameplayAbility>> StartAbilities)
+void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<UGameplayAbility>> StartAbilities)
 {
 	for (auto Ability : StartAbilities)
 	{
@@ -18,9 +19,17 @@ void UHASAbilitySystemComponent::AddStartAbilities(TArray<TSubclassOf<UGameplayA
 		{
 			//AbilitySpec에 InputTag를 추가.
 			AbilitySpec.DynamicAbilityTags.AddTag(HASAbility->InputTag);
+
 			GiveAbility(AbilitySpec);
+
 		}
 	}
+}
+
+void UHASAbilitySystemComponent::AddHitReactAbility(TSubclassOf<UGameplayAbility> HitReactAbility)
+{
+	FGameplayAbilitySpec AbilitySpec(HitReactAbility, 1.f);
+	GiveAbility(AbilitySpec);
 }
 
 void UHASAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)

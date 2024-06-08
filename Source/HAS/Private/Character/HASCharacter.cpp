@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GroomComponent.h"
+#include "HASGameplayTags.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -30,6 +31,9 @@ void AHASCharacter::PossessedBy(AController* NewController)
 
 	AddStartAbilities();
 
+	AddHitReactAbility(HitReactAbility);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
+
 }
 
 void AHASCharacter::OnRep_PlayerState()
@@ -37,6 +41,9 @@ void AHASCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
+
+	AddHitReactAbility(HitReactAbility);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
 
 }
 
@@ -53,7 +60,7 @@ void AHASCharacter::InitAbilityActorInfo()
 	// HASCHaracter - UAbilitySystemComponent, HASPlayerState - UHASAbilitySystemComponent.
 	// HASCHaracter - UAttributeSet,           HASPlayerState - UHASAttributeSet.
 	AbilitySystemComponent = HASPlayerState->GetAbilitySystemComponent();
-	AttributeSet = HASPlayerState->GetAttributeSet();
+	AttributeSetComp = HASPlayerState->GetAttributeSet();
 
 	// BroadcastInitialValue하기 전에 StartAttributeEffect 적용.
 	InitializeStartAttributes();
@@ -62,7 +69,7 @@ void AHASCharacter::InitAbilityActorInfo()
 	{
 		if (AHASHUD* HASHUD = Cast<AHASHUD>(HASPlayerController->GetHUD()))
 		{
-			HASHUD->InitOverlay(HASPlayerController, HASPlayerState, AbilitySystemComponent, AttributeSet);
+			HASHUD->InitOverlay(HASPlayerController, HASPlayerState, AbilitySystemComponent, AttributeSetComp);
 		}
 	}
 

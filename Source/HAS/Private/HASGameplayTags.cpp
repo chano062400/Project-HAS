@@ -106,4 +106,17 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Fire.FireBall"),
 		FString("FireBall Ability Tag")
 	);
+	
+	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.HitReact"),
+		FString("HitReact Ability Tag")
+	);
+
+	/* Montage Tag */
+
+	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.HitReact"),
+		FString("HitReact Montage Tag")
+	);
+
 }

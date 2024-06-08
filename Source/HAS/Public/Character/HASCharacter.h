@@ -32,6 +32,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsDodging = false;
+
 private:
 
 	UPROPERTY(VisibleAnywhere)

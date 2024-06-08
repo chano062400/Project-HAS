@@ -1,6 +1,8 @@
 #include "Character/HASCharacterBase.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "HASGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -8,6 +10,8 @@ AHASCharacterBase::AHASCharacterBase()
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
+
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
@@ -43,7 +47,16 @@ void AHASCharacterBase::AddStartAbilities()
 	if (!HasAuthority()) return;
 	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		ASC->AddStartAbilities(StartAbilities);
+		ASC->AddStartAbilitiesByInputTag(StartAbilities);
+	}
+}
+
+void AHASCharacterBase::AddHitReactAbility(TSubclassOf<UGameplayAbility> InHitReactAbility)
+{
+	if (!HasAuthority()) return;
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		ASC->AddHitReactAbility(InHitReactAbility);
 	}
 }
 
@@ -82,15 +95,42 @@ FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGamepla
 	return FVector();
 }
 
+void AHASCharacterBase::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
+{
+	NewCount ? GetCharacterMovement()->MaxWalkSpeed = 0.f : GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+}
+
+void AHASCharacterBase::Die()
+{
+	MulticastHandleDie();
+}
+
+void AHASCharacterBase::MulticastHandleDie_Implementation()
+{
+	FDetachmentTransformRules Rules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+	Weapon->DetachFromComponent(Rules);
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	PlayDieEffect(DieEffectMaterialIndex);
+}
+
 void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-FAttackMontage AHASCharacterBase::GetAttackMontageInfo(const FGameplayTag& MontageTag)
+FMontageInfo AHASCharacterBase::GetMontageInfo_Implementation(const FGameplayTag& MontageTag)
 {
-	for (FAttackMontage Info : AttackMontageInfo)
+	for (FMontageInfo Info : MontageInformations)
 	{
 		if (Info.MontageTag.MatchesTagExact(MontageTag))
 		{
@@ -98,6 +138,6 @@ FAttackMontage AHASCharacterBase::GetAttackMontageInfo(const FGameplayTag& Monta
 		}
 	}
 
-	return FAttackMontage();
+	return FMontageInfo();
 }
 

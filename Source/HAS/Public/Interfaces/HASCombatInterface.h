@@ -8,12 +8,12 @@
 class UAnimMontage;
 
 USTRUCT(BlueprintType)
-struct FAttackMontage
+struct FMontageInfo
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UAnimMontage> AttackMontage;
+	TObjectPtr<UAnimMontage> Montage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag SocketTag;
@@ -49,5 +49,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetWeaponSocketLocation(const FGameplayTag& SocketTag);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FMontageInfo GetMontageInfo(const FGameplayTag& MontageTag); 
+
+	virtual void Die() = 0;
 
 };

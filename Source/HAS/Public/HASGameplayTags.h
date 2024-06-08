@@ -46,6 +46,11 @@ public:
 	/* Ability Tag */
 
 	FGameplayTag Ability_Fire_FireBall;
+	FGameplayTag Ability_HitReact;
+	
+	/* Montage Tag */
+
+	FGameplayTag Montage_HitReact;
 
 private:
 

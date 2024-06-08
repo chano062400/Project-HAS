@@ -4,6 +4,7 @@
 #include "Player/HASPlayerState.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/HASUserWidget.h"
+#include "HASGameplayTags.h"
 
 AHASEnemy::AHASEnemy()
 {
@@ -11,10 +12,11 @@ AHASEnemy::AHASEnemy()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
-	AttributeSet = CreateDefaultSubobject<UHASAttributeSet>(TEXT("AttributeSet"));
+	AttributeSetComp = CreateDefaultSubobject<UHASAttributeSet>(TEXT("AttributeSet"));
 
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
+	HealthBarWidget->SetIsReplicated(true);
 
 }
 
@@ -23,23 +25,35 @@ void AHASEnemy::InitAbilityActorInfo()
 
 }
 
+void AHASEnemy::Die()
+{
+	HealthBarWidget->SetVisibility(false);
+	Super::Die();
+}
+
 void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
+	AddStartAbilities();
+
+	AddHitReactAbility(HitReactAbility);
+
 	if (HasAuthority()) InitializeStartAttributes();
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
 
 	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{
 		HASWidget->SetWidgetController(this);
 	}
 
-	if (UHASAttributeSet* AS = Cast<UHASAttributeSet>(AttributeSet))
+	if (UHASAttributeSet* AS = Cast<UHASAttributeSet>(AttributeSetComp))
 	{
 		// �ʱⰪ
-		HealthChangedDelegate.Broadcast(AS->GetMaxHealth());
+		MaxHealthChangedDelegate.Broadcast(AS->GetMaxHealth());
 		HealthChangedDelegate.Broadcast(AS->GetHealth());
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddLambda(
