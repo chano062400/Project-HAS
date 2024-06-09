@@ -11,6 +11,7 @@
 #include "HASGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AHASPlayerController::AHASPlayerController()
 {
@@ -291,6 +292,20 @@ void AHASPlayerController::SetupInputComponent()
 		HASEnhancedInputComponent->BindAbilityAction(InputInfo, this, &AHASPlayerController::AbilityInputTagPressed, &AHASPlayerController::AbilityInputTagReleased, &AHASPlayerController::AbilityInputTagHeld);
 	}
 
+}
+
+void AHASPlayerController::ClientShowFloatingDamageText_Implementation(float Damage, AActor* TargetActor, bool bIsCritical)
+{
+	if (IsValid(TargetActor) && DamageTextComponentClass)
+	{
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetActor, DamageTextComponentClass);
+		//NewObject로 생성한 Component는 반드시 등록(Register)절차를 거쳐야 함
+		DamageText->RegisterComponent();
+		DamageText->AttachToComponent(TargetActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageText->SetDamageText(Damage, bIsCritical);
+	}
 }
 
 void AHASPlayerController::PlayerTick(float DeltaTime)

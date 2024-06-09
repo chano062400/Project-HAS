@@ -73,6 +73,8 @@ public:
 
 	void HandleIncomingDamage(FEffectProperties& Props);
 
+	void ShowDamageText(FEffectProperties& Props, float Damage);
+
 	/* Vital Attributes */
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")

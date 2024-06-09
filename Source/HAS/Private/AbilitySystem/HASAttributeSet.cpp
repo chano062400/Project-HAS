@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "HASGameplayTags.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "Player/HASPlayerController.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 UHASAttributeSet::UHASAttributeSet()
 {
@@ -118,6 +120,8 @@ void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data
 
 void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 {
+	if (Props.SourceAvatarActor == Props.TargetAvatarActor) return;
+
 	const float LocalIncomingDamage = GetInComingDamage();
 	SetInComingDamage(0.f);
 
@@ -126,6 +130,8 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 		const float NewHealth = GetHealth() - LocalIncomingDamage;
 		const bool bFatal = NewHealth <= 0.f;
 		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+
+		ShowDamageText(Props, LocalIncomingDamage);
 
 		if (bFatal)
 		{
@@ -142,7 +148,17 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 			
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-		}		
+		}
+	}
+}
+
+void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
+{
+	bool bIsCritical = UHASAbilitySystemBlueprintLibrary::IsCriticalHit(Props.EffectContextHandle);
+
+	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.SourceASC->AbilityActorInfo->PlayerController))
+	{
+		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical);
 	}
 }
 

@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UHASEnhancedInputComponent;
 class USplineComponent;
+class UDamageTextComponent;
 
 /**
  * 
@@ -25,6 +26,9 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 
 	virtual void SetupInputComponent() override;
+
+	UFUNCTION(Client, Reliable)
+	void ClientShowFloatingDamageText(float Damage, AActor* TargetActor, bool bIsCritical);
 
 protected:
 
@@ -110,4 +114,7 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
 	float AutoRunAcceptance = 50.f;
+
+	UPROPERTY(EditDefaultsOnly, Category ="Combat|DamageText")
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };
