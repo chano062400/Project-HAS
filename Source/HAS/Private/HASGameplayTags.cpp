@@ -118,5 +118,12 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Montage.HitReact"),
 		FString("HitReact Montage Tag")
 	);
+	
+	/* Effect Tag */
+
+	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effect.HitReact"),
+		FString("HitReact Effect Tag")
+	);
 
 }

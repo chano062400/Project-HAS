@@ -19,13 +19,12 @@ UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AHASCharacterBase::InitializeStartAttributes()
+void AHASCharacterBase::InitializeDefaultAttributes(ECharacterClass InCharacterClass, int32 Level)
 {
-	ApplyAttributes(StartPrimrayAttribute, this);
-
-	ApplyAttributes(StartSecondaryAttribute, this);
-
-	ApplyAttributes(StartVitalAttribute, this);
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		ASC->ApplyDefaultAttributesByClass(InCharacterClass, Level);
+	}
 }
 
 void AHASCharacterBase::InitAbilityActorInfo()

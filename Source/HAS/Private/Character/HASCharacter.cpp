@@ -63,7 +63,7 @@ void AHASCharacter::InitAbilityActorInfo()
 	AttributeSetComp = HASPlayerState->GetAttributeSet();
 
 	// BroadcastInitialValue하기 전에 StartAttributeEffect 적용.
-	InitializeStartAttributes();
+	InitializeDefaultAttributes(CharacterClass, 1);
 
 	if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
 	{

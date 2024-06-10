@@ -52,6 +52,10 @@ public:
 
 	FGameplayTag Montage_HitReact;
 
+	/* Effect Tag */
+
+	FGameplayTag Effect_HitReact;
+
 private:
 
 	static FHASGameplayTags GameplayTags;

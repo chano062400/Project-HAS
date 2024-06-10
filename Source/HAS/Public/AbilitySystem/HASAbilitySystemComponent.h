@@ -2,7 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "HASAbilitySystemComponent.generated.h"
+
 
 /**
  * 
@@ -25,6 +27,8 @@ public:
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+
+	void ApplyDefaultAttributesByClass(ECharacterClass CharacterClass, int32 Level);
 
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);

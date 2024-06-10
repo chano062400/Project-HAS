@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "HASCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -32,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> StartSecondaryAttribute;
 	
-	virtual void InitializeStartAttributes();
+	virtual void InitializeDefaultAttributes(ECharacterClass InCharacterClass, int32 Level);
 
 	virtual void InitAbilityActorInfo();
 
@@ -52,7 +53,7 @@ public:
 
 	virtual FVector GetWeaponSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 
-	void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
+	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
 
 	virtual void Die() override;
 
@@ -87,7 +88,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> HitReactAbility;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -95,4 +96,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 DieEffectMaterialIndex;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	ECharacterClass CharacterClass = ECharacterClass::ECC_None;
 };

@@ -5,6 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/HASUserWidget.h"
 #include "HASGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AHASEnemy::AHASEnemy()
 {
@@ -17,6 +18,7 @@ AHASEnemy::AHASEnemy()
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 	HealthBarWidget->SetIsReplicated(true);
+	HealthBarWidget->SetVisibility(false);
 
 }
 
@@ -31,6 +33,20 @@ void AHASEnemy::Die()
 	Super::Die();
 }
 
+void AHASEnemy::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
+{
+	if (NewCount > 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 0.f;
+		HealthBarWidget->SetVisibility(true);
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+		HealthBarWidget->SetVisibility(false);
+	}
+}
+
 void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -41,9 +57,7 @@ void AHASEnemy::BeginPlay()
 
 	AddHitReactAbility(HitReactAbility);
 
-	if (HasAuthority()) InitializeStartAttributes();
-
-	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
+	if (HasAuthority()) InitializeDefaultAttributes(CharacterClass, Level);
 
 	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{
@@ -70,6 +84,8 @@ void AHASEnemy::BeginPlay()
 			}
 		);
 	}
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASEnemy::HitReactTagEvent);
 
 }
 

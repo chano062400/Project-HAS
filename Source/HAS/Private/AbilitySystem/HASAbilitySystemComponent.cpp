@@ -1,6 +1,9 @@
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/HASGameplayAbility.h"
 #include "HASGameplayTags.h"
+#include "Kismet/GameplayStatics.h"
+#include "HAS/HASGameModeBase.h"
+#include "AbilitySystem/Data/ClassInfoDataAsset.h"
 
 void UHASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -75,6 +78,23 @@ void UHASAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTa
 				TryActivateAbility(AbilitySpec.Handle);
 			}
 		}
+	}
+}
+
+void UHASAbilitySystemComponent::ApplyDefaultAttributesByClass(ECharacterClass CharacterClass, int32 Level)
+{
+	if (AHASGameModeBase* HASGameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(GetAvatarActor())))
+	{
+		FClassDefaultInfo Info = HASGameMode->ClassInformation->GetCharacterClassInfo(CharacterClass);
+
+		FGameplayEffectSpecHandle PrimaryAttributeEffectSpec = MakeOutgoingSpec(Info.PrimaryAttribute, Level, MakeEffectContext());
+		ApplyGameplayEffectSpecToSelf(*PrimaryAttributeEffectSpec.Data.Get());
+
+		FGameplayEffectSpecHandle SecondaryAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->SecondaryAttribute, Level, MakeEffectContext());
+		ApplyGameplayEffectSpecToSelf(*SecondaryAttributeEffectSpec.Data.Get());
+
+		FGameplayEffectSpecHandle VitalAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->VitalAttribute, Level, MakeEffectContext());
+		ApplyGameplayEffectSpecToSelf(*VitalAttributeEffectSpec.Data.Get());
 	}
 }
 
