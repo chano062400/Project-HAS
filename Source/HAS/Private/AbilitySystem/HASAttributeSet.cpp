@@ -194,16 +194,16 @@ void UHASAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OIdIntel
 
 void UHASAttributeSet::OnRep_Dexterity(const FGameplayAttributeData& OIdDexterity)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdDexterity);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Dexterity, OIdDexterity);
 }
 
 void UHASAttributeSet::OnRep_CriticalChance(const FGameplayAttributeData& OIdCriticalChacne)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdCriticalChacne);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, CriticalChance, OIdCriticalChacne);
 }
 
 void UHASAttributeSet::OnRep_CriticalResistance(const FGameplayAttributeData& OIdCriticalResistance)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, Intelligence, OIdCriticalResistance);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, CriticalResistance, OIdCriticalResistance);
 
 }

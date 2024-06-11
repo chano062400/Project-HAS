@@ -19,7 +19,7 @@ UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AHASCharacterBase::InitializeDefaultAttributes(ECharacterClass InCharacterClass, int32 Level)
+void AHASCharacterBase::InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level)
 {
 	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
 	{
@@ -29,16 +29,6 @@ void AHASCharacterBase::InitializeDefaultAttributes(ECharacterClass InCharacterC
 
 void AHASCharacterBase::InitAbilityActorInfo()
 {
-}
-
-void AHASCharacterBase::ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject)
-{
-	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(SourceObject);
-
-	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, EffectContextHandle);
-
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
 void AHASCharacterBase::AddStartAbilities()

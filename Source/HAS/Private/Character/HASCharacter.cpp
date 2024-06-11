@@ -63,7 +63,7 @@ void AHASCharacter::InitAbilityActorInfo()
 	AttributeSetComp = HASPlayerState->GetAttributeSet();
 
 	// BroadcastInitialValue하기 전에 StartAttributeEffect 적용.
-	InitializeDefaultAttributes(CharacterClass, 1);
+	InitializeDefaultAttributes();
 
 	if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
 	{
@@ -81,4 +81,21 @@ int32 AHASCharacter::GetLevel_Implementation()
 	check(PS);
 	
 	return PS->GetLevel();
+}
+
+void AHASCharacter::InitializeDefaultAttributes()
+{
+	ApplyAttribute(DefaultPrimrayAttribute, this);
+	ApplyAttribute(DefaultSecondaryAttribute, this);
+	ApplyAttribute(DefaultVitalAttribute, this);
+}
+
+void AHASCharacter::ApplyAttribute(TSubclassOf<UGameplayEffect> Attribute, AActor* SourceObject)
+{
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceObject);
+
+	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Attribute, 1.f, EffectContextHandle);
+
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }

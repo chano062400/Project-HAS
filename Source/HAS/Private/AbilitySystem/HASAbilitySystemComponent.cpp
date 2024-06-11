@@ -87,13 +87,19 @@ void UHASAbilitySystemComponent::ApplyDefaultAttributesByClass(ECharacterClass C
 	{
 		FClassDefaultInfo Info = HASGameMode->ClassInformation->GetCharacterClassInfo(CharacterClass);
 
-		FGameplayEffectSpecHandle PrimaryAttributeEffectSpec = MakeOutgoingSpec(Info.PrimaryAttribute, Level, MakeEffectContext());
+		FGameplayEffectContextHandle PrimaryEffectContextHandle = MakeEffectContext();
+		PrimaryEffectContextHandle.AddSourceObject(GetAvatarActor());
+		FGameplayEffectSpecHandle PrimaryAttributeEffectSpec = MakeOutgoingSpec(Info.PrimaryAttribute, Level, PrimaryEffectContextHandle);
 		ApplyGameplayEffectSpecToSelf(*PrimaryAttributeEffectSpec.Data.Get());
 
-		FGameplayEffectSpecHandle SecondaryAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->SecondaryAttribute, Level, MakeEffectContext());
+		FGameplayEffectContextHandle SecondaryEffectContextHandle = MakeEffectContext();
+		SecondaryEffectContextHandle.AddSourceObject(GetAvatarActor());
+		FGameplayEffectSpecHandle SecondaryAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->SecondaryAttribute, Level, SecondaryEffectContextHandle);
 		ApplyGameplayEffectSpecToSelf(*SecondaryAttributeEffectSpec.Data.Get());
 
-		FGameplayEffectSpecHandle VitalAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->VitalAttribute, Level, MakeEffectContext());
+		FGameplayEffectContextHandle VitalEffectContextHandle = MakeEffectContext();
+		VitalEffectContextHandle.AddSourceObject(GetAvatarActor());
+		FGameplayEffectSpecHandle VitalAttributeEffectSpec = MakeOutgoingSpec(HASGameMode->ClassInformation->VitalAttribute, Level, VitalEffectContextHandle);
 		ApplyGameplayEffectSpecToSelf(*VitalAttributeEffectSpec.Data.Get());
 	}
 }

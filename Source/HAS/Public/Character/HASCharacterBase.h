@@ -24,20 +24,9 @@ public:
 
 	UAttributeSet* GetAttributeSet() const { return AttributeSetComp; }
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> StartVitalAttribute;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> StartPrimrayAttribute;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> StartSecondaryAttribute;
-	
-	virtual void InitializeDefaultAttributes(ECharacterClass InCharacterClass, int32 Level);
+	virtual void InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level);
 
 	virtual void InitAbilityActorInfo();
-
-	virtual void ApplyAttributes(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceObject);
 
 	virtual	void AddStartAbilities();
 

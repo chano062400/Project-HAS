@@ -17,7 +17,6 @@ AHASEnemy::AHASEnemy()
 
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
-	HealthBarWidget->SetIsReplicated(true);
 	HealthBarWidget->SetVisibility(false);
 
 }
@@ -57,7 +56,7 @@ void AHASEnemy::BeginPlay()
 
 	AddHitReactAbility(HitReactAbility);
 
-	if (HasAuthority()) InitializeDefaultAttributes(CharacterClass, Level);
+	if (HasAuthority()) InitializeDefaultAttributesByClass(CharacterClass, Level);
 
 	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{
@@ -66,10 +65,6 @@ void AHASEnemy::BeginPlay()
 
 	if (UHASAttributeSet* AS = Cast<UHASAttributeSet>(AttributeSetComp))
 	{
-		// 초기값
-		MaxHealthChangedDelegate.Broadcast(AS->GetMaxHealth());
-		HealthChangedDelegate.Broadcast(AS->GetHealth());
-
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddLambda(
 			[this](const FOnAttributeChangeData& Data)
 			{
@@ -83,6 +78,10 @@ void AHASEnemy::BeginPlay()
 				HealthChangedDelegate.Broadcast(Data.NewValue);
 			}
 		);
+
+		// 초기값
+		MaxHealthChangedDelegate.Broadcast(AS->GetMaxHealth());
+		HealthChangedDelegate.Broadcast(AS->GetHealth());
 	}
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASEnemy::HitReactTagEvent);
