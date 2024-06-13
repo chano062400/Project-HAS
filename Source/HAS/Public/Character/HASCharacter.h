@@ -35,10 +35,6 @@ public:
 
 protected:
 
-	void InitializeDefaultAttributes();
-	
-	void ApplyAttribute(TSubclassOf<UGameplayEffect> Attribute, AActor* SourceObject);
-
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -49,15 +45,5 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroomComponent> Hair;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> DefaultVitalAttribute;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> DefaultPrimrayAttribute;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> DefaultSecondaryAttribute;
-
 
 };

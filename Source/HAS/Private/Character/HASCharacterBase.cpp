@@ -27,6 +27,32 @@ void AHASCharacterBase::InitializeDefaultAttributesByClass(ECharacterClass InCha
 	}
 }
 
+void AHASCharacterBase::AddDefaultAbilitiesByClass(ECharacterClass InCharacterClass, int32 Level)
+{
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		ASC->AddDefaultAbilitiesByClass(InCharacterClass, Level);
+	}
+}
+
+void AHASCharacterBase::InitializeDefaultAttributes()
+{
+	ApplyAttribute(DefaultPrimrayAttribute, this);
+	ApplyAttribute(DefaultSecondaryAttribute, this);
+	ApplyAttribute(DefaultVitalAttribute, this);
+
+}
+
+void AHASCharacterBase::ApplyAttribute(TSubclassOf<UGameplayEffect> Attribute, AActor* SourceObject)
+{
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceObject);
+
+	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Attribute, 1.f, EffectContextHandle);
+
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+}
+
 void AHASCharacterBase::InitAbilityActorInfo()
 {
 }
@@ -40,12 +66,12 @@ void AHASCharacterBase::AddStartAbilities()
 	}
 }
 
-void AHASCharacterBase::AddHitReactAbility(TSubclassOf<UGameplayAbility> InHitReactAbility)
+void AHASCharacterBase::AddCommonAbilities()
 {
 	if (!HasAuthority()) return;
 	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		ASC->AddHitReactAbility(InHitReactAbility);
+		ASC->AddCommonAbilities();
 	}
 }
 

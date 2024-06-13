@@ -30,6 +30,10 @@ public:
 
 	void ApplyDefaultAttributesByClass(ECharacterClass CharacterClass, int32 Level);
 
+	void AddDefaultAbilitiesByClass(ECharacterClass CharacterClass, int32 Level);
+
+	void AddCommonAbilities();
+
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 };

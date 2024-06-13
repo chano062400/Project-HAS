@@ -104,6 +104,34 @@ void UHASAbilitySystemComponent::ApplyDefaultAttributesByClass(ECharacterClass C
 	}
 }
 
+void UHASAbilitySystemComponent::AddDefaultAbilitiesByClass(ECharacterClass CharacterClass, int32 Level)
+{
+	if(AHASGameModeBase* HASGameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(GetAvatarActor())))
+	{
+		FClassDefaultInfo Info = HASGameMode->ClassInformation->GetCharacterClassInfo(CharacterClass);
+		
+		for (TSubclassOf<UGameplayAbility> Ability : Info.DefaultAbilities)
+		{
+			FGameplayAbilitySpec AbilitySpec(Ability, Level);
+
+			GiveAbility(AbilitySpec);
+		}
+	}
+}
+
+void UHASAbilitySystemComponent::AddCommonAbilities()
+{
+	if (AHASGameModeBase* HASGameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(GetAvatarActor())))
+	{
+		for (TSubclassOf<UGameplayAbility> Ability : HASGameMode->ClassInformation->CommonAbilities)
+		{
+			FGameplayAbilitySpec AbilitySpec(Ability, 1.f);
+
+			GiveAbility(AbilitySpec);
+		}
+	}
+}
+
 void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
 {
 	if (!InputTag.IsValid()) return;

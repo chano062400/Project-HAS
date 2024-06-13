@@ -31,7 +31,6 @@ void AHASCharacter::PossessedBy(AController* NewController)
 
 	AddStartAbilities();
 
-	AddHitReactAbility(HitReactAbility);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
 
 }
@@ -42,7 +41,6 @@ void AHASCharacter::OnRep_PlayerState()
 
 	InitAbilityActorInfo();
 
-	AddHitReactAbility(HitReactAbility);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
 
 }
@@ -81,21 +79,4 @@ int32 AHASCharacter::GetLevel_Implementation()
 	check(PS);
 	
 	return PS->GetLevel();
-}
-
-void AHASCharacter::InitializeDefaultAttributes()
-{
-	ApplyAttribute(DefaultPrimrayAttribute, this);
-	ApplyAttribute(DefaultSecondaryAttribute, this);
-	ApplyAttribute(DefaultVitalAttribute, this);
-}
-
-void AHASCharacter::ApplyAttribute(TSubclassOf<UGameplayEffect> Attribute, AActor* SourceObject)
-{
-	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(SourceObject);
-
-	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Attribute, 1.f, EffectContextHandle);
-
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }

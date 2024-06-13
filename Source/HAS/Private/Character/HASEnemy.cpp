@@ -6,6 +6,9 @@
 #include "UI/Widget/HASUserWidget.h"
 #include "HASGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AI/HASAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AHASEnemy::AHASEnemy()
 {
@@ -29,6 +32,7 @@ void AHASEnemy::InitAbilityActorInfo()
 void AHASEnemy::Die()
 {
 	HealthBarWidget->SetVisibility(false);
+	if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);
 	Super::Die();
 }
 
@@ -46,15 +50,30 @@ void AHASEnemy::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 	}
 }
 
+void AHASEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	HASAIController = Cast<AHASAIController>(NewController);
+	check(HASAIController);
+
+	// BehaviorTree 로드 및 실행.
+	HASAIController->RunBehaviorTree(BehaviorTree);
+	HASAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->GetBlackboardAsset());
+	HASAIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), nullptr);
+	HASAIController->GetBlackboardComponent()->SetValueAsFloat(FName("DistanceToTarget"), 0.f);
+	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), false);
+}
+
 void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-	AddStartAbilities();
+	AddDefaultAbilitiesByClass(CharacterClass, Level);
 
-	AddHitReactAbility(HitReactAbility);
+	AddCommonAbilities();
 
 	if (HasAuthority()) InitializeDefaultAttributesByClass(CharacterClass, Level);
 

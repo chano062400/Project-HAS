@@ -26,11 +26,17 @@ public:
 
 	virtual void InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level);
 
+	virtual void AddDefaultAbilitiesByClass(ECharacterClass InCharacterClass, int32 Level);
+
+	virtual void InitializeDefaultAttributes();
+
+	virtual void ApplyAttribute(TSubclassOf<UGameplayEffect> Attribute, AActor* SourceObject);
+
 	virtual void InitAbilityActorInfo();
 
 	virtual	void AddStartAbilities();
 
-	virtual void AddHitReactAbility(TSubclassOf<UGameplayAbility> InHitReactAbility);
+	virtual void AddCommonAbilities();
 
 	/* Combat Interface */
 
@@ -52,14 +58,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayDieEffect(int32 MaterialIndex);
 
+	UFUNCTION(BlueprintCallable)
+	virtual FMontageInfo GetMontageInfo_Implementation(const FGameplayTag& MontageTag);
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual FMontageInfo GetMontageInfo_Implementation(const FGameplayTag& MontageTag);
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montage")
+	UPROPERTY(EditAnywhere, Category = "Montage")
 	TArray<FMontageInfo> MontageInformations;
 
 	UPROPERTY(EditAnywhere)
@@ -74,18 +80,28 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	UPROPERTY(EditAnywhere, Category = "Ability")
 	TSubclassOf<UGameplayAbility> HitReactAbility;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> DieEffectMI;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 DieEffectMaterialIndex;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	UPROPERTY(EditAnywhere, Category = "Class")
 	ECharacterClass CharacterClass = ECharacterClass::ECC_None;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> DefaultVitalAttribute;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> DefaultPrimrayAttribute;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttribute;
+
 };

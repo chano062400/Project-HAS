@@ -6,6 +6,9 @@
 #include "HASEnemy.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AHASAIController;
+
 /**
  * 
  */
@@ -39,9 +42,16 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void PossessedBy(AController* NewController) override;
+
 private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HealthBarWidget;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AHASAIController> HASAIController;
 };
