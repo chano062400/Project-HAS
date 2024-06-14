@@ -111,12 +111,22 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.HitReact"),
 		FString("HitReact Ability Tag")
 	);
+		
+	GameplayTags.Ability_MeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.MeleeAttack"),
+		FString("MeleeAttack Ability Tag")
+	);
 
 	/* Montage Tag */
 
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.HitReact"),
 		FString("HitReact Montage Tag")
+	);
+	
+	GameplayTags.Montage_MeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.MeleeAttack"),
+		FString("MeleeAttack Montage Tag")
 	);
 	
 	/* Effect Tag */

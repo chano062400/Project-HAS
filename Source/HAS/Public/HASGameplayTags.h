@@ -47,10 +47,12 @@ public:
 
 	FGameplayTag Ability_Fire_FireBall;
 	FGameplayTag Ability_HitReact;
+	FGameplayTag Ability_MeleeAttack;
 	
 	/* Montage Tag */
 
 	FGameplayTag Montage_HitReact;
+	FGameplayTag Montage_MeleeAttack;
 
 	/* Effect Tag */
 
