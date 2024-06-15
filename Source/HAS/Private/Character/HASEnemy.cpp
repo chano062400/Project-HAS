@@ -41,6 +41,7 @@ void AHASEnemy::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 {
 	if (NewCount > 0)
 	{
+		if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsHit"), true);
 		GetCharacterMovement()->MaxWalkSpeed = 0.f;
 		HealthBarWidget->SetVisibility(true);
 	}

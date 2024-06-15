@@ -61,15 +61,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual FMontageInfo GetMontageInfo_Implementation(const FGameplayTag& MontageTag);
 
+	UPROPERTY(EditAnywhere)
+	float BaseWalkSpeed = 250.f;
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Montage")
 	TArray<FMontageInfo> MontageInformations;
-
-	UPROPERTY(EditAnywhere)
-	float BaseWalkSpeed = 250.f;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
