@@ -22,6 +22,7 @@ AHASEnemy::AHASEnemy()
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 	HealthBarWidget->SetVisibility(false);
 
+	BaseWalkSpeed = 500.f;
 }
 
 void AHASEnemy::InitAbilityActorInfo()
@@ -63,6 +64,7 @@ void AHASEnemy::PossessedBy(AController* NewController)
 	HASAIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), nullptr);
 	HASAIController->GetBlackboardComponent()->SetValueAsFloat(FName("DistanceToTarget"), 0.f);
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), false);
+	HASAIController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolLocation"), FVector::ZeroVector);
 }
 
 void AHASEnemy::BeginPlay()

@@ -2,6 +2,12 @@
 #include "AIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BTFunctionLibrary.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
+UBTService_FindNearestPlayer::UBTService_FindNearestPlayer()
+{
+
+}
 
 void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -25,6 +31,6 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		}
 	}
 
-	UBTFunctionLibrary::SetBlackboardValueAsFloat(this, DistanceToTargetSelector, MinDistance);
-	UBTFunctionLibrary::SetBlackboardValueAsObject(this, TargetActorSelector, NearestPlayer);
+	OwnerComp.GetBlackboardComponent()->SetValueAsFloat(FName("DistanceToTarget"), MinDistance);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), NearestPlayer);
 }

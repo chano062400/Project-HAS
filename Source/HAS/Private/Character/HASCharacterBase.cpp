@@ -129,7 +129,7 @@ void AHASCharacterBase::MulticastHandleDie_Implementation()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
 	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
