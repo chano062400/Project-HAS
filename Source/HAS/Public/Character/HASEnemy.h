@@ -38,6 +38,12 @@ public:
 
 	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount) override;
 
+	/* Combat Interface */
+
+	virtual AActor* GetCombatTarget_Implementation() override;
+
+	virtual	void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -54,4 +60,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AHASAIController> HASAIController;
+
+	UPROPERTY()
+	AActor* CombatTarget = nullptr;
 };

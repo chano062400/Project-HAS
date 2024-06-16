@@ -5,6 +5,11 @@ FHASGameplayTags FHASGameplayTags::GameplayTags;
 
 void FHASGameplayTags::InitializeNativeGameplayTags()
 {
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Ice);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Lightning);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Physical);
+
 	/* Vital Attributes */
 
 	GameplayTags.Attribute_Vital_Health = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -134,6 +139,28 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effect.HitReact"),
 		FString("HitReact Effect Tag")
+	);
+
+	/* Damage Tag */
+
+	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Fire"),
+		FString("Fire Damage Tag")
+	);
+	
+	GameplayTags.Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Ice"),
+		FString("Ice Damage Tag")
+	);
+	
+	GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Lightning"),
+		FString("Lightning Damage Tag")
+	);
+	
+	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Physical"),
+		FString("Physical Damage Tag")
 	);
 
 }

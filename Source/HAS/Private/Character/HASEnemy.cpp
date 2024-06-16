@@ -41,15 +41,22 @@ void AHASEnemy::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 {
 	if (NewCount > 0)
 	{
-		if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsHit"), true);
-		GetCharacterMovement()->MaxWalkSpeed = 0.f;
 		HealthBarWidget->SetVisibility(true);
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 		HealthBarWidget->SetVisibility(false);
 	}
+}
+
+AActor* AHASEnemy::GetCombatTarget_Implementation()
+{
+	return CombatTarget;
+}
+
+void AHASEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
 }
 
 void AHASEnemy::PossessedBy(AController* NewController)
@@ -63,8 +70,10 @@ void AHASEnemy::PossessedBy(AController* NewController)
 	HASAIController->RunBehaviorTree(BehaviorTree);
 	HASAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->GetBlackboardAsset());
 	HASAIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), nullptr);
+	HASAIController->GetBlackboardComponent()->SetValueAsObject(FName("ChaseTarget"), nullptr);
 	HASAIController->GetBlackboardComponent()->SetValueAsFloat(FName("DistanceToTarget"), 0.f);
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), false);
+	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsHit"), false);
 	HASAIController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolLocation"), FVector::ZeroVector);
 }
 

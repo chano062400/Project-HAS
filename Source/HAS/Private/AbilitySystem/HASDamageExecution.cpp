@@ -57,11 +57,27 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 		SourceActorLevel = IHASCombatInterface::Execute_GetLevel(SourceAvatarActor);
 	}
 
+	float BaseDamage = 0.f;
 	float Intelligence = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().IntelligenceDef, Params, Intelligence);
-	Intelligence = FMath::Max<float>(0.f, Intelligence);
 
-	float BaseDamage = SourceActorLevel * 10 + Intelligence * 2.5;
+	// Player 공격
+	if (TargetAvatarActor->ActorHasTag(FName("Enemy")))
+	{	
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().IntelligenceDef, Params, Intelligence);
+		Intelligence = FMath::Max<float>(0.f, Intelligence);
+		BaseDamage = SourceActorLevel * 10 + Intelligence * 2.5;
+	}
+	// Enemy 공격
+	else if(TargetAvatarActor->ActorHasTag(FName("Player")))
+	{
+		const float FireDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Fire);
+		const float IceDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Ice);
+		const float LightningDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Lightning);
+		const float PhysicalDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Physical);
+
+		BaseDamage = FireDamage + IceDamage + LightningDamage + PhysicalDamage;
+	}
+	
 
 	float SourceCriticalChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalChanceDef, Params, SourceCriticalChance);

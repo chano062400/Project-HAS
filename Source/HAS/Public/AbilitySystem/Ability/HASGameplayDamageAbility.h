@@ -22,6 +22,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void ApplyDamage(AActor* CombatTarget, int32 Level);
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag DamageType;
+
+	UPROPERTY(EditDefaultsOnly)
+	FScalableFloat Damage;
 };

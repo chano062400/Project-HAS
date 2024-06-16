@@ -135,6 +135,7 @@ void AHASCharacterBase::MulticastHandleDie_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	PlayDieEffect(DieEffectMaterialIndex);
+	bDead = true;
 }
 
 void AHASCharacterBase::BeginPlay()
@@ -143,7 +144,7 @@ void AHASCharacterBase::BeginPlay()
 	
 }
 
-FMontageInfo AHASCharacterBase::GetMontageInfo_Implementation(const FGameplayTag& MontageTag)
+FMontageInfo AHASCharacterBase::GetMontageInfoByTag_Implementation(const FGameplayTag& MontageTag)
 {
 	for (FMontageInfo Info : MontageInformations)
 	{
@@ -156,3 +157,7 @@ FMontageInfo AHASCharacterBase::GetMontageInfo_Implementation(const FGameplayTag
 	return FMontageInfo();
 }
 
+bool AHASCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}

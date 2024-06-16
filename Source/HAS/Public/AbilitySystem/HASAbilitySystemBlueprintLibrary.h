@@ -14,10 +14,12 @@ class HAS_API UHASAbilitySystemBlueprintLibrary : public UBlueprintFunctionLibra
 	
 public:
 	
-	UFUNCTION(BlueprintCallable, Category = "AbilitySystem|GameplayEffectContext")
+	UFUNCTION(BlueprintCallable)
 	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsCriticalHit);
 	
-	UFUNCTION(BlueprintCallable, Category = "AbilitySystem|GameplayEffectContext")
+	UFUNCTION(BlueprintCallable)
 	static bool IsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle);
 
+	UFUNCTION(BlueprintCallable)
+	static void GetPlayersWithinRadius(UObject* WorldContextObject, TArray<AActor*>& OutOverlapingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
 };

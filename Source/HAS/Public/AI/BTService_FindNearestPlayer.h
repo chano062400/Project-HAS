@@ -16,8 +16,6 @@ class HAS_API UBTService_FindNearestPlayer : public UBTService
 	
 public:
 
-	UBTService_FindNearestPlayer();
-
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

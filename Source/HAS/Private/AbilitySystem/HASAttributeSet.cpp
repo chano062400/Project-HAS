@@ -146,6 +146,8 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FHASGameplayTags::Get().Ability_HitReact);
 			
+			OnAttackedDelegate.Broadcast(Props.SourceAvatarActor);
+
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 		}

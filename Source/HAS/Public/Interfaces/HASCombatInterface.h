@@ -51,7 +51,16 @@ public:
 	FVector GetWeaponSocketLocation(const FGameplayTag& SocketTag);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FMontageInfo GetMontageInfo(const FGameplayTag& MontageTag); 
+	FMontageInfo GetMontageInfoByTag(const FGameplayTag& MontageTag); 
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetCombatTarget();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
 
 	virtual void Die() = 0;
 

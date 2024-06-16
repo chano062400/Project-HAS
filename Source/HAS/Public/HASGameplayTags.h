@@ -58,6 +58,15 @@ public:
 
 	FGameplayTag Effect_HitReact;
 
+	/* Damage Tag */
+
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Ice;
+	FGameplayTag Damage_Lightning;
+	FGameplayTag Damage_Physical;
+
+	TArray<FGameplayTag> DamageTypes;
+
 private:
 
 	static FHASGameplayTags GameplayTags;

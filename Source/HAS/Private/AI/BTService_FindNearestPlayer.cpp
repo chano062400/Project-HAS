@@ -5,11 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/HASEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-UBTService_FindNearestPlayer::UBTService_FindNearestPlayer()
-{
-
-}
+#include "AbilitySystem/HASAttributeSet.h"
 
 void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -37,33 +33,48 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		}
 	}
 	
-	if (Enemy && IsValid(BBComp->GetValueAsObject(FName("TargetActor"))))
+	// 공격당했다면 Chase.
+	if (UHASAttributeSet* AS = Cast<UHASAttributeSet>(Enemy->GetAttributeSet()))
 	{
-		// 범위 안에 있다면 추격.
-		if (MinDistance <= 500.f) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
-		else
-		{
-			// 범위 밖에서 공격당했다면 추격.
-			if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(FName("IsHit")))
+		AS->OnAttackedDelegate.AddLambda(
+			[AS, BBComp, this, Enemy](UObject* DamageCauser)
 			{
+				BBComp->SetValueAsBool(FName("IsHit"), true);
+				BBComp->SetValueAsObject(FName("ChaseTarget"), DamageCauser);
+
 				FTimerHandle HitHandle;
 				// 3초 뒤 어그로 해제.
 				GetWorld()->GetTimerManager().SetTimer(HitHandle, [BBComp]
 					{
 						BBComp->SetValueAsBool(FName("IsHit"), false);
+						BBComp->SetValueAsObject(FName("ChaseTarget"), nullptr);
 					},
-				3.f, 
-				false);
+					3.f,
+					false);
 				Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 			}
-			// 공격당하지 않고, 범위 밖에 있다면 Patrol.
+		);
+	}
+
+	if (Enemy && IsValid(BBComp->GetValueAsObject(FName("TargetActor"))))
+	{
+		// 범위 안에 있다면 Chase.
+		if (MinDistance <= 500.f) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		else // 범위 밖
+		{
+			// 범위 밖에서 공격 당했다면 Chase
+			if (BBComp->GetValueAsBool(FName("IsHit")))
+			{
+				Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+			}
 			else
 			{
-				
+				// 공격당하지 않았다면 Patrol.
 				Enemy->GetCharacterMovement()->MaxWalkSpeed = 100.f;
 			}
 		}
 	}
+
 	BBComp->SetValueAsFloat(FName("DistanceToTarget"), MinDistance);
 	BBComp->SetValueAsObject(FName("TargetActor"), NearestPlayer);
 }

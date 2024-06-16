@@ -13,6 +13,8 @@
 
 struct FGameplayEffectModCallbackData;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttackedSignature, UObject* /*DamageCauser*/);
+
 USTRUCT()
 struct FEffectProperties
 {
@@ -74,6 +76,8 @@ public:
 	void HandleIncomingDamage(FEffectProperties& Props);
 
 	void ShowDamageText(FEffectProperties& Props, float Damage);
+
+	FOnAttackedSignature OnAttackedDelegate;
 
 	/* Vital Attributes */
 

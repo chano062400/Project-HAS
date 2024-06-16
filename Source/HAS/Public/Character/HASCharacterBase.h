@@ -48,18 +48,19 @@ public:
 
 	virtual FVector GetWeaponSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 
-	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
-
 	virtual void Die() override;
+
+	virtual FMontageInfo GetMontageInfoByTag_Implementation(const FGameplayTag& MontageTag) override;
+
+	virtual bool IsDead_Implementation() const override;
+
+	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDie();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayDieEffect(int32 MaterialIndex);
-
-	UFUNCTION(BlueprintCallable)
-	virtual FMontageInfo GetMontageInfo_Implementation(const FGameplayTag& MontageTag);
 
 	UPROPERTY(EditAnywhere)
 	float BaseWalkSpeed = 250.f;
@@ -103,5 +104,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttribute;
+
+	bool bDead = false;
 
 };
