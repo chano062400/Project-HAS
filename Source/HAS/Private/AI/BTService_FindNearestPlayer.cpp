@@ -61,7 +61,19 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	if (Enemy && IsValid(TargetActor) && TargetActor->Implements<UHASCombatInterface>())
 	{
 		const bool IsTargetDead = IHASCombatInterface::Execute_IsDead(TargetActor);
-		if (IsTargetDead) BBComp->SetValueAsBool(FName("IsTargetDead"), IsTargetDead);
+		if (IsTargetDead)
+		{
+			BBComp->SetValueAsBool(FName("IsTargetDead"), IsTargetDead);
+			// 다른 Target을 감지하도록 변경.
+			FTimerHandle TargetDeadHandle;
+			GetWorld()->GetTimerManager().SetTimer(TargetDeadHandle, [BBComp]
+				{
+					BBComp->SetValueAsBool(FName("IsTargetDead"), false);
+
+				},
+			1.f,
+			false);
+		}
 
 		// 범위 안에 있다면 Chase.
 		if (MinDistance <= 500.f) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;

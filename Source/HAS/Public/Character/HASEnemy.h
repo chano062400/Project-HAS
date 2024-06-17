@@ -23,7 +23,7 @@ public:
 
 	virtual void InitAbilityActorInfo() override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	int32 Level = 1;
 
 	virtual int32 GetLevel_Implementation() override { return Level; }

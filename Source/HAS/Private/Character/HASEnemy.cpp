@@ -75,6 +75,7 @@ void AHASEnemy::PossessedBy(AController* NewController)
 	HASAIController->GetBlackboardComponent()->SetValueAsFloat(FName("DistanceToTarget"), 0.f);
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), false);
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsHit"), false);
+	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsTargetDead"), false);
 	HASAIController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolLocation"), FVector::ZeroVector);
 }
 
