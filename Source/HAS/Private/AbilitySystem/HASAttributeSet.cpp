@@ -158,7 +158,14 @@ void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
 {
 	bool bIsCritical = UHASAbilitySystemBlueprintLibrary::IsCriticalHit(Props.EffectContextHandle);
 
-	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.SourceASC->AbilityActorInfo->PlayerController))
+	// Player가 공격할 때
+	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.SourceASC->AbilityActorInfo.Get()->PlayerController))
+	{
+		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical);
+	}
+
+	// Enemy가 공격할 때
+	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.TargetController))
 	{
 		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical);
 	}

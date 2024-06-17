@@ -33,7 +33,8 @@ void AHASEnemy::InitAbilityActorInfo()
 void AHASEnemy::Die()
 {
 	HealthBarWidget->SetVisibility(false);
-	if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);
+	/*if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);*/
+	if (HasAuthority()) HASAIController->BehaviorTree->StopTree();
 	Super::Die();
 }
 

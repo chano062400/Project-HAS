@@ -38,3 +38,10 @@ void UHASAbilitySystemBlueprintLibrary::GetPlayersWithinRadius(UObject* WorldCon
 		}
 	}
 }
+
+bool UHASAbilitySystemBlueprintLibrary::IsFriend(AActor* Actor1, AActor* Actor2)
+{
+	if (Actor1->ActorHasTag(FName("Enemy")) && Actor2->ActorHasTag(FName("Enemy"))) return true;
+	else if (Actor1->ActorHasTag(FName("Player")) && Actor2->ActorHasTag(FName("Player"))) return true;
+	else return false;
+}

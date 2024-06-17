@@ -65,6 +65,10 @@ public:
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Physical;
 
+	/* GameplayCue Tag */
+	
+	FGameplayTag GameplayCue_HitReact;
+
 	TArray<FGameplayTag> DamageTypes;
 
 private:

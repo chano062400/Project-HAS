@@ -98,4 +98,4 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UHASAttributeSet::GetInComingDamageAttribute(), EGameplayModOp::Additive, BaseDamage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
-}
+} 

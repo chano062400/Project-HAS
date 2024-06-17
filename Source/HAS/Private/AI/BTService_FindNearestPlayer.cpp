@@ -6,6 +6,7 @@
 #include "Character/HASEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystem/HASAttributeSet.h"
+#include "Interfaces/HASCombatInterface.h"
 
 void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -56,8 +57,12 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		);
 	}
 
-	if (Enemy && IsValid(BBComp->GetValueAsObject(FName("TargetActor"))))
+	AActor* TargetActor = Cast<AActor>(BBComp->GetValueAsObject(FName("TargetActor")));
+	if (Enemy && IsValid(TargetActor) && TargetActor->Implements<UHASCombatInterface>())
 	{
+		const bool IsTargetDead = IHASCombatInterface::Execute_IsDead(TargetActor);
+		if (IsTargetDead) BBComp->SetValueAsBool(FName("IsTargetDead"), IsTargetDead);
+
 		// 범위 안에 있다면 Chase.
 		if (MinDistance <= 500.f) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 		else // 범위 밖

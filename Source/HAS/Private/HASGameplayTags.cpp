@@ -163,4 +163,10 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("Physical Damage Tag")
 	);
 
+	/* GameplayCue Tag */
+
+	GameplayTags.GameplayCue_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.HitReact"),
+		FString("HitReact GameplayCue Tag")
+	);
 }
