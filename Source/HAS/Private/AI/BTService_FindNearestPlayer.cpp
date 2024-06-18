@@ -26,11 +26,17 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
 	for (AActor* Player : Players)
 	{
-		float DistanceToPlayer = ControlledPawn->GetDistanceTo(Player);
-		if (DistanceToPlayer < MinDistance)
+		if(Player->Implements<UHASCombatInterface>())
 		{
-			NearestPlayer = Player;
-			MinDistance = DistanceToPlayer;
+			// Á×Àº Player´Â ¹«½Ã.
+			if (IHASCombatInterface::Execute_IsDead(Player)) continue;
+
+			float DistanceToPlayer = ControlledPawn->GetDistanceTo(Player);
+			if (DistanceToPlayer < MinDistance)
+			{
+				NearestPlayer = Player;
+				MinDistance = DistanceToPlayer;
+			}
 		}
 	}
 	
@@ -69,7 +75,6 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 			GetWorld()->GetTimerManager().SetTimer(TargetDeadHandle, [BBComp]
 				{
 					BBComp->SetValueAsBool(FName("IsTargetDead"), false);
-
 				},
 			1.f,
 			false);
