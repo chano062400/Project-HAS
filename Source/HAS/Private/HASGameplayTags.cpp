@@ -101,8 +101,13 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	/* WeaponSocket Tag */
 
 	GameplayTags.WeaponSocket_Staff = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("WeaponSocket.Starff"),
+		FName("WeaponSocket.Staff"),
 		FString("Staff Socket Tag")
+	);
+	
+	GameplayTags.WeaponSocket_Bow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("WeaponSocket.Bow"),
+		FString("Bow Socket Tag")
 	);
 
 	/* Ability Tag */
@@ -121,6 +126,16 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.MeleeAttack"),
 		FString("MeleeAttack Ability Tag")
 	);
+		
+	GameplayTags.Ability_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.RangedAttack"),
+		FString("RangedAttack Ability Tag")
+	);
+			
+	GameplayTags.Ability_Dodge = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Dodge"),
+		FString("Dodge Ability Tag")
+	);
 
 	/* Montage Tag */
 
@@ -132,6 +147,16 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_MeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.MeleeAttack"),
 		FString("MeleeAttack Montage Tag")
+	);
+	
+	GameplayTags.Montage_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.RangedAttack"),
+		FString("RangedAttack Montage Tag")
+	);
+		
+	GameplayTags.Montage_Dodge = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Dodge"),
+		FString("Dodge Montage Tag")
 	);
 	
 	/* Effect Tag */

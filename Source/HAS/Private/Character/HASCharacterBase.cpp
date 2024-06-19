@@ -9,8 +9,7 @@ AHASCharacterBase::AHASCharacterBase()
 	PrimaryActorTick.bCanEverTick = false;
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
-
+	
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
@@ -106,6 +105,10 @@ FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGamepla
 	if (SocketTag.MatchesTagExact(FHASGameplayTags::Get().WeaponSocket_Staff))
 	{
 		return Weapon->GetSocketLocation(FName("Staff"));
+	}
+	if (SocketTag.MatchesTagExact(FHASGameplayTags::Get().WeaponSocket_Bow))
+	{
+		return Weapon->GetSocketLocation(FName("Bow"));
 	}
 	return FVector();
 }

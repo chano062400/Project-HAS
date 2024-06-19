@@ -42,17 +42,22 @@ public:
 	/* WeaponSocket Tag */
 
 	FGameplayTag WeaponSocket_Staff;
+	FGameplayTag WeaponSocket_Bow;
 
 	/* Ability Tag */
 
 	FGameplayTag Ability_Fire_FireBall;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
+	FGameplayTag Ability_RangedAttack;
+	FGameplayTag Ability_Dodge;
 	
 	/* Montage Tag */
 
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
+	FGameplayTag Montage_RangedAttack;
+	FGameplayTag Montage_Dodge;
 
 	/* Effect Tag */
 

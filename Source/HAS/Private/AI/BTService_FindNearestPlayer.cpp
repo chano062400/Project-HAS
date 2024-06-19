@@ -81,7 +81,7 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		}
 
 		// 범위 안에 있다면 Chase.
-		if (MinDistance <= 500.f) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		if (MinDistance <= CriteriaDIstance) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 		else // 범위 밖
 		{
 			// 범위 밖에서 공격 당했다면 Chase
@@ -92,7 +92,7 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 			else
 			{
 				// 공격당하지 않았다면 Patrol.
-				Enemy->GetCharacterMovement()->MaxWalkSpeed = 100.f;
+				Enemy->GetCharacterMovement()->MaxWalkSpeed = 200.f;
 			}
 		}
 	}

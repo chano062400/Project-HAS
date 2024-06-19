@@ -11,8 +11,10 @@ AHASProjectile::AHASProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 
-	SetRootComponent(Sphere);
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	SetRootComponent(Sphere);
+	// Projectile Channel·Î ¼³Á¤.
+	Sphere->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	Sphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);

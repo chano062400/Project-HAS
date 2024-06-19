@@ -18,6 +18,9 @@ public:
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
+	UPROPERTY(EditAnywhere)
+	float CriteriaDIstance = 500.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FBlackboardKeySelector TargetActorSelector;
 

@@ -83,6 +83,21 @@ void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FName SocketName;
+	switch (CharacterClass)
+	{
+	case ECharacterClass::ECC_Warrior:
+		SocketName = FName("SwordSocket");
+		break;
+	case ECharacterClass::ECC_Archer:
+		SocketName = FName("BowSocket");
+		break;
+	case ECharacterClass::ECC_Mage:
+		SocketName = FName("StaffSocket");
+		break;
+	}
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);
+
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	AddDefaultAbilitiesByClass(CharacterClass, Level);
