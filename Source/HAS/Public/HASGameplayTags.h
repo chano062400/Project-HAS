@@ -73,6 +73,10 @@ public:
 	/* GameplayCue Tag */
 	
 	FGameplayTag GameplayCue_HitReact;
+	FGameplayTag GameplayCue_Trail_FireBall;
+	FGameplayTag GameplayCue_Trail_ElectricArrow;
+	FGameplayTag GameplayCue_Impact_FireBall;
+	FGameplayTag GameplayCue_Impact_ElectricArrow;
 
 	TArray<FGameplayTag> DamageTypes;
 

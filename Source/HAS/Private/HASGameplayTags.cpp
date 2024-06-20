@@ -194,4 +194,25 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("GameplayCue.HitReact"),
 		FString("HitReact GameplayCue Tag")
 	);
+	
+	GameplayTags.GameplayCue_Trail_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Trail.FireBall"),
+		FString("FireBall Trail GameplayCue Tag")
+	);
+	
+	GameplayTags.GameplayCue_Trail_ElectricArrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Trail.ElectricArrow"),
+		FString("ElectricArrow Trail GameplayCue Tag")
+	);
+	
+	GameplayTags.GameplayCue_Impact_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Impact.FireBall"),
+		FString("FireBall Impact GameplayCue Tag")
+	);
+	
+	GameplayTags.GameplayCue_Impact_ElectricArrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Impact.ElectricArrow"),
+		FString("ElectricArrow Impact GameplayCue Tag")
+	);
+
 }

@@ -5,6 +5,9 @@
 #include "AbilitySystemComponent.h"
 #include "HAS/HAS.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameplayCueManager.h"
 
 AHASProjectile::AHASProjectile()
 {
@@ -28,23 +31,66 @@ AHASProjectile::AHASProjectile()
 void AHASProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHASProjectile::OnSphereOverlap);
+
+	SetReplicateMovement(true);
+
+	SetLifeSpan(LifeSpan);
+
+	if (LoopingSound) LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+
 }
 
 void AHASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(UHASAbilitySystemBlueprintLibrary::IsFriend(OtherActor, GetOwner())) return;
 
+	if(!bHit) OnHit();
+
 	if (HasAuthority())
 	{
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			if(DamageEffectSpecHandle.IsValid())
+			if (DamageEffectSpecHandle.IsValid())
 			{
 				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+
 				Destroy();
 			}
 		}
 	}
+	// 클라이언트에서 Overlap이 먼저 발생한 경우.
+	else bHit = true;
+	
+
 }
+
+void AHASProjectile::Destroyed()
+{
+	if (LoopingSoundComponent && LoopingSoundComponent->IsPlaying())
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+	// 클라이언트에서 Destroy가 먼저 발생한 경우.
+	if (!bHit && !HasAuthority()) OnHit();
+
+	Super::Destroyed();
+}
+
+void AHASProjectile::OnHit()
+{
+	FGameplayCueParameters CueParams;
+	CueParams.Location = GetActorLocation();
+	UGameplayCueManager::ExecuteGameplayCue_NonReplicated(this, ImpactGameplayCueTag, CueParams);
+
+	if (LoopingSoundComponent && LoopingSoundComponent->IsPlaying())
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+
+	bHit = true;
+}
+
