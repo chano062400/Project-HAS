@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "HASAbilitySystemBlueprintLibrary.generated.h"
 
 /**
@@ -25,4 +26,11 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static bool IsFriend(AActor* Actor1, AActor* Actor2);
+
+	UFUNCTION(BlueprintPure)
+	static FClassDefaultInfo GetClassDefaultInfo(UObject* WorldContextObejct, ECharacterClass CharacterClass);
+
+	UFUNCTION(BlueprintPure)
+	static int32 GetLevelByXP(UObject* WorldContextObejct, int32 XP);
+
 };

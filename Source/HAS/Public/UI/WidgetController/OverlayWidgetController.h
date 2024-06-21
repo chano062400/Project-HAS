@@ -20,6 +20,10 @@ public:
 
 	virtual void BindCallBacks() override;
 
+	void PlayerXPChanged(int32 NewXP);
+
+	void PlayerLevelChanged(int32 NewLevel);
+
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedSignature MaxHealthChanged;
 
@@ -31,5 +35,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedSignature ManaChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChangedSignature PlayerXPChangedDelegate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChangedSignature PlayerLevelChangedDelegate;
 
 };

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/HASCharacterBase.h"
+#include "Interfaces/HASPlayerInterface.h"
 #include "HASCharacter.generated.h"
 
 class USpringArmComponent;
@@ -12,7 +13,7 @@ class UGroomComponent;
  * 
  */
 UCLASS()
-class HAS_API AHASCharacter : public AHASCharacterBase
+class HAS_API AHASCharacter : public AHASCharacterBase, public IHASPlayerInterface
 {
 	GENERATED_BODY()
 	
@@ -29,6 +30,14 @@ public:
 	/* Combat Interface */
 	
 	virtual int32 GetLevel_Implementation() override;
+
+	/* Player Interface */
+
+	virtual void SetXP(int32 NewXP) override;
+
+	virtual void SetLevel(int32 NewLevel) override;
+
+	virtual int32 GetXP() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsDodging = false;

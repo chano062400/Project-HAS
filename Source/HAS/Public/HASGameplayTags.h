@@ -51,6 +51,7 @@ public:
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
 	FGameplayTag Ability_Dodge;
+	FGameplayTag Ability_XP;
 	
 	/* Montage Tag */
 
@@ -73,8 +74,6 @@ public:
 	/* GameplayCue Tag */
 	
 	FGameplayTag GameplayCue_HitReact;
-	FGameplayTag GameplayCue_Trail_FireBall;
-	FGameplayTag GameplayCue_Trail_ElectricArrow;
 	FGameplayTag GameplayCue_Impact_FireBall;
 	FGameplayTag GameplayCue_Impact_ElectricArrow;
 

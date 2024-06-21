@@ -24,6 +24,7 @@ void AHASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION_NOTIFY(AHASPlayerState, Level, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(AHASPlayerState, XP, COND_None, REPNOTIFY_Always);
 }
 
 UAttributeSet* AHASPlayerState::GetAttributeSet() const
@@ -33,5 +34,22 @@ UAttributeSet* AHASPlayerState::GetAttributeSet() const
 
 void AHASPlayerState::OnRep_Level(int32 OldLevel)
 {
+	PlayerLevelChangedDelegate.Broadcast(Level);
+}
 
+void AHASPlayerState::SetLevel(int32 NewLevel)
+{
+	Level = NewLevel;
+	PlayerLevelChangedDelegate.Broadcast(Level);
+}
+
+void AHASPlayerState::OnRep_XP(int32 OldXP)
+{
+	PlayerXPChangedDelegate.Broadcast(XP);
+}
+
+void AHASPlayerState::SetXP(int32 NewXP)
+{
+	XP = NewXP;
+	PlayerXPChangedDelegate.Broadcast(XP);
 }

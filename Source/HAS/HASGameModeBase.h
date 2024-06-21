@@ -5,6 +5,7 @@
 #include "HASGameModeBase.generated.h"
 
 class UClassInfoDataAsset;
+class ULevelXPInfo;
 
 /**
  * 
@@ -18,5 +19,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UClassInfoDataAsset> ClassInformation;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<ULevelXPInfo> LevelXPInformation;
 	
 };

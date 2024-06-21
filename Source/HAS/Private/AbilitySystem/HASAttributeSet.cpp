@@ -8,6 +8,8 @@
 #include "Interfaces/HASCombatInterface.h"
 #include "Player/HASPlayerController.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
+#include "Interfaces/HASEnemyInterface.h"
+#include "Interfaces/HASPlayerInterface.h"
 
 UHASAttributeSet::UHASAttributeSet()
 {
@@ -135,9 +137,25 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 		if (bFatal)
 		{
-			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
+			if (IHASCombatInterface* CombatInterface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
 			{
-				Interface->Die();
+				CombatInterface->Die();
+				if (Props.TargetAvatarActor->Implements<UHASEnemyInterface>() && Props.SourceAvatarActor->Implements<UHASPlayerInterface>())
+				{
+					IHASEnemyInterface* EnemyInterface = Cast<IHASEnemyInterface>(Props.TargetAvatarActor);
+
+					FClassDefaultInfo Info = UHASAbilitySystemBlueprintLibrary::GetClassDefaultInfo(Props.TargetAvatarActor, EnemyInterface->GetCharacterClass());
+					int32 EnemyLevel = CombatInterface->Execute_GetLevel(Props.TargetAvatarActor);
+					int32 EnemyXPReward = Info.XPReward.GetValueAtLevel(EnemyLevel);
+
+					IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(Props.SourceAvatarActor);
+					int32 PlayerLevel = CombatInterface->Execute_GetLevel(Props.SourceAvatarActor);
+					int32 PlayerNewXP = PlayerInterface->GetXP() + EnemyXPReward;
+
+					int32 PlayerNewLevel = UHASAbilitySystemBlueprintLibrary::GetLevelByXP(Props.SourceAvatarActor, PlayerNewXP);
+					PlayerInterface->SetLevel(PlayerNewLevel);
+					PlayerInterface->SetXP(PlayerNewXP);
+				}
 			}
 		}
 		// HitReact

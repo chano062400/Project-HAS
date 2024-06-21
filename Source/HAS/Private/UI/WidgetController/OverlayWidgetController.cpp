@@ -1,5 +1,6 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/HASAttributeSet.h"
+#include "Player/HASPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -45,6 +46,21 @@ void UOverlayWidgetController::BindCallBacks()
 				ManaChanged.Broadcast(Data.NewValue);
 			}
 		);
-
 	}
+
+	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
+	{
+		HASPS->PlayerLevelChangedDelegate.AddDynamic(this, &UOverlayWidgetController::PlayerXPChanged);
+		HASPS->PlayerXPChangedDelegate.AddDynamic(this, &UOverlayWidgetController::PlayerLevelChanged);
+	}
+}
+
+void UOverlayWidgetController::PlayerXPChanged(int32 NewXP)
+{
+	PlayerXPChangedDelegate.Broadcast(NewXP);
+}
+
+void UOverlayWidgetController::PlayerLevelChanged(int32 NewLevel)
+{
+	PlayerLevelChangedDelegate.Broadcast(NewLevel);
 }

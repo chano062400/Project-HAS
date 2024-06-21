@@ -8,6 +8,8 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerStatChangedSignature, int32, NewValue);
+
 /**
  * 
  */
@@ -15,7 +17,7 @@ UCLASS()
 class HAS_API AHASPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	AHASPlayerState();
@@ -35,8 +37,31 @@ public:
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 
+	/* Level */
+
+	FPlayerStatChangedSignature PlayerLevelChangedDelegate;
+
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 
+	void SetLevel(int32 NewLevel);
+
 	FORCEINLINE int32 GetLevel() { return Level; }
+
+	/* XP */
+
+	FPlayerStatChangedSignature PlayerXPChangedDelegate;
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
+	int32 XP = 0.f;
+
+	UFUNCTION()
+	void OnRep_XP(int32 OldXP);
+
+	void SetXP(int32 NewXP);
+
+	FORCEINLINE int32 GetXP() { return XP; }
+
+private:
+
 };

@@ -136,6 +136,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Dodge"),
 		FString("Dodge Ability Tag")
 	);
+				
+	GameplayTags.Ability_XP = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.XP"),
+		FString("XP Passive Ability Tag")
+	);
 
 	/* Montage Tag */
 
@@ -194,17 +199,7 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("GameplayCue.HitReact"),
 		FString("HitReact GameplayCue Tag")
 	);
-	
-	GameplayTags.GameplayCue_Trail_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("GameplayCue.Trail.FireBall"),
-		FString("FireBall Trail GameplayCue Tag")
-	);
-	
-	GameplayTags.GameplayCue_Trail_ElectricArrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("GameplayCue.Trail.ElectricArrow"),
-		FString("ElectricArrow Trail GameplayCue Tag")
-	);
-	
+
 	GameplayTags.GameplayCue_Impact_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.Impact.FireBall"),
 		FString("FireBall Impact GameplayCue Tag")

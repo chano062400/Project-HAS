@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "ScalableFloat.h"
 #include "ClassInfoDataAsset.generated.h"
 
 class UGameplayEffect;
@@ -28,6 +29,8 @@ struct FClassDefaultInfo
 	UPROPERTY(EditDefaultsOnly, Category = "Class Default Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Class Default LevelXP")
+	FScalableFloat XPReward;
 };
 
 /**

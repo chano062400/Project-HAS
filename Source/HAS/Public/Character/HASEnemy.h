@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Character/HASCharacterBase.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "Interfaces/HASEnemyInterface.h"
 #include "HASEnemy.generated.h"
 
 class UWidgetComponent;
@@ -13,7 +14,7 @@ class AHASAIController;
  * 
  */
 UCLASS()
-class HAS_API AHASEnemy : public AHASCharacterBase
+class HAS_API AHASEnemy : public AHASCharacterBase, public IHASEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -43,6 +44,10 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() override;
 
 	virtual	void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+
+	/* Enemy Interface */
+
+	virtual ECharacterClass GetCharacterClass() override { return CharacterClass; }
 
 protected:
 

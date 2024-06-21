@@ -80,3 +80,27 @@ int32 AHASCharacter::GetLevel_Implementation()
 	
 	return PS->GetLevel();
 }
+
+void AHASCharacter::SetXP(int32 NewXP)
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	PS->SetXP(NewXP);
+}
+
+void AHASCharacter::SetLevel(int32 NewLevel)
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	PS->SetLevel(NewLevel);
+}
+
+int32 AHASCharacter::GetXP()
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->GetXP();
+}
