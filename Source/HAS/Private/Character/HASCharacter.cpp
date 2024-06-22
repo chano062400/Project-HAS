@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GroomComponent.h"
 #include "HASGameplayTags.h"
+#include "NiagaraComponent.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -21,6 +22,10 @@ AHASCharacter::AHASCharacter()
 
 	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("HairGroom"));
 	Hair->SetupAttachment(GetMesh(), FName("HairGroom"));
+
+	LevelUpEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUp Effect"));
+	LevelUpEffectComponent->SetupAttachment(GetRootComponent());
+	LevelUpEffectComponent->bAutoActivate = false;
 }
 
 void AHASCharacter::PossessedBy(AController* NewController)
@@ -95,6 +100,16 @@ void AHASCharacter::SetLevel(int32 NewLevel)
 	check(PS);
 
 	PS->SetLevel(NewLevel);
+
+	if (IsValid(LevelUpEffectComponent))
+	{
+		const FVector CameraLoc = Camera->GetComponentLocation();
+		const FVector NiagaraLoc = LevelUpEffectComponent->GetComponentLocation();
+		const FRotator Rotation = (CameraLoc - NiagaraLoc).Rotation();
+
+		LevelUpEffectComponent->SetWorldRotation(Rotation);
+		LevelUpEffectComponent->Activate(true);
+	}
 }
 
 int32 AHASCharacter::GetXP()

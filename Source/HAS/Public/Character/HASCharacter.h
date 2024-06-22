@@ -8,6 +8,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
+class UNiagaraComponent;
 
 /**
  * 
@@ -54,5 +55,8 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroomComponent> Hair;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraComponent> LevelUpEffectComponent;
 
 };
