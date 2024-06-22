@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "HAS/HASGameModeBase.h"
 #include "AbilitySystem/Data/LevelXPInfo.h"
+#include "Player/HASPlayerState.h"
 
 void UHASAbilitySystemBlueprintLibrary::SetCriticalHit(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, bool bIsCriticalHit)
 {
@@ -62,9 +63,9 @@ FClassDefaultInfo UHASAbilitySystemBlueprintLibrary::GetClassDefaultInfo(UObject
 
 int32 UHASAbilitySystemBlueprintLibrary::GetLevelByXP(UObject* WorldContextObejct, int32 XP)
 {
-	if (AHASGameModeBase* GameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObejct)))
+	if (AHASPlayerState* PS = Cast<AHASPlayerState>(UGameplayStatics::GetPlayerState(WorldContextObejct, 0)))
 	{
-		return GameMode->LevelXPInformation->FindLevelByXP(XP);
+		return PS->LevelXPInformation->FindLevelByXP(XP);
 	}
 
 	return 0;

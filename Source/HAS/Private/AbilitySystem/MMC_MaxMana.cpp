@@ -23,7 +23,8 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
     GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParams, Intelligence);
     Intelligence = FMath::Max<float>(0.f, Intelligence);
 
-    AActor* TargetActor = Spec.GetEffectContext().GetInstigator();
+    UObject* TargetActor = Spec.GetEffectContext().GetSourceObject();
+
     int32 Level = 1;
     if (TargetActor->Implements<UHASCombatInterface>())
     {

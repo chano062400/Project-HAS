@@ -1,6 +1,8 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/HASAttributeSet.h"
 #include "Player/HASPlayerState.h"
+#include "AbilitySystem/Data/LevelXPInfo.h"
+#include "AbilitySystem/HASAbilitySystemComponent.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -17,50 +19,59 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallBacks()
 {
-	if (UHASAttributeSet* HASAttributeSet = Cast<UHASAttributeSet>(AS))
+	if (UHASAttributeSet* HASAS = Cast<UHASAttributeSet>(AS))
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetMaxHealthAttribute()).AddLambda(
-			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
-			{
-				MaxHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
+		if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
+		{
+			HASASC->GetGameplayAttributeValueChangeDelegate(HASAS->GetMaxHealthAttribute()).AddLambda(
+				[this, HASAS](const FOnAttributeChangeData& Data)
+				{
+					MaxHealthChanged.Broadcast(Data.NewValue);
+				}
+			);
 
-		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetHealthAttribute()).AddLambda(
-			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
-			{
-				HealthChanged.Broadcast(Data.NewValue);
-			}
-		);
+			HASASC->GetGameplayAttributeValueChangeDelegate(HASAS->GetHealthAttribute()).AddLambda(
+				[this, HASAS](const FOnAttributeChangeData& Data)
+				{
+					HealthChanged.Broadcast(Data.NewValue);
+				}
+			);
 
-		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetMaxManaAttribute()).AddLambda(
-			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
-			{
-				MaxManaChanged.Broadcast(Data.NewValue);
-			}
-		);
+			HASASC->GetGameplayAttributeValueChangeDelegate(HASAS->GetMaxManaAttribute()).AddLambda(
+				[this, HASAS](const FOnAttributeChangeData& Data)
+				{
+					MaxManaChanged.Broadcast(Data.NewValue);
+				}
+			);
 
-		ASC->GetGameplayAttributeValueChangeDelegate(HASAttributeSet->GetManaAttribute()).AddLambda(
-			[this, HASAttributeSet](const FOnAttributeChangeData& Data)
-			{
-				ManaChanged.Broadcast(Data.NewValue);
-			}
-		);
+			HASASC->GetGameplayAttributeValueChangeDelegate(HASAS->GetManaAttribute()).AddLambda(
+				[this, HASAS](const FOnAttributeChangeData& Data)
+				{
+					ManaChanged.Broadcast(Data.NewValue);
+				}
+			);
+		}
 	}
 
 	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
 	{
-		HASPS->PlayerLevelChangedDelegate.AddDynamic(this, &UOverlayWidgetController::PlayerXPChanged);
-		HASPS->PlayerXPChangedDelegate.AddDynamic(this, &UOverlayWidgetController::PlayerLevelChanged);
+		HASPS->PlayerLevelChangedDelegate.AddLambda(
+			[this](int32 NewLevel)
+			{
+				PlayerLevelChangedDelegate.Broadcast(static_cast<int32>(NewLevel));
+			}
+		);
+
+		HASPS->PlayerXPChangedDelegate.AddLambda(
+			[this,HASPS](int32 NewXP)
+			{
+				ULevelXPInfo* LevelXPInfo = HASPS->LevelXPInformation;
+				int32 PlayerLevel = LevelXPInfo->FindLevelByXP(NewXP);
+				int32 RequirementXP = LevelXPInfo->LevelXPInformations[PlayerLevel].RequirementXP;
+				float Percent = (float) NewXP / (float) RequirementXP;
+
+				PlayerXPPercentChangedDelegate.Broadcast(Percent);
+			}
+		);
 	}
-}
-
-void UOverlayWidgetController::PlayerXPChanged(int32 NewXP)
-{
-	PlayerXPChangedDelegate.Broadcast(NewXP);
-}
-
-void UOverlayWidgetController::PlayerLevelChanged(int32 NewLevel)
-{
-	PlayerLevelChangedDelegate.Broadcast(NewLevel);
 }

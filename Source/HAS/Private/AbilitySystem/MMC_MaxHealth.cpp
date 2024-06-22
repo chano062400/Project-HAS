@@ -20,7 +20,7 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
 
-	AActor* TargetActor = Spec.GetEffectContext().GetInstigator();
+	UObject* TargetActor = Spec.GetEffectContext().GetSourceObject();
 
 	int32 Level = 1;
 	if (TargetActor->Implements<UHASCombatInterface>())

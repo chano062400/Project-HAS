@@ -71,6 +71,10 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+	
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
 	void SetEffectProps(const FGameplayEffectModCallbackData& Data, FEffectProperties& OutProps);
 
 	void HandleIncomingDamage(FEffectProperties& Props);
@@ -156,4 +160,8 @@ public:
 
 	UPROPERTY()
 	TMap<FGameplayTag, FGameplayAttribute> TagsToAttributes;
+
+private:
+
+	bool bLevelUp = false;
 };

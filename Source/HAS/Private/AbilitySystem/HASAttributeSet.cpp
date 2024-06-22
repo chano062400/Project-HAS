@@ -76,7 +76,41 @@ void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Blue, GetManaAttribute().GetName());
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
+}
 
+void UHASAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	// 레벨업하면 MaxHealth,MaxMana도 증가. 
+	// MaxHealth 공식 - 50.f + Vigor * 5.f + Level * 25.f;
+
+	if (Attribute == GetMaxHealthAttribute() && bLevelUp)
+	{
+		SetHealth(GetMaxHealth());
+		bLevelUp = false;
+	}
+	if (Attribute == GetMaxManaAttribute() && bLevelUp)
+	{
+		SetMana(GetMaxMana());
+		bLevelUp = false;
+	}
+}
+
+void UHASAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+
+
+	if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
 }
 
 void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data, FEffectProperties& OutProps)
@@ -150,10 +184,19 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 					IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(Props.SourceAvatarActor);
 					int32 PlayerLevel = CombatInterface->Execute_GetLevel(Props.SourceAvatarActor);
+					
 					int32 PlayerNewXP = PlayerInterface->GetXP() + EnemyXPReward;
-
 					int32 PlayerNewLevel = UHASAbilitySystemBlueprintLibrary::GetLevelByXP(Props.SourceAvatarActor, PlayerNewXP);
-					PlayerInterface->SetLevel(PlayerNewLevel);
+					
+					const int32 NumOfLevelUp = PlayerNewLevel - PlayerLevel;
+					
+					// 레벨업 했다면
+					if(NumOfLevelUp > 0)
+					{
+						bLevelUp = true;
+						PlayerInterface->SetLevel(PlayerNewLevel);
+					}
+
 					PlayerInterface->SetXP(PlayerNewXP);
 				}
 			}

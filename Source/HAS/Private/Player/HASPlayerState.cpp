@@ -23,8 +23,8 @@ void AHASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(AHASPlayerState, Level, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(AHASPlayerState, XP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME(AHASPlayerState, Level);
+	DOREPLIFETIME(AHASPlayerState, XP);
 }
 
 UAttributeSet* AHASPlayerState::GetAttributeSet() const

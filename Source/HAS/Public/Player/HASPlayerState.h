@@ -7,8 +7,9 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class ULevelXPInfo;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerStatChangedSignature, int32, NewValue);
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerStatChangedSignature, int32);
 
 /**
  * 
@@ -61,6 +62,9 @@ public:
 	void SetXP(int32 NewXP);
 
 	FORCEINLINE int32 GetXP() { return XP; }
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<ULevelXPInfo> LevelXPInformation;
 
 private:
 
