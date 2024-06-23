@@ -161,7 +161,6 @@ public:
 	UPROPERTY()
 	TMap<FGameplayTag, FGameplayAttribute> TagsToAttributes;
 
-private:
-
 	bool bLevelUp = false;
+
 };

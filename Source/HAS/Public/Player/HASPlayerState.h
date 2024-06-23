@@ -35,9 +35,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
-	int32 Level = 1;
-
 	/* Level */
 
 	FPlayerStatChangedSignature PlayerLevelChangedDelegate;
@@ -53,9 +50,6 @@ public:
 
 	FPlayerStatChangedSignature PlayerXPChangedDelegate;
 
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
-	int32 XP = 0.f;
-
 	UFUNCTION()
 	void OnRep_XP(int32 OldXP);
 
@@ -67,5 +61,11 @@ public:
 	TObjectPtr<ULevelXPInfo> LevelXPInformation;
 
 private:
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
+	int32 XP = 0.f;
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
+	int32 Level = 1;
 
 };

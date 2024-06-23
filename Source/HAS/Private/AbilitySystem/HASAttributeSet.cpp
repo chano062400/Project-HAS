@@ -62,20 +62,20 @@ void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	FEffectProperties EffectProps;
 	SetEffectProps(Data, EffectProps);
 
-	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	/*if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, GetHealthAttribute().GetName());
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-	}
+	}*/
 	if (Data.EvaluatedData.Attribute == GetInComingDamageAttribute())
 	{
 		HandleIncomingDamage(EffectProps);
 	}
-	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	/*if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Blue, GetManaAttribute().GetName());
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
-	}
+	}*/
 }
 
 void UHASAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
@@ -88,11 +88,12 @@ void UHASAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetMaxHealthAttribute() && bLevelUp)
 	{
 		SetHealth(GetMaxHealth());
-		bLevelUp = false;
 	}
 	if (Attribute == GetMaxManaAttribute() && bLevelUp)
 	{
 		SetMana(GetMaxMana());
+
+		// MaxMana가 MaxHealth보다 늦게 변경되므로, MaxMana가 변경되고서 bLevelUp을 false로 설정.
 		bLevelUp = false;
 	}
 }
@@ -193,8 +194,14 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 					// 레벨업 했다면
 					if(NumOfLevelUp > 0)
 					{
-						bLevelUp = true;
+						// MMC_MaxHealth,Mana 공식에 Level 값이 있으므로, 변경 전에 Level을 올려줌.
 						PlayerInterface->SetLevel(PlayerNewLevel);
+
+						// 핵심 스텟 + 1, Vigor, Intelligence 값이 변경됨에 따라 MMC_MaxHealth,Mana를 호출하여 MaxHealth,Mana Attribute값 변경 -> PostAttributeChange() 호출
+						Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, 1.f);
+						Props.SourceASC->ApplyModToAttribute(GetIntelligenceAttribute(), EGameplayModOp::Additive, 1.f);
+						Props.SourceASC->ApplyModToAttribute(GetDexterityAttribute(), EGameplayModOp::Additive, 1.f);
+
 					}
 
 					PlayerInterface->SetXP(PlayerNewXP);

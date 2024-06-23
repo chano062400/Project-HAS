@@ -9,6 +9,7 @@
 #include "GroomComponent.h"
 #include "HASGameplayTags.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/HASAttributeSet.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -78,6 +79,19 @@ void AHASCharacter::InitAbilityActorInfo()
 
 }
 
+void AHASCharacter::MulticastPlayLevelUpEffect_Implementation()
+{
+	if (IsValid(LevelUpEffectComponent))
+	{
+		const FVector CameraLoc = Camera->GetComponentLocation();
+		const FVector NiagaraLoc = LevelUpEffectComponent->GetComponentLocation();
+		const FRotator Rotation = (CameraLoc - NiagaraLoc).Rotation();
+
+		LevelUpEffectComponent->SetWorldRotation(Rotation);
+		LevelUpEffectComponent->Activate(true);
+	}
+}
+
 int32 AHASCharacter::GetLevel_Implementation()
 {
 	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
@@ -99,17 +113,11 @@ void AHASCharacter::SetLevel(int32 NewLevel)
 	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
 	check(PS);
 
+	Cast<UHASAttributeSet>(PS->GetAttributeSet())->bLevelUp = true;
+
 	PS->SetLevel(NewLevel);
 
-	if (IsValid(LevelUpEffectComponent))
-	{
-		const FVector CameraLoc = Camera->GetComponentLocation();
-		const FVector NiagaraLoc = LevelUpEffectComponent->GetComponentLocation();
-		const FRotator Rotation = (CameraLoc - NiagaraLoc).Rotation();
-
-		LevelUpEffectComponent->SetWorldRotation(Rotation);
-		LevelUpEffectComponent->Activate(true);
-	}
+	MulticastPlayLevelUpEffect();
 }
 
 int32 AHASCharacter::GetXP()
@@ -118,4 +126,12 @@ int32 AHASCharacter::GetXP()
 	check(PS);
 
 	return PS->GetXP();
+}
+
+UAttributeSet* AHASCharacter::GetAttributeSet()
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->GetAttributeSet();
 }

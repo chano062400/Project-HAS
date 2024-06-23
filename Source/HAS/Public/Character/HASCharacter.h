@@ -28,6 +28,9 @@ public:
 	
 	virtual void InitAbilityActorInfo() override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayLevelUpEffect();
+
 	/* Combat Interface */
 	
 	virtual int32 GetLevel_Implementation() override;
@@ -39,6 +42,8 @@ public:
 	virtual void SetLevel(int32 NewLevel) override;
 
 	virtual int32 GetXP() override;
+
+	virtual UAttributeSet* GetAttributeSet() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsDodging = false;
