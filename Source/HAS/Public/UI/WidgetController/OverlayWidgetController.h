@@ -5,6 +5,8 @@
 #include "OverlayWidgetController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeChangedSignature, float , NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerXPPercentChangedSignature, float , NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerLevelChangedSignature, int32, NewValue, bool, bLevelUp);
 
 /**
  * 
@@ -33,9 +35,9 @@ public:
 	FAttributeChangedSignature ManaChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FAttributeChangedSignature PlayerXPPercentChangedDelegate;
+	FPlayerXPPercentChangedSignature PlayerXPPercentChangedDelegate;
 	
 	UPROPERTY(BlueprintAssignable)
-	FAttributeChangedSignature PlayerLevelChangedDelegate;
+	FPlayerLevelChangedSignature PlayerLevelChangedDelegate;
 
 };

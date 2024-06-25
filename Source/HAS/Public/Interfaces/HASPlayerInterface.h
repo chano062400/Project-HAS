@@ -26,5 +26,7 @@ public:
 	virtual void SetXP(int32 NewXP) = 0;
 	virtual void SetLevel(int32 NewLevel) = 0;
 	virtual int32 GetXP() = 0;
+	virtual int32 GetAttributePoint() = 0;
+	virtual void SetAttributePoint(int32 NewAttributePoint) = 0;
 	virtual UAttributeSet* GetAttributeSet() = 0;
 };

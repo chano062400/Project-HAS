@@ -43,6 +43,10 @@ public:
 
 	virtual int32 GetXP() override;
 
+	virtual int32 GetAttributePoint() override;
+
+	virtual void SetAttributePoint(int32 NewAttributePoint) override;
+
 	virtual UAttributeSet* GetAttributeSet() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

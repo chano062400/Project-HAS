@@ -12,6 +12,7 @@ AHASPlayerState::AHASPlayerState()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AttributeSet = CreateDefaultSubobject<UHASAttributeSet>(TEXT("AttributeSet"));
+
 }
 
 UAbilitySystemComponent* AHASPlayerState::GetAbilitySystemComponent() const
@@ -25,6 +26,7 @@ void AHASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	DOREPLIFETIME(AHASPlayerState, Level);
 	DOREPLIFETIME(AHASPlayerState, XP);
+	DOREPLIFETIME(AHASPlayerState, AttributePoint);
 }
 
 UAttributeSet* AHASPlayerState::GetAttributeSet() const
@@ -52,4 +54,15 @@ void AHASPlayerState::SetXP(int32 NewXP)
 {
 	XP = NewXP;
 	PlayerXPChangedDelegate.Broadcast(XP);
+}
+
+void AHASPlayerState::OnRep_AttributePoint(int32 OldAttributePoint)
+{
+	PlayerAttributePointChangedDelegate.Broadcast(AttributePoint);
+}
+
+void AHASPlayerState::SetAttributePoint(int32 NewAttributePoint)
+{
+	AttributePoint = NewAttributePoint;
+	PlayerAttributePointChangedDelegate.Broadcast(AttributePoint);
 }

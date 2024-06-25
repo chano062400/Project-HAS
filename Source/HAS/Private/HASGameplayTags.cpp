@@ -46,8 +46,8 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("Chance to Increase Damage")
 	);
 	
-	GameplayTags.Attribute_Secondary_CriticalChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attribute.Secondary.CriticalChance"),
+	GameplayTags.Attribute_Secondary_CriticalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Secondary.CriticalResistance"),
 		FString("Reduces Critical Hit Chance")
 	);
 

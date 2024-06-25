@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,7 +8,9 @@
 class UAttributeInfoDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FHASAttributeInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributePointChangedSignature, int32, NewAttributePoint);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStatChangedSignature, const FGameplayTag&, AttributeTag, const FGameplayAttributeData&, NewValue);
+
 
 /**
  * 
@@ -25,11 +26,17 @@ public:
 
 	virtual void BindCallBacks() override;
 
+	UFUNCTION(BlueprintCallable)
+	void UseAttributePointPressed(const FGameplayTag& AttributeTag);
+
 	UPROPERTY(BlueprintAssignable)
 	FAttributeInfoSignature AttributeInfoDelegate;
 
 	UPROPERTY(BlueprintAssignable)
 	FStatChangedSignature StatChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FAttributePointChangedSignature AttributePointChangedDelegate;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfoDataAsset> AttributeInfo;

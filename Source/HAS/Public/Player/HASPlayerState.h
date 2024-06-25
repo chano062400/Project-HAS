@@ -29,10 +29,10 @@ public:
 
 	UAttributeSet* GetAttributeSet() const;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	/* Level */
@@ -60,6 +60,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelXPInfo> LevelXPInformation;
 
+	/* Attribute Point */
+
+	UFUNCTION()
+	void OnRep_AttributePoint(int32 OldAttributePoint);
+
+	void SetAttributePoint(int32 NewAttributePoint);
+
+	FORCEINLINE int32 GetAttributePoint() { return AttributePoint; }
+
+	FPlayerStatChangedSignature PlayerAttributePointChangedDelegate;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
@@ -67,5 +78,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
+	
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_AttributePoint)
+	int32 AttributePoint = 0;
 
 };

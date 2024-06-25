@@ -13,21 +13,22 @@
 
 UHASAttributeSet::UHASAttributeSet()
 {
-	FHASGameplayTags Tag = FHASGameplayTags::Get();
+	const FHASGameplayTags& Tag = FHASGameplayTags::Get();
 
 	/* Primary Attributes */
-	TagsToAttributes.Add( Tag.Attribute_Primary_Intelligence, GetIntelligenceAttribute() );
-	TagsToAttributes.Add( Tag.Attribute_Primary_Dexterity, GetDexterityAttribute() );
-	TagsToAttributes.Add( Tag.Attribute_Primary_Vigor, GetVigorAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Primary_Intelligence, GetIntelligenceAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Primary_Dexterity, GetDexterityAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Primary_Vigor, GetVigorAttribute() );
 
 	/* Secondary Attributes */
-	TagsToAttributes.Add( Tag.Attribute_Secondary_CriticalChance, GetCriticalChanceAttribute() );
-	TagsToAttributes.Add( Tag.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute() );
-	TagsToAttributes.Add( Tag.Attribute_Secondary_MaxMana, GetMaxManaAttribute() );
+	TagToAttribute.Add (Tag.Attribute_Secondary_CriticalResistance, GetCriticalResistanceAttribute());
+	TagToAttribute.Add( Tag.Attribute_Secondary_CriticalChance, GetCriticalChanceAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Secondary_MaxMana, GetMaxManaAttribute() );
 
 	/* Vital Attributes */
-	TagsToAttributes.Add( Tag.Attribute_Vital_Health, GetHealthAttribute() );
-	TagsToAttributes.Add( Tag.Attribute_Vital_Mana, GetManaAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Vital_Health, GetHealthAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Vital_Mana, GetManaAttribute() );
 
 }
 
@@ -172,41 +173,7 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 		if (bFatal)
 		{
-			if (IHASCombatInterface* CombatInterface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
-			{
-				CombatInterface->Die();
-				if (Props.TargetAvatarActor->Implements<UHASEnemyInterface>() && Props.SourceAvatarActor->Implements<UHASPlayerInterface>())
-				{
-					IHASEnemyInterface* EnemyInterface = Cast<IHASEnemyInterface>(Props.TargetAvatarActor);
-
-					FClassDefaultInfo Info = UHASAbilitySystemBlueprintLibrary::GetClassDefaultInfo(Props.TargetAvatarActor, EnemyInterface->GetCharacterClass());
-					int32 EnemyLevel = CombatInterface->Execute_GetLevel(Props.TargetAvatarActor);
-					int32 EnemyXPReward = Info.XPReward.GetValueAtLevel(EnemyLevel);
-
-					IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(Props.SourceAvatarActor);
-					int32 PlayerLevel = CombatInterface->Execute_GetLevel(Props.SourceAvatarActor);
-					
-					int32 PlayerNewXP = PlayerInterface->GetXP() + EnemyXPReward;
-					int32 PlayerNewLevel = UHASAbilitySystemBlueprintLibrary::GetLevelByXP(Props.SourceAvatarActor, PlayerNewXP);
-					
-					const int32 NumOfLevelUp = PlayerNewLevel - PlayerLevel;
-					
-					// 레벨업 했다면
-					if(NumOfLevelUp > 0)
-					{
-						// MMC_MaxHealth,Mana 공식에 Level 값이 있으므로, 변경 전에 Level을 올려줌.
-						PlayerInterface->SetLevel(PlayerNewLevel);
-
-						// 핵심 스텟 + 1, Vigor, Intelligence 값이 변경됨에 따라 MMC_MaxHealth,Mana를 호출하여 MaxHealth,Mana Attribute값 변경 -> PostAttributeChange() 호출
-						Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, 1.f);
-						Props.SourceASC->ApplyModToAttribute(GetIntelligenceAttribute(), EGameplayModOp::Additive, 1.f);
-						Props.SourceASC->ApplyModToAttribute(GetDexterityAttribute(), EGameplayModOp::Additive, 1.f);
-
-					}
-
-					PlayerInterface->SetXP(PlayerNewXP);
-				}
-			}
+			HandleXP(Props);
 		}
 		// HitReact
 		else
@@ -218,6 +185,47 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+		}
+	}
+}
+
+void UHASAttributeSet::HandleXP(FEffectProperties& Props)
+{
+	if (IHASCombatInterface* CombatInterface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
+	{
+		CombatInterface->Die();
+		if (Props.TargetAvatarActor->Implements<UHASEnemyInterface>() && Props.SourceAvatarActor->Implements<UHASPlayerInterface>())
+		{
+			IHASEnemyInterface* EnemyInterface = Cast<IHASEnemyInterface>(Props.TargetAvatarActor);
+
+			FClassDefaultInfo Info = UHASAbilitySystemBlueprintLibrary::GetClassDefaultInfo(Props.TargetAvatarActor, EnemyInterface->GetCharacterClass());
+			int32 EnemyLevel = CombatInterface->Execute_GetLevel(Props.TargetAvatarActor);
+			int32 EnemyXPReward = Info.XPReward.GetValueAtLevel(EnemyLevel);
+
+			IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(Props.SourceAvatarActor);
+			int32 PlayerLevel = CombatInterface->Execute_GetLevel(Props.SourceAvatarActor);
+
+			int32 PlayerNewXP = PlayerInterface->GetXP() + EnemyXPReward;
+			int32 PlayerNewLevel = UHASAbilitySystemBlueprintLibrary::GetLevelByXP(Props.SourceAvatarActor, PlayerNewXP);
+			int32 PlayerAttributePoint = PlayerInterface->GetAttributePoint();
+
+			const int32 NumOfLevelUp = PlayerNewLevel - PlayerLevel;
+
+			// 레벨업 했다면
+			if (NumOfLevelUp > 0)
+			{
+				// MMC_MaxHealth,Mana 공식에 Level 값이 있으므로, 변경 전에 Level을 올려줌.
+				PlayerInterface->SetLevel(PlayerNewLevel);
+				PlayerInterface->SetAttributePoint(PlayerAttributePoint + 5);
+
+				// 핵심 스텟 + 1, Vigor, Intelligence 값이 변경됨에 따라 MMC_MaxHealth,Mana를 호출하여 MaxHealth,Mana Attribute값 변경 -> PostAttributeChange() 호출
+				Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, 1.f);
+				Props.SourceASC->ApplyModToAttribute(GetIntelligenceAttribute(), EGameplayModOp::Additive, 1.f);
+				Props.SourceASC->ApplyModToAttribute(GetDexterityAttribute(), EGameplayModOp::Additive, 1.f);
+
+			}
+
+			PlayerInterface->SetXP(PlayerNewXP);
 		}
 	}
 }

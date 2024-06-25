@@ -128,6 +128,22 @@ int32 AHASCharacter::GetXP()
 	return PS->GetXP();
 }
 
+int32 AHASCharacter::GetAttributePoint()
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->GetAttributePoint();
+}
+
+void AHASCharacter::SetAttributePoint(int32 NewAttributePoint)
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->SetAttributePoint(NewAttributePoint);
+}
+
 UAttributeSet* AHASCharacter::GetAttributeSet()
 {
 	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();

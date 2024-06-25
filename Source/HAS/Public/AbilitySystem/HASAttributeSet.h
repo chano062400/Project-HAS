@@ -79,6 +79,8 @@ public:
 
 	void HandleIncomingDamage(FEffectProperties& Props);
 
+	void HandleXP(FEffectProperties& Props);
+
 	void ShowDamageText(FEffectProperties& Props, float Damage);
 
 	FOnAttackedSignature OnAttackedDelegate;
@@ -158,8 +160,11 @@ public:
 	FGameplayAttributeData InComingDamage;
 	ATTRIBUTE_ACCESSORS(UHASAttributeSet, InComingDamage);
 
+	//UPROPERTY()
+	//TMap<FGameplayTag, FGameplayAttribute> TagsToAttributes;
+	//
 	UPROPERTY()
-	TMap<FGameplayTag, FGameplayAttribute> TagsToAttributes;
+	TMap<FGameplayTag, FGameplayAttribute> TagToAttribute;
 
 	bool bLevelUp = false;
 

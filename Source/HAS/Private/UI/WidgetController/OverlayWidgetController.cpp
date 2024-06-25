@@ -15,6 +15,19 @@ void UOverlayWidgetController::BroadcastInitialValues()
 		MaxManaChanged.Broadcast(HASAttributeSet->GetMaxMana());
 		ManaChanged.Broadcast(HASAttributeSet->GetMana());
 	} 
+
+	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
+	{
+		PlayerLevelChangedDelegate.Broadcast(HASPS->GetLevel(), false);
+		
+		ULevelXPInfo* LevelXPInfo = HASPS->LevelXPInformation;
+		int32 CurXP = HASPS->GetXP();
+		int32 PlayerLevel = LevelXPInfo->FindLevelByXP(CurXP);
+		int32 RequirementXP = LevelXPInfo->LevelXPInformations[PlayerLevel].RequirementXP;
+		float Percent = (float)CurXP / (float)RequirementXP;
+
+		PlayerXPPercentChangedDelegate.Broadcast(Percent);
+	}
 }
 
 void UOverlayWidgetController::BindCallBacks()
@@ -55,22 +68,22 @@ void UOverlayWidgetController::BindCallBacks()
 
 	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
 	{
-		HASPS->PlayerLevelChangedDelegate.AddLambda(
-			[this](int32 NewLevel)
-			{
-				PlayerLevelChangedDelegate.Broadcast(static_cast<int32>(NewLevel));
-			}
-		);
-
 		HASPS->PlayerXPChangedDelegate.AddLambda(
-			[this,HASPS](int32 NewXP)
+			[this, HASPS](int32 NewXP)
 			{
 				ULevelXPInfo* LevelXPInfo = HASPS->LevelXPInformation;
 				int32 PlayerLevel = LevelXPInfo->FindLevelByXP(NewXP);
 				int32 RequirementXP = LevelXPInfo->LevelXPInformations[PlayerLevel].RequirementXP;
-				float Percent = (float) NewXP / (float) RequirementXP;
+				float Percent = (float)NewXP / (float)RequirementXP;
 
 				PlayerXPPercentChangedDelegate.Broadcast(Percent);
+			}
+		);
+
+		HASPS->PlayerLevelChangedDelegate.AddLambda(
+			[this](int32 NewLevel)
+			{
+				PlayerLevelChangedDelegate.Broadcast(NewLevel, true);
 			}
 		);
 	}
