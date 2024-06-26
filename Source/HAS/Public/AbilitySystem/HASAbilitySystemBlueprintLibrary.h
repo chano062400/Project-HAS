@@ -33,4 +33,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	static int32 GetLevelByXP(UObject* WorldContextObejct, int32 XP);
 
+	UFUNCTION(BlueprintCallable)
+	static void SpawnFireSphere(UObject* WorldContextObject, TArray<FVector>& OutVectors, float Radius, float Interval, const FVector& SphereOrigin);
+
 };

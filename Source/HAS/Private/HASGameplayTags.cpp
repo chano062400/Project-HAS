@@ -117,6 +117,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("FireBall Ability Tag")
 	);
 	
+	GameplayTags.Ability_Fire_FireWall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Fire.FireWall"),
+		FString("FireWall Ability Tag")
+	);
+	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
 		FString("HitReact Ability Tag")
@@ -144,6 +149,16 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 
 	/* Montage Tag */
 
+	GameplayTags.Montage_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.FireBall"),
+		FString("FireBall Montage Tag")
+	);
+	
+	GameplayTags.Montage_FireWall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.FireWall"),
+		FString("FireWall Montage Tag")
+	);
+	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.HitReact"),
 		FString("HitReact Montage Tag")
@@ -198,6 +213,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.HitReact"),
 		FString("HitReact GameplayCue Tag")
+	);
+	
+	GameplayTags.GameplayCue_FireWall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.FireWall"),
+		FString("FireWall GameplayCue Tag")
 	);
 
 	GameplayTags.GameplayCue_Impact_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(

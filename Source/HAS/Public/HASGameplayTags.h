@@ -47,6 +47,7 @@ public:
 	/* Ability Tag */
 
 	FGameplayTag Ability_Fire_FireBall;
+	FGameplayTag Ability_Fire_FireWall;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
@@ -55,6 +56,8 @@ public:
 	
 	/* Montage Tag */
 
+	FGameplayTag Montage_FireBall;
+	FGameplayTag Montage_FireWall;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
 	FGameplayTag Montage_RangedAttack;
@@ -74,7 +77,8 @@ public:
 	/* GameplayCue Tag */
 	
 	FGameplayTag GameplayCue_HitReact;
-	FGameplayTag GameplayCue_Impact_FireBall;
+	FGameplayTag GameplayCue_FireWall;
+	FGameplayTag GameplayCue_Impact_FireBall;;
 	FGameplayTag GameplayCue_Impact_ElectricArrow;
 
 	TArray<FGameplayTag> DamageTypes;

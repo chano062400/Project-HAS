@@ -70,3 +70,21 @@ int32 UHASAbilitySystemBlueprintLibrary::GetLevelByXP(UObject* WorldContextObejc
 
 	return 0;
 }
+
+void UHASAbilitySystemBlueprintLibrary::SpawnFireSphere(UObject* WorldContextObject, TArray<FVector>& OutVectors, float Radius, float Interval, const FVector& SphereOrigin)
+{
+	for (int x = -Radius; x <= Radius; x += Interval)
+	{
+		for (int y = -Radius; y <= Radius; y += Interval)
+		{
+			FVector XY = SphereOrigin + FVector(x, y, 0.f);
+			float distance = SphereOrigin.Distance(SphereOrigin, XY);
+
+			if (FMath::Sqrt(Radius * Radius) == distance)
+			{
+				OutVectors.Add(XY);
+				//DrawDebugSphere(WorldContextObject->GetWorld(), XY, 50.f, 12, FColor::White, false, 5.f);
+			}
+		}
+	}
+}

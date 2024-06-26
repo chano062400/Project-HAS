@@ -27,6 +27,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	bool bFireWall;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -65,4 +68,7 @@ private:
 	FGameplayTag TrailGameplayCueTag;
 
 	bool bHit = false;
+
+	FTimerHandle FireWallHandle;
+
 };
