@@ -121,6 +121,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Fire.FireWall"),
 		FString("FireWall Ability Tag")
 	);
+		
+	GameplayTags.Ability_Fire_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Fire.FireMeteor"),
+		FString("FireMeteor Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -157,6 +162,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_FireWall = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.FireWall"),
 		FString("FireWall Montage Tag")
+	);
+		
+	GameplayTags.Montage_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.FireMeteor"),
+		FString("FireMeteor Montage Tag")
 	);
 	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(

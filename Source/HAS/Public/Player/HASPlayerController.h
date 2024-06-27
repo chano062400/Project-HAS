@@ -4,12 +4,14 @@
 #include "GameFramework/PlayerController.h"
 #include "InputAction.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "Interfaces/HASPlayerInterface.h"
 #include "HASPlayerController.generated.h"
 
 class UInputMappingContext;
 class UHASEnhancedInputComponent;
 class USplineComponent;
 class UDamageTextComponent;
+class AHASMagicCircle;
 
 /**
  * 
@@ -29,6 +31,14 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClientShowFloatingDamageText(float Damage, AActor* TargetActor, bool bIsCritical);
+
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
+
+	void UpdateMagicCircle();
 
 protected:
 
@@ -117,4 +127,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category ="Combat|DamageText")
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASMagicCircle> MagicCircleDecalComponent;
+
+	UPROPERTY()
+	TObjectPtr<AHASMagicCircle> MagicCircle;
 };

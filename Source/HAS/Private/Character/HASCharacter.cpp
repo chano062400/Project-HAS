@@ -151,3 +151,19 @@ UAttributeSet* AHASCharacter::GetAttributeSet()
 
 	return PS->GetAttributeSet();
 }
+
+void AHASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+{
+	AHASPlayerController* PC = Cast<AHASPlayerController>(GetController());
+	check(PC);
+
+	PC->ShowMagicCircle(DecalMaterial);
+}
+
+void AHASCharacter::HideMagicCircle_Implementation()
+{
+	AHASPlayerController* PC = Cast<AHASPlayerController>(GetController());
+	check(PC);
+
+	PC->HideMagicCircle();
+}

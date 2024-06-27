@@ -29,4 +29,11 @@ public:
 	virtual int32 GetAttributePoint() = 0;
 	virtual void SetAttributePoint(int32 NewAttributePoint) = 0;
 	virtual UAttributeSet* GetAttributeSet() = 0;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void HideMagicCircle();
+
 };

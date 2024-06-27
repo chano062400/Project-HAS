@@ -49,6 +49,10 @@ public:
 
 	virtual UAttributeSet* GetAttributeSet() override;
 
+	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
+
+	virtual void HideMagicCircle_Implementation() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsDodging = false;
 

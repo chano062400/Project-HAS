@@ -12,6 +12,8 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "UI/Widget/DamageTextComponent.h"
+#include "Actor/HASMagicCircle.h"
+#include "Components/DecalComponent.h"
 
 AHASPlayerController::AHASPlayerController()
 {
@@ -19,6 +21,34 @@ AHASPlayerController::AHASPlayerController()
 
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 
+}
+
+void AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
+{
+	if (IsValid(MagicCircleDecalComponent))
+	{
+		MagicCircle = GetWorld()->SpawnActor<AHASMagicCircle>(MagicCircleDecalComponent);
+		if (IsValid(MagicCircle))
+		{
+			MagicCircle->MagicCircleComponent->SetDecalMaterial(DecalMaterial);
+		}
+	}
+}
+
+void AHASPlayerController::HideMagicCircle()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->Destroy();
+	}
+}
+
+void AHASPlayerController::UpdateMagicCircle()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->SetActorLocation(MouseCursorHitResult.ImpactPoint);
+	}
 }
 
 void AHASPlayerController::BeginPlay()
@@ -315,4 +345,6 @@ void AHASPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 
 	AutoRun();
+
+	UpdateMagicCircle();
 }

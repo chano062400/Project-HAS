@@ -48,6 +48,7 @@ public:
 
 	FGameplayTag Ability_Fire_FireBall;
 	FGameplayTag Ability_Fire_FireWall;
+	FGameplayTag Ability_Fire_FireMeteor;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
@@ -58,6 +59,7 @@ public:
 
 	FGameplayTag Montage_FireBall;
 	FGameplayTag Montage_FireWall;
+	FGameplayTag Montage_FireMeteor;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
 	FGameplayTag Montage_RangedAttack;
