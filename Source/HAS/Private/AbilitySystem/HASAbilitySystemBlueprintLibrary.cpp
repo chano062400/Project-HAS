@@ -6,6 +6,7 @@
 #include "HAS/HASGameModeBase.h"
 #include "AbilitySystem/Data/LevelXPInfo.h"
 #include "Player/HASPlayerState.h"
+#include "Interfaces/HASCombatInterface.h"
 
 void UHASAbilitySystemBlueprintLibrary::SetCriticalHit(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, bool bIsCriticalHit)
 {
@@ -49,6 +50,16 @@ bool UHASAbilitySystemBlueprintLibrary::IsFriend(AActor* Actor1, AActor* Actor2)
 	if (Actor1->ActorHasTag(FName("Enemy")) && Actor2->ActorHasTag(FName("Enemy"))) return true;
 	else if (Actor1->ActorHasTag(FName("Player")) && Actor2->ActorHasTag(FName("Player"))) return true;
 	else return false;
+}
+
+bool UHASAbilitySystemBlueprintLibrary::IsDead(AActor* Actor)
+{
+	if (Actor->Implements<UHASCombatInterface>())
+	{
+		bool bIsDead = IHASCombatInterface::Execute_IsDead(Actor);
+		return bIsDead;
+	}
+	return false;
 }
 
 FClassDefaultInfo UHASAbilitySystemBlueprintLibrary::GetClassDefaultInfo(UObject* WorldContextObejct, ECharacterClass CharacterClass)

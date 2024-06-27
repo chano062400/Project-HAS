@@ -53,34 +53,11 @@ void AHASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			if (IsValid(OtherActor) && OtherActor->Implements<UHASCombatInterface>())
+			if (DamageEffectSpecHandle.IsValid())
 			{
-				bool bIsDead = IHASCombatInterface::Execute_IsDead(OtherActor);
-				if (bIsDead) return;
+				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 
-				if (DamageEffectSpecHandle.IsValid())
-				{
-					// FireWall은 설정한 시간마다 데미지를 입힘.
-					if (bFireWall &&) 
-					{
-						FTimerHandle FireWallHandle;
-						GetWorld()->GetTimerManager().SetTimer(FireWallHandle,
-							[this, TargetASC]()
-							{
-								TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-							},
-							1.f,
-							true
-						);
-					}
-
-					else
-					{
-						TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-
-						Destroy();
-					}
-				}
+				Destroy();
 			}
 		}
 	}

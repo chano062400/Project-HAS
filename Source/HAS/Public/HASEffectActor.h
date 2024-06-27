@@ -7,6 +7,7 @@
 class UGameplayEffect;
 class USphereComponent;
 struct FScalableFloat;
+class UNiagaraSystem;
 
 UCLASS()
 class HAS_API AHASEffectActor : public AActor
@@ -24,6 +25,17 @@ protected:
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	virtual void Destroyed() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	bool bIsPotion = true;
+
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	float LifeSpan;
+
 private:
 
 	UPROPERTY(EditDefaultsOnly)
@@ -34,4 +46,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Mesh;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> LoopingSound;
+
 };

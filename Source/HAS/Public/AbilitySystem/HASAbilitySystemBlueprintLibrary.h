@@ -28,6 +28,9 @@ public:
 	static bool IsFriend(AActor* Actor1, AActor* Actor2);
 
 	UFUNCTION(BlueprintPure)
+	static bool IsDead(AActor* Actor);
+
+	UFUNCTION(BlueprintPure)
 	static FClassDefaultInfo GetClassDefaultInfo(UObject* WorldContextObejct, ECharacterClass CharacterClass);
 
 	UFUNCTION(BlueprintPure)
