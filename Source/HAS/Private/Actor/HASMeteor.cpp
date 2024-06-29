@@ -12,7 +12,7 @@ void AHASMeteor::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (HasAuthority())
 	{
-		OnSphereOverlapDelegate.Broadcast(OtherActor);
+		OnSphereOverlapDelegate.Broadcast(GetActorLocation());
 	}
 	else bHit = true;
 }

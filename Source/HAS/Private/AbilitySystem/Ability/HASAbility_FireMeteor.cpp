@@ -7,9 +7,11 @@
 
 void UHASAbility_FireMeteor::SpawnMeteor(const FVector& TargetLocation)
 {
+	// 생성위치
 	FVector SpawnLoc = FVector(TargetLocation.X, TargetLocation.Y, TargetLocation.Z + 1000.f);
 	/*DrawDebugSphere(GetWorld(), SpawnLoc, 50.f, 12, FColor::Blue, true);*/
 
+	// 떨어질 곳 랜덤위치.
 	float RandValueX = FMath::RandRange(-Radius, Radius);
 	float RandValueY = FMath::RandRange(-Radius, Radius);
 	FVector EndLoc = FVector(TargetLocation.X + RandValueX, TargetLocation.Y + RandValueY, 0.f);

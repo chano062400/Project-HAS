@@ -17,9 +17,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnMeteor(const FVector& TargetLocation);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FScalableFloat NumOfProjectiles;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Radius;
 

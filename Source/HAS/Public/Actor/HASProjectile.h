@@ -12,7 +12,7 @@ class UParticleSystemComponent;
 class UAudioComponent;
 class USoundBase;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSphereOverlapSignature, AActor*, OverlapActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSphereOverlapSignature, const FVector&, OverlapLocation);
 
 UCLASS()
 class HAS_API AHASProjectile : public AActor
