@@ -23,12 +23,13 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 		SpawnTransform.SetLocation(SocketLocation);
 
-		AHASProjectile* Projectile = GetWorld()->SpawnActorDeferred<AHASProjectile>(
+		Projectile = GetWorld()->SpawnActorDeferred<AHASProjectile>(
 			ProjectileClass,
 			SpawnTransform,
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetAvatarActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
 
 		// HASGameplayEffectContext.
 		FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();

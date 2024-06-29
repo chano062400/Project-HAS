@@ -12,6 +12,8 @@ class UParticleSystemComponent;
 class UAudioComponent;
 class USoundBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSphereOverlapSignature, AActor*, OverlapActor);
+
 UCLASS()
 class HAS_API AHASProjectile : public AActor
 {
@@ -27,6 +29,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnSphereOverlapSignature OnSphereOverlapDelegate;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -37,9 +42,7 @@ protected:
 	virtual void Destroyed() override;
 
 	virtual void OnHit();
-
-private:
-
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -48,21 +51,23 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
-	
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> LoopingSound;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;
-	
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParticleSystem> ImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag ImpactGameplayCueTag;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag TrailGameplayCueTag;
 
 	bool bHit = false;
 };
+
+

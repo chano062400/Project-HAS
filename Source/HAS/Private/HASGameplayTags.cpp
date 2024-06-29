@@ -235,6 +235,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("FireBall Impact GameplayCue Tag")
 	);
 	
+	GameplayTags.GameplayCue_Impact_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Impact.FireMeteor"),
+		FString("FireMeteor Impact GameplayCue Tag")
+	);
+	
 	GameplayTags.GameplayCue_Impact_ElectricArrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.Impact.ElectricArrow"),
 		FString("ElectricArrow Impact GameplayCue Tag")

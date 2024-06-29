@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASProjectile> ProjectileClass;
 
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AHASProjectile> Projectile;
+
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag DamageType;
 

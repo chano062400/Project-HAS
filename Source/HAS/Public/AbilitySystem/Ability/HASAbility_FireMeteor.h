@@ -12,5 +12,15 @@ class HAS_API UHASAbility_FireMeteor : public UHASGameplayDamageAbility
 {
 	GENERATED_BODY()
 	
-	virtual void SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming) override;
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnMeteor(const FVector& TargetLocation);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FScalableFloat NumOfProjectiles;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Radius;
+
 };
