@@ -32,7 +32,7 @@ bool UHASAbilitySystemBlueprintLibrary::IsApplyDebuff(UPARAM(ref)FGameplayEffect
 {
 	if (const FHASGameplayEffectContext* HASEffectContext = static_cast<const FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		HASEffectContext->IsApplyDebuff();
+		return HASEffectContext->IsApplyDebuff();
 	}
 	return false;
 }
@@ -70,7 +70,7 @@ float UHASAbilitySystemBlueprintLibrary::GetDebuffChance(UPARAM(ref)FGameplayEff
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		HASEffectContext->GetDebuffChance();
+		return HASEffectContext->GetDebuffChance();
 	}
 	return 0.f;
 }
@@ -87,7 +87,7 @@ float UHASAbilitySystemBlueprintLibrary::GetDebuffDuration(UPARAM(ref)FGameplayE
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		HASEffectContext->GetDebuffDuration();
+		return HASEffectContext->GetDebuffDuration();
 	}
 	return 0.f;
 }
@@ -104,7 +104,7 @@ float UHASAbilitySystemBlueprintLibrary::GetDebuffFrequency(UPARAM(ref)FGameplay
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		HASEffectContext->GetDebuffFrequency();
+		return HASEffectContext->GetDebuffFrequency();
 	}
 	return 0.f;
 }
@@ -121,7 +121,7 @@ float UHASAbilitySystemBlueprintLibrary::GetDebuffDamge(UPARAM(ref)FGameplayEffe
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		HASEffectContext->GetDebuffDamage();
+		return HASEffectContext->GetDebuffDamage();
 	}
 	return 0.f;
 }

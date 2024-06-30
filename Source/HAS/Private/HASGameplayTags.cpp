@@ -5,13 +5,6 @@ FHASGameplayTags FHASGameplayTags::GameplayTags;
 
 void FHASGameplayTags::InitializeNativeGameplayTags()
 {
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Ice);
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Lightning);
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Physical);
-
-	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn });
-
 	/* Vital Attributes */
 
 	GameplayTags.Attribute_Vital_Health = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -278,5 +271,12 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("GameplayCue.Impact.ElectricArrow"),
 		FString("ElectricArrow Impact GameplayCue Tag")
 	);
+
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Ice);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Lightning);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Physical);
+
+	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn });
 
 }
