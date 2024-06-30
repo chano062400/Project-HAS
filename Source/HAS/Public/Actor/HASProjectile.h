@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
+#include "HASAbilityTypes.h"
 #include "HASProjectile.generated.h"
 
 class UProjectileMovementComponent;
@@ -26,8 +27,11 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
+	//UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	//FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	//
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	FHASDamageEffectParams DamageEffectParams;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSphereOverlapSignature OnSphereOverlapDelegate;

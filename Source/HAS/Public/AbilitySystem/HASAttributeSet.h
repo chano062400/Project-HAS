@@ -81,6 +81,8 @@ public:
 
 	void HandleXP(FEffectProperties& Props);
 
+	void HandleDebuff(FEffectProperties& Props);
+
 	void ShowDamageText(FEffectProperties& Props, float Damage);
 
 	FOnAttackedSignature OnAttackedDelegate;

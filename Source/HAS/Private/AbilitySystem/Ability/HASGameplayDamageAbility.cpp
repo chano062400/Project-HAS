@@ -3,6 +3,7 @@
 #include "Interfaces/HASCombatInterface.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "HASAbilityTypes.h"
 
 void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming)
 {
@@ -31,13 +32,7 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 
-		// HASGameplayEffectContext.
-		FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
-		EffectContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
-		Projectile->DamageEffectSpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-		
-		const float DamageMagnitude = Damage.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, DamageType, DamageMagnitude);
+		Projectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}
@@ -45,7 +40,7 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 
 void UHASGameplayDamageAbility::ApplyDamage(AActor* CombatTarget, int32 Level)
 {
-	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 	{
 		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.f);
 	
@@ -54,4 +49,23 @@ void UHASGameplayDamageAbility::ApplyDamage(AActor* CombatTarget, int32 Level)
 		
 		ASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(CombatTarget));
 	}
+}
+
+FHASDamageEffectParams UHASGameplayDamageAbility::MakeDamageEffectParams(AActor* TargetActor)
+{
+	FHASDamageEffectParams Params;
+
+	Params.WorldContextObejct = GetAvatarActorFromActorInfo();
+	Params.AbilityLevel = GetAbilityLevel();
+	Params.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	Params.SourceASC = GetAbilitySystemComponentFromActorInfo();
+	if(IsValid(TargetActor)) Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	Params.DamageEffectClass = DamageEffectClass;
+	Params.DamageType = DamageType;
+	Params.DebuffChance = DebuffChance;
+	Params.DebuffDuration = DebuffDuration;
+	Params.DebuffFrequency = DebuffFrequency;
+	Params.DebuffDamage = DebuffDamage;
+
+	return Params;
 }

@@ -76,6 +76,16 @@ public:
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Physical;
 
+	/* Debuff Tag */
+
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequency;
+	FGameplayTag Debuff_Damage;
+
+	FGameplayTag Debuff_Burn;
+
+
 	/* GameplayCue Tag */
 	
 	FGameplayTag GameplayCue_HitReact;
@@ -85,6 +95,7 @@ public:
 	FGameplayTag GameplayCue_Impact_ElectricArrow;
 
 	TArray<FGameplayTag> DamageTypes;
+	TMap<FGameplayTag, FGameplayTag> DamageToDebuff;
 
 private:
 

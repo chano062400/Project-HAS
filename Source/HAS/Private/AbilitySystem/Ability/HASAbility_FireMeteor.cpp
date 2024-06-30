@@ -30,12 +30,7 @@ void UHASAbility_FireMeteor::SpawnMeteor(const FVector& TargetLocation)
 		Cast<APawn>(GetAvatarActorFromActorInfo()),
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
-	Projectile->DamageEffectSpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-
-	const float DamageMagnitude = Damage.GetValueAtLevel(GetAbilityLevel());
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, DamageType, DamageMagnitude);
+	Projectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
 
 	Projectile->FinishSpawning(SpawnTransform);
 }

@@ -10,6 +10,7 @@
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "Interfaces/HASEnemyInterface.h"
 #include "Interfaces/HASPlayerInterface.h"
+#include "HASAbilityTypes.h"
 
 UHASAttributeSet::UHASAttributeSet()
 {
@@ -185,6 +186,12 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+			bool bIsApplyDebuff = UHASAbilitySystemBlueprintLibrary::IsApplyDebuff(Props.EffectContextHandle);
+			if (bIsApplyDebuff)
+			{
+				HandleDebuff(Props);
+			}
 		}
 	}
 }
@@ -227,6 +234,48 @@ void UHASAttributeSet::HandleXP(FEffectProperties& Props)
 
 			PlayerInterface->SetXP(PlayerNewXP);
 		}
+	}
+}
+
+//Debuff Effect 적용.
+void UHASAttributeSet::HandleDebuff(FEffectProperties& Props)
+{
+	const FGameplayTag DamageType = UHASAbilitySystemBlueprintLibrary::GetDamageType(Props.EffectContextHandle);
+
+	const FString DebuffName = FString::Printf(TEXT("%s Debuff"), *DamageType.ToString());
+	const float DebuffChance = UHASAbilitySystemBlueprintLibrary::GetDebuffChance(Props.EffectContextHandle);
+	const float DebuffDuration = UHASAbilitySystemBlueprintLibrary::GetDebuffDuration(Props.EffectContextHandle);
+	const float DebuffFrequency = UHASAbilitySystemBlueprintLibrary::GetDebuffFrequency(Props.EffectContextHandle);
+	const float DebuffDamage = UHASAbilitySystemBlueprintLibrary::GetDebuffDamge(Props.EffectContextHandle);
+
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
+	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	Effect->DurationMagnitude = FGameplayEffectModifierMagnitude(DebuffDuration);
+	Effect->Period = DebuffFrequency;
+	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	Effect->StackLimitCount = 1;
+
+	const FGameplayTag DebuffTag = FHASGameplayTags::Get().DamageToDebuff[DamageType];
+	Effect->InheritableOwnedTagsContainer.AddTag(DebuffTag);
+
+	FGameplayEffectContextHandle EffectContextHandle = Props.SourceASC->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(Props.SourceAvatarActor);
+
+	const int32 Idx = Effect->Modifiers.Num();
+	// 적용할 Modifier
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[Idx];
+	ModifierInfo.Attribute = GetInComingDamageAttribute();
+	ModifierInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+
+	if (FGameplayEffectSpec* Spec = new FGameplayEffectSpec(Effect, EffectContextHandle, 1.f))
+	{
+		FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get());
+		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
+		HASEffectContext->SetDamageType(DebuffDamageType);
+
+		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
 	}
 }
 

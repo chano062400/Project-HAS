@@ -51,6 +51,8 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	Params.SourceTags = SourceTags;
 	Params.TargetTags = TargetTags;
 
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetEffectContext();
+
 	int32 SourceActorLevel = 1;
 	if (IsValid(SourceAvatarActor) && SourceAvatarActor->Implements<UHASCombatInterface>())
 	{
@@ -60,10 +62,10 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	float BaseDamage = 0.f;
 	float Intelligence = 0.f;
 
-	const float FireDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Fire);
-	const float IceDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Ice);
-	const float LightningDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Lightning);
-	const float PhysicalDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Physical);
+	const float FireDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Fire, false);
+	const float IceDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Ice, false);
+	const float LightningDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Lightning, false);
+	const float PhysicalDamage = Spec.GetSetByCallerMagnitude(FHASGameplayTags::Get().Damage_Physical, false);
 
 	BaseDamage = FireDamage + IceDamage + LightningDamage + PhysicalDamage;
 
@@ -94,8 +96,24 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	if (bIsCritical)
 	{
 		BaseDamage *= 1.25f;
-		FGameplayEffectContextHandle EffectContextHandle = Spec.GetEffectContext();
 		UHASAbilitySystemBlueprintLibrary::SetCriticalHit(EffectContextHandle, true);
+	}
+
+	for (TTuple<FGameplayTag, FGameplayTag> pair : FHASGameplayTags::Get().DamageToDebuff)
+	{
+		const FGameplayTag DebuffType = pair.Value;
+
+		const float DebuffChance = ExecutionParams.GetOwningSpec().GetSetByCallerMagnitude(FHASGameplayTags::Get().Debuff_Chance, false);
+		const float DebuffDuration = ExecutionParams.GetOwningSpec().GetSetByCallerMagnitude(FHASGameplayTags::Get().Debuff_Duration, false);
+		const float DebuffFrequency = ExecutionParams.GetOwningSpec().GetSetByCallerMagnitude(FHASGameplayTags::Get().Debuff_Frequency, false);
+
+		if (DebuffChance > FMath::RandRange(0.f, 100.f))
+		{
+			UHASAbilitySystemBlueprintLibrary::SetIsApplyDebuff(EffectContextHandle, true);
+			UHASAbilitySystemBlueprintLibrary::SetDebuffChance(EffectContextHandle, DebuffChance);
+			UHASAbilitySystemBlueprintLibrary::SetDebuffDuration(EffectContextHandle, DebuffDuration);
+			UHASAbilitySystemBlueprintLibrary::SetDebuffFrequency(EffectContextHandle, DebuffFrequency);
+		}
 	}
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UHASAttributeSet::GetInComingDamageAttribute(), EGameplayModOp::Additive, BaseDamage);

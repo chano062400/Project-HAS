@@ -5,6 +5,7 @@
 #include "HASGameplayDamageAbility.generated.h"
 
 class AHASProjectile;
+struct FHASDamageEffectParams;
 
 /**
  * 
@@ -25,15 +26,30 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyDamage(AActor* CombatTarget, int32 Level);
 
+	FHASDamageEffectParams MakeDamageEffectParams(AActor* TargetActor);
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASProjectile> ProjectileClass;
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AHASProjectile> Projectile;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
 	FGameplayTag DamageType;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
 	FScalableFloat Damage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float DebuffChance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float DebuffDuration;
+
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float DebuffFrequency;
+
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float DebuffDamage;
+
 };

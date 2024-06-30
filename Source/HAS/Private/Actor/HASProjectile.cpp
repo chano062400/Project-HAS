@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameplayCueManager.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "HASAbilityTypes.h"
 
 AHASProjectile::AHASProjectile()
 {
@@ -53,13 +54,10 @@ void AHASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			if (DamageEffectSpecHandle.IsValid())
-			{
-				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-
-				Destroy();
-			}
+			DamageEffectParams.TargetASC = TargetASC;
+			UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
 		}
+		Destroy();
 	}
 	// 클라이언트에서 Overlap이 먼저 발생한 경우.
 	else bHit = true;

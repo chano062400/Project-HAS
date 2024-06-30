@@ -7,6 +7,9 @@
 #include "AbilitySystem/Data/LevelXPInfo.h"
 #include "Player/HASPlayerState.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "HASGameplayTags.h"
 
 void UHASAbilitySystemBlueprintLibrary::SetCriticalHit(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, bool bIsCriticalHit)
 {
@@ -23,6 +26,112 @@ bool UHASAbilitySystemBlueprintLibrary::IsCriticalHit(UPARAM(ref)FGameplayEffect
 		return HASEffectContext->IsCriticalHit();
 	}
 	return false;
+}
+
+bool UHASAbilitySystemBlueprintLibrary::IsApplyDebuff(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FHASGameplayEffectContext* HASEffectContext = static_cast<const FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->IsApplyDebuff();
+	}
+	return false;
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetIsApplyDebuff(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, bool bIsApplyDebuff)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetIsApplyDebuff(bIsApplyDebuff);
+	}
+}
+
+FGameplayTag UHASAbilitySystemBlueprintLibrary::GetDamageType(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		if (HASEffectContext->GetDamageType().IsValid())
+		{
+			return *HASEffectContext->GetDamageType();
+		}
+	}
+	return FGameplayTag();
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetDamageType(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const FGameplayTag& InDamageType)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(InDamageType);
+		HASEffectContext->SetDamageType(DamageType);
+	}
+}
+
+float UHASAbilitySystemBlueprintLibrary::GetDebuffChance(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->GetDebuffChance();
+	}
+	return 0.f;
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetDebuffChance(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, float InDebuffChance)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetDebuffChance(InDebuffChance);
+	}
+}
+
+float UHASAbilitySystemBlueprintLibrary::GetDebuffDuration(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->GetDebuffDuration();
+	}
+	return 0.f;
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetDebuffDuration(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDuration)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetDebuffDuration(InDebuffDuration);
+	}
+}
+
+float UHASAbilitySystemBlueprintLibrary::GetDebuffFrequency(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->GetDebuffFrequency();
+	}
+	return 0.f;
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetDebuffFrequency(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, float InDebuffFrequency)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetDebuffFrequency(InDebuffFrequency);
+	}
+}
+
+float UHASAbilitySystemBlueprintLibrary::GetDebuffDamge(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->GetDebuffDamage();
+	}
+	return 0.f;
+}
+
+void UHASAbilitySystemBlueprintLibrary::SetDebuffDamage(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDamage)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetDebuffDamage(InDebuffDamage);
+	}
 }
 
 void UHASAbilitySystemBlueprintLibrary::GetActorsWithinRadius(UObject* WorldContextObject, TArray<AActor*>& OutOverlapingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin)
@@ -98,4 +207,24 @@ void UHASAbilitySystemBlueprintLibrary::SpawnFireSphere(UObject* WorldContextObj
 			}
 		}
 	}
+}
+
+FGameplayEffectContextHandle UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(const FHASDamageEffectParams& Params)
+{
+	const AActor* SourceAvatarActor = Params.SourceASC->GetAvatarActor();
+
+	FGameplayEffectContextHandle EffectContextHandle = Params.SourceASC->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(Params.WorldContextObejct);
+
+	FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
+
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageType, Params.BaseDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, FHASGameplayTags::Get().Debuff_Chance, Params.DebuffChance);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, FHASGameplayTags::Get().Debuff_Duration, Params.DebuffDuration);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, FHASGameplayTags::Get().Debuff_Frequency, Params.DebuffFrequency);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, FHASGameplayTags::Get().Debuff_Damage, Params.DebuffDamage);
+
+	Params.TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+	return EffectContextHandle;
 }
