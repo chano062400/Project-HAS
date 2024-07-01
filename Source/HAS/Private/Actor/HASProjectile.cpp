@@ -30,6 +30,11 @@ AHASProjectile::AHASProjectile()
 	ProjectileMovement->ProjectileGravityScale = 0.f; // 중력 영향 X
 }
 
+void AHASProjectile::SetDamageEffectTargetASC(UAbilitySystemComponent* AbilitySystemComponent)
+{
+	DamageEffectParams.TargetASC = AbilitySystemComponent;
+}
+
 void AHASProjectile::BeginPlay()
 {
 	Super::BeginPlay();

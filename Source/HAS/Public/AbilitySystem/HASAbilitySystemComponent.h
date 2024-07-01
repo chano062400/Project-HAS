@@ -34,6 +34,8 @@ public:
 
 	void AddCommonAbilities();
 
+	void RemoveAllDebuffEffect();
+
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 };

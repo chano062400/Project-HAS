@@ -36,6 +36,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSphereOverlapSignature OnSphereOverlapDelegate;
 
+	UFUNCTION(BlueprintCallable)
+	void SetDamageEffectTargetASC(UAbilitySystemComponent* AbilitySystemComponent);
+
 protected:
 	
 	virtual void BeginPlay() override;

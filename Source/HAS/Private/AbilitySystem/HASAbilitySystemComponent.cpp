@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "HAS/HASGameModeBase.h"
 #include "AbilitySystem/Data/ClassInfoDataAsset.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 void UHASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -130,6 +131,14 @@ void UHASAbilitySystemComponent::AddCommonAbilities()
 			GiveAbility(AbilitySpec);
 		}
 	}
+}
+
+void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
+{
+	FGameplayTagContainer TagContainer;
+	// Debuff Tag를 모두 추가.
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag(FName("Debuff")));
+	RemoveActiveEffectsWithGrantedTags(TagContainer);
 }
 
 void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)

@@ -120,11 +120,17 @@ void AHASCharacterBase::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 
 void AHASCharacterBase::Die()
 {
+	if (UHASAbilitySystemComponent* ASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		ASC->RemoveAllDebuffEffect();
+	}
 	MulticastHandleDie();
 }
 
 void AHASCharacterBase::MulticastHandleDie_Implementation()
 {
+	
+
 	FDetachmentTransformRules Rules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 	Weapon->DetachFromComponent(Rules);
 	Weapon->SetSimulatePhysics(true);

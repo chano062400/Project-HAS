@@ -83,7 +83,6 @@ public:
 
 	void SetCriticalHit(bool InIsCriticalHit) { bIsCriticalHit = InIsCriticalHit; }
 
-
 	// Debuff
 
 	TSharedPtr<FGameplayTag> GetDamageType() { return DamageType; }
