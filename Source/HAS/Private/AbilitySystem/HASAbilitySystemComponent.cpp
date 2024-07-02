@@ -137,7 +137,7 @@ void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
 {
 	FGameplayTagContainer TagContainer;
 	// Debuff Tag를 모두 추가.
-	TagContainer.AddTag(FGameplayTag::RequestGameplayTag(FName("Debuff")));
+	TagContainer.AddTag(FHASGameplayTags::Get().Debuff_Burn);
 	RemoveActiveEffectsWithGrantedTags(TagContainer);
 }
 

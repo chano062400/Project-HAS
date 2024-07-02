@@ -133,6 +133,11 @@ void AHASEnemy::BeginPlay()
 	}
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASEnemy::HitReactTagEvent);
+	
+	for (TTuple<FGameplayTag, UNiagaraComponent*> pair : DebuffTagToNiagara)
+	{
+		AbilitySystemComponent->RegisterGameplayTagEvent(pair.Key, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::DebuffTagEvent);
+	}
 
 }
 

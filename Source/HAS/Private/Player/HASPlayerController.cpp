@@ -27,7 +27,7 @@ void AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (IsValid(MagicCircleDecalComponent))
 	{
-		MagicCircle = GetWorld()->SpawnActor<AHASMagicCircle>(MagicCircleDecalComponent);
+		MagicCircle = GetWorld()->SpawnActor<AHASMagicCircle>(MagicCircleDecalComponent, MouseCursorHitResult.ImpactPoint, FRotator::ZeroRotator);
 		if (IsValid(MagicCircle))
 		{
 			MagicCircle->MagicCircleComponent->SetDecalMaterial(DecalMaterial);

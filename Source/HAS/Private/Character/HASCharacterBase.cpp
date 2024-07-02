@@ -3,6 +3,7 @@
 #include "HASGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "NiagaraComponent.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -11,6 +12,12 @@ AHASCharacterBase::AHASCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+
+	BurnDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Burn Debuff Component"));
+	BurnDebuffComponent->SetupAttachment(GetMesh());
+	BurnDebuffComponent->bAutoActivate = false;
+
+	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_Burn, BurnDebuffComponent});
 }
 
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
@@ -116,6 +123,25 @@ FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGamepla
 void AHASCharacterBase::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 {
 	NewCount ? GetCharacterMovement()->MaxWalkSpeed = 0.f : GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+}
+
+void AHASCharacterBase::DebuffTagEvent(const FGameplayTag Tag, int32 NewCount)
+{
+	for (TTuple<FGameplayTag, UNiagaraComponent*> pair : DebuffTagToNiagara)
+	{
+		if (pair.Key.MatchesTagExact(Tag))
+		{
+			if (NewCount > 0)
+			{
+				pair.Value->Activate();
+			}
+			// Á×À¸¸é Debuff
+			else
+			{
+				pair.Value->Deactivate();
+			}
+		}
+	}
 }
 
 void AHASCharacterBase::Die()

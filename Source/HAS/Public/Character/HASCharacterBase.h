@@ -10,6 +10,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UNiagaraComponent;
 
 UCLASS()
 class HAS_API AHASCharacterBase : public ACharacter, public IAbilitySystemInterface, public IHASCombatInterface
@@ -38,6 +39,10 @@ public:
 
 	virtual void AddCommonAbilities();
 
+	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
+
+	virtual void DebuffTagEvent(const FGameplayTag Tag, int32 NewCount);
+
 	/* Combat Interface */
 
 	virtual int32 GetLevel_Implementation() override;
@@ -54,7 +59,6 @@ public:
 
 	virtual bool IsDead_Implementation() const override;
 
-	virtual void HitReactTagEvent(const FGameplayTag Tag, int32 NewCount);
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDie();
@@ -107,4 +111,11 @@ protected:
 
 	bool bDead = false;
 
+	TMap<FGameplayTag, UNiagaraComponent*> DebuffTagToNiagara;
+
+	/* Debuff Niagara Component */
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> BurnDebuffComponent;
+	
 };
