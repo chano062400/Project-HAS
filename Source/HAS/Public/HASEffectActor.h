@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "HASAbilityTypes.h"
 #include "HASEffectActor.generated.h"
 
 class UGameplayEffect;
@@ -31,10 +32,10 @@ protected:
 	bool bIsPotion = true;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	float LifeSpan;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	float LifeSpan;
+	FHASDamageEffectParams DamageEffectParams;
 
 private:
 
@@ -52,5 +53,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> LoopingSound;
+
 
 };

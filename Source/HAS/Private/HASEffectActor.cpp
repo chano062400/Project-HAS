@@ -47,10 +47,8 @@ void AHASEffectActor::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		{
 			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
-				if (DamageEffectSpecHandle.IsValid())
-				{
-					TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-				}
+				DamageEffectParams.TargetASC = TargetASC;
+				UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
 			}
 		}
 		else

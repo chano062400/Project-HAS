@@ -26,6 +26,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyDamage(AActor* CombatTarget, int32 Level);
 
+	UFUNCTION(BlueprintPure)
 	FHASDamageEffectParams MakeDamageEffectParams(AActor* TargetActor);
 
 	UPROPERTY(EditDefaultsOnly)
