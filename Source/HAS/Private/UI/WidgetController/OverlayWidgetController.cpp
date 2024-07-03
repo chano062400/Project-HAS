@@ -28,6 +28,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 		PlayerXPPercentChangedDelegate.Broadcast(Percent);
 	}
+
+	BroadcastInitialAbilityInfo();
 }
 
 void UOverlayWidgetController::BindCallBacks()

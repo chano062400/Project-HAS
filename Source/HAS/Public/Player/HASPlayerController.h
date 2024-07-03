@@ -12,6 +12,8 @@ class UHASEnhancedInputComponent;
 class USplineComponent;
 class UDamageTextComponent;
 class AHASMagicCircle;
+class UHASInputInfo;
+class UHASAbilityInfo;
 
 /**
  * 
@@ -51,8 +53,8 @@ private:
 	void Look(const FInputActionValue& Value);
 
 	void OpenAttributeMenu();
-
-	bool bOpenedAttributeMenu = false;
+	
+	void OpenSpellMenu();
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 
@@ -68,6 +70,10 @@ private:
 
 	void ShiftReleased();
 
+	bool bOpenedAttributeMenu = false;
+
+	bool bOpenedSpellMenu = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
 
@@ -76,6 +82,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> AttributeMenuAction;
+		
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UInputAction> SpellMenuAction;
 		
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> ShiftPressedAction;

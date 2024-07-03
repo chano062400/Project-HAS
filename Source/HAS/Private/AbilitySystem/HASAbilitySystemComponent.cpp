@@ -25,7 +25,7 @@ void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<
 			AbilitySpec.DynamicAbilityTags.AddTag(HASAbility->InputTag);
 
 			GiveAbility(AbilitySpec);
-
+			AbilityUpdateDelegate.Broadcast(AbilitySpec, true);
 		}
 	}
 }
@@ -139,6 +139,21 @@ void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
 	// Debuff Tag를 모두 추가.
 	TagContainer.AddTag(FHASGameplayTags::Get().Debuff_Burn);
 	RemoveActiveEffectsWithGrantedTags(TagContainer);
+}
+
+FGameplayTag UHASAbilitySystemComponent::FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability)
+	{
+		for (FGameplayTag AbilityTag : AbilitySpec.Ability->AbilityTags)
+		{
+			if (AbilityTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Ability"))))
+			{
+				return AbilityTag;
+			}
+		}
+	}
+	return FGameplayTag();
 }
 
 void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)

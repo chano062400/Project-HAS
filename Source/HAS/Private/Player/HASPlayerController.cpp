@@ -118,6 +118,54 @@ void AHASPlayerController::OpenAttributeMenu()
 			bOpenedAttributeMenu = false;
 			HASHUD->AttributeMenuWidget->RemoveFromParent();
 		}
+
+		if (bOpenedSpellMenu)
+		{
+			if (UHASUserWidget* Widget = HASHUD->SpellMenuWidget)
+			{
+				bOpenedSpellMenu = false;
+				Widget->RemoveFromParent();
+			}
+		}
+	}
+}
+
+void AHASPlayerController::OpenSpellMenu()
+{
+	if (AHASHUD* HASHUD = GetHUD<AHASHUD>())
+	{
+		check(HASHUD->SpellMenuWidget);
+
+		if (!bOpenedSpellMenu)
+		{
+			bOpenedSpellMenu = true;
+
+			if (UHASUserWidget* Widget = HASHUD->SpellMenuWidget)
+			{
+				FVector2D Size = Widget->GetDesiredSize();
+				Widget->SetDesiredSizeInViewport(Size);
+
+				int x = 0, y = 0;
+				GetViewportSize(x, y);
+				Widget->SetPositionInViewport(FVector2D(x / 2, 30.f));
+
+				Widget->AddToViewport();
+			}
+		}
+		else
+		{
+			bOpenedSpellMenu = false;
+			HASHUD->SpellMenuWidget->RemoveFromParent();
+		}
+
+		if (bOpenedAttributeMenu)
+		{
+			if (UHASUserWidget* Widget = HASHUD->AttributeMenuWidget)
+			{
+				bOpenedAttributeMenu = false;
+				Widget->RemoveFromParent();
+			}
+		}
 	}
 }
 
@@ -317,6 +365,7 @@ void AHASPlayerController::SetupInputComponent()
 	{
 		HASEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
 		HASEnhancedInputComponent->BindAction(AttributeMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenAttributeMenu);
+		HASEnhancedInputComponent->BindAction(SpellMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenSpellMenu);
 		HASEnhancedInputComponent->BindAction(ShiftPressedAction, ETriggerEvent::Started, this, &AHASPlayerController::ShiftPressed);
 		HASEnhancedInputComponent->BindAction(ShiftReleasedAction, ETriggerEvent::Completed, this, &AHASPlayerController::ShiftReleased);
 		HASEnhancedInputComponent->BindAbilityAction(InputInfo, this, &AHASPlayerController::AbilityInputTagPressed, &AHASPlayerController::AbilityInputTagReleased, &AHASPlayerController::AbilityInputTagHeld);

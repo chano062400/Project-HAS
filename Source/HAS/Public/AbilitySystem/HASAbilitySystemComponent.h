@@ -5,6 +5,7 @@
 #include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "HASAbilitySystemComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityUpdateSignature, FGameplayAbilitySpec& /* AbilitySpec */, bool /* bIsStartAbility */);
 
 /**
  * 
@@ -35,6 +36,10 @@ public:
 	void AddCommonAbilities();
 
 	void RemoveAllDebuffEffect();
+
+	FGameplayTag FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	FAbilityUpdateSignature AbilityUpdateDelegate;
 
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);

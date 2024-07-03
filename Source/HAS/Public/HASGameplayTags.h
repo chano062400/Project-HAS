@@ -39,6 +39,13 @@ public:
 	FGameplayTag Input_3;
 	FGameplayTag Input_4;
 
+	/* Status Tag */
+
+	FGameplayTag Status_Locked;
+	FGameplayTag Status_UnLocked;
+	FGameplayTag Status_UnEquipped;
+	FGameplayTag Status_Equipped;
+
 	/* WeaponSocket Tag */
 
 	FGameplayTag WeaponSocket_Staff;

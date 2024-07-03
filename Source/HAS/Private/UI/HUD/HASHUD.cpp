@@ -2,6 +2,7 @@
 #include "UI/Widget/HASUserWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
+#include "UI/WidgetController/SpellMenuWidgetController.h"
 
 UOverlayWidgetController* AHASHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
@@ -26,6 +27,17 @@ UAttributeMenuWidgetController* AHASHUD::GetAttributeMenuWidgetController(const 
 	return AttributeMenuWidgetController;
 }
 
+USpellMenuWidgetController* AHASHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (SpellMenuWidgetController == nullptr)
+	{
+		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+		SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
+		SpellMenuWidgetController->BindCallBacks();
+	}
+	return SpellMenuWidgetController;
+}
+
 void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
 	checkf(OverlayWidgetClass, TEXT("Can't find OverlayWidgetClass"));
@@ -42,6 +54,8 @@ void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 
 	InitAttributeMenu(PC, PS, ASC, AS);
 	
+	InitSpellMenu(PC, PS, ASC, AS);
+
 	Widget->AddToViewport();
 
 }
@@ -60,4 +74,20 @@ void AHASHUD::InitAttributeMenu(APlayerController* PC, APlayerState* PS, UAbilit
 	
 	AttributeMenuWidget->SetWidgetController(WidgetController);
 	AttributeMenuWidgetController->BroadcastInitialValues();
+}
+
+void AHASHUD::InitSpellMenu(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+{
+	check(SpellMenuWidgetClass);
+	check(SpellMenuWidgetControllerClass);
+
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), SpellMenuWidgetClass);
+	SpellMenuWidget = Cast<UHASUserWidget>(Widget);
+
+	const FWidgetControllerParams WCParams(PC, PS, ASC, AS);
+
+	USpellMenuWidgetController* WidgetController = GetSpellMenuWidgetController(WCParams);
+	
+	SpellMenuWidget->SetWidgetController(WidgetController);
+	SpellMenuWidgetController->BroadcastInitialValues();
 }

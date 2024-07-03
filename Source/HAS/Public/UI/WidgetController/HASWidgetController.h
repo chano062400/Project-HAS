@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "HASWidgetController.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FHASAbilityInfo&, AbilityInfo);
 
 class UAbilitySystemComponent;
 class UAttributeSet;
@@ -47,6 +50,8 @@ public:
 
 	virtual void BindCallBacks();
 
+	virtual void BroadcastInitialAbilityInfo();
+
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<APlayerController> PC;
 	
@@ -59,4 +64,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<UAttributeSet> AS;	
 
+	UPROPERTY(BlueprintAssignable)
+	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 };

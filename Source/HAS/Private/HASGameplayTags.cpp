@@ -93,6 +93,28 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("4 Input Tag")
 	);
 	
+	/* Status Tag */
+
+	GameplayTags.Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Locked"),
+		FString("Ability Locked Status Tag")
+	);
+	
+	GameplayTags.Status_UnLocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.UnLocked"),
+		FString("Ability UnLocked Status Tag")
+	);
+	
+	GameplayTags.Status_UnEquipped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.UnEquipped"),
+		FString("Ability UnEquipped Status Tag")
+	);
+	
+	GameplayTags.Status_Equipped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Equipped"),
+		FString("Ability Equipped Status Tag")
+	);
+
 	/* WeaponSocket Tag */
 
 	GameplayTags.WeaponSocket_Staff = UGameplayTagsManager::Get().AddNativeGameplayTag(
