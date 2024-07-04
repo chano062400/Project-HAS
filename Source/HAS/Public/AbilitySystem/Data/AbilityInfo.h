@@ -40,7 +40,7 @@ struct FHASAbilityInfo
 	int32 PlayerLevel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<UHASGameplayDamageAbility> Ability;
+	TSubclassOf<UHASGameplayDamageAbility> Ability;
 };
 
 /**

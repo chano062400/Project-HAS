@@ -5,7 +5,7 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "HASWidgetController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FHASAbilityInfo&, AbilityInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FHASAbilityInfo, AbilityInfo);
 
 class UAbilitySystemComponent;
 class UAttributeSet;
