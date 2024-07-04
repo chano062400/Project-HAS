@@ -17,7 +17,11 @@ void USpellMenuWidgetController::BindCallBacks()
 				if (!bIsStartAbility)
 				{
 					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
-					AbilityInfoDelegate.Broadcast(AbilityInfo->FindAbilityInfoByTag(AbilityTag));
+					FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
+					Info.AbilityLevel = InAbilitySpec.Level;
+					Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
+					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
+					AbilityInfoDelegate.Broadcast(Info);
 				}
 			}
 		);

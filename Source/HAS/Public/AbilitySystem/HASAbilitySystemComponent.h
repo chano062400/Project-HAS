@@ -39,6 +39,10 @@ public:
 
 	FGameplayTag FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
+	FGameplayTag FindStatusTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	int32 FindPlayerLevelByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
+
 	FAbilityUpdateSignature AbilityUpdateDelegate;
 
 	UFUNCTION(Client, Reliable)

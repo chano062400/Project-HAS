@@ -5,6 +5,7 @@
 #include "HAS/HASGameModeBase.h"
 #include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Interfaces/HASCombatInterface.h"
 
 void UHASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -13,6 +14,8 @@ void UHASAbilitySystemComponent::AbilityActorInfoSet()
 	/*OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UHASAbilitySystemComponent::ClientEffectApplied);*/
 }
 
+
+// StartAbility를 등록할 때마다 Broadcast.
 void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<UGameplayAbility>> StartAbilities)
 {
 	for (auto Ability : StartAbilities)
@@ -21,8 +24,12 @@ void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<
 
 		if (UHASGameplayAbility* HASAbility = Cast<UHASGameplayAbility>(AbilitySpec.Ability))
 		{
+			AbilitySpec.SourceObject = GetAvatarActor();
+
 			//AbilitySpec에 InputTag를 추가.
 			AbilitySpec.DynamicAbilityTags.AddTag(HASAbility->InputTag);
+
+			AbilitySpec.DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
 
 			GiveAbility(AbilitySpec);
 			AbilityUpdateDelegate.Broadcast(AbilitySpec, true);
@@ -154,6 +161,27 @@ FGameplayTag UHASAbilitySystemComponent::FindAbilityTagByAbilitySpec(const FGame
 		}
 	}
 	return FGameplayTag();
+}
+
+FGameplayTag UHASAbilitySystemComponent::FindStatusTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	for (FGameplayTag Tag : AbilitySpec.DynamicAbilityTags)
+	{
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Status"))))
+		{
+			return Tag;
+		}
+	}
+	return FGameplayTag();
+}
+
+int32 UHASAbilitySystemComponent::FindPlayerLevelByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.SourceObject->Implements<UHASCombatInterface>())
+	{
+		return IHASCombatInterface::Execute_GetLevel(AbilitySpec.SourceObject.Get());
+	}
+	return 0;
 }
 
 void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)

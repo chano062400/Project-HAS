@@ -5,6 +5,8 @@
 #include "GameplayTagContainer.h"
 #include "AbilityInfo.generated.h"
 
+class UHASGameplayDamageAbility;
+
 USTRUCT(BlueprintType)
 struct FHASAbilityInfo
 {
@@ -13,6 +15,9 @@ struct FHASAbilityInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName AbilityName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag DamageType;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FGameplayTag StatusTag;
 
@@ -27,6 +32,15 @@ struct FHASAbilityInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 RequirementLevel;
+	
+	UPROPERTY(BlueprintReadWrite)
+	int32 AbilityLevel;
+	
+	UPROPERTY(BlueprintReadWrite)
+	int32 PlayerLevel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UHASGameplayDamageAbility> Ability;
 };
 
 /**
