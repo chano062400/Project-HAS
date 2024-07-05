@@ -2,10 +2,12 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/HASGameplayDamageAbility.h"
+#include "Player/HASPlayerState.h"
 
 void USpellMenuWidgetController::BroadcastInitialValues()
 {
 	BroadcastInitialAbilityInfo();
+	SpellPointChangedDelegate.Broadcast(0);
 }
 
 void USpellMenuWidgetController::BindCallBacks()
@@ -27,5 +29,29 @@ void USpellMenuWidgetController::BindCallBacks()
 				}
 			}
 		);
+	}
+
+	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
+	{
+		HASPS->PlayerSpellPointChangedDelegate.AddLambda(
+			[this](int32 NewSpellPoint)
+			{
+				SpellPointChangedDelegate.Broadcast(NewSpellPoint);
+			}
+		);
+	}
+}
+
+void USpellMenuWidgetController::SpellBoxPressed(const FGameplayTag& AbilityTag)
+{
+	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
+	{
+		int32 CurSpellPoint = HASPS->GetSpellPoint();
+		if (CurSpellPoint <= 0) return;
+
+		if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
+		{
+			HASASC->AbilityLevelUp(AbilityTag);
+		}
 	}
 }

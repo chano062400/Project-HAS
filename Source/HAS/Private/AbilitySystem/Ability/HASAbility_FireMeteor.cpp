@@ -34,3 +34,11 @@ void UHASAbility_FireMeteor::SpawnMeteor(const FVector& TargetLocation)
 
 	Projectile->FinishSpawning(SpawnTransform);
 }
+
+FString UHASAbility_FireMeteor::GetAbilityDescription(int32 InAbilityLevel)
+{
+	return FString::Printf(TEXT(
+		"<Title> FireMeteor </> \n\n <Level> Rank : %d / 5 </> \n\n Meteors fall from the sky, dealing <Damage>%.2f</> Fire damage to enemies within the range based on where the meteor fell and causing a debuff with a <Debuff>%.2f</> chance.</>"),
+		InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel), DebuffChance
+	);
+}

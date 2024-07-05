@@ -80,7 +80,7 @@ void UHASDamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	{	
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().IntelligenceDef, Params, Intelligence);
 		Intelligence = FMath::Max<float>(0.f, Intelligence);
-		BaseDamage += SourceActorLevel * 10 + Intelligence * 2.5;
+		BaseDamage += Intelligence * 2.5;
 	}
 	// Enemy АјАн
 	else if(TargetAvatarActor->ActorHasTag(FName("Player")))

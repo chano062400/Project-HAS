@@ -5,6 +5,8 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "SpellMenuWidgetController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellPointChangedSignature, int32, NewSpellPoint);
+
 /**
  * 
  */
@@ -19,4 +21,9 @@ public:
 
 	virtual void BindCallBacks() override;
 
+	UFUNCTION(BlueprintCallable)
+	void SpellBoxPressed(const FGameplayTag& AbilityTag);
+
+	UPROPERTY(BlueprintAssignable)
+	FSpellPointChangedSignature SpellPointChangedDelegate;
 };

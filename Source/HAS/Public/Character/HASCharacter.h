@@ -47,6 +47,10 @@ public:
 
 	virtual void SetAttributePoint(int32 NewAttributePoint) override;
 
+	virtual int32 GetSpellPoint() override;
+
+	virtual void SetSpellPoint(int32 NewSpellPoint) override;
+
 	virtual UAttributeSet* GetAttributeSet() override;
 
 	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;

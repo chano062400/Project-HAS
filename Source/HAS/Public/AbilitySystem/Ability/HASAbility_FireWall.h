@@ -16,5 +16,5 @@ class HAS_API UHASAbility_FireWall : public UHASGameplayDamageAbility
 	
 public:
 
-	virtual FString GetAbilityDescription();
+	virtual FString GetAbilityDescription(int32 InAbilityLevel);
 };

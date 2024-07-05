@@ -27,6 +27,7 @@ void AHASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AHASPlayerState, Level);
 	DOREPLIFETIME(AHASPlayerState, XP);
 	DOREPLIFETIME(AHASPlayerState, AttributePoint);
+	DOREPLIFETIME(AHASPlayerState, SpellPoint);
 }
 
 UAttributeSet* AHASPlayerState::GetAttributeSet() const
@@ -65,4 +66,15 @@ void AHASPlayerState::SetAttributePoint(int32 NewAttributePoint)
 {
 	AttributePoint = NewAttributePoint;
 	PlayerAttributePointChangedDelegate.Broadcast(AttributePoint);
+}
+
+void AHASPlayerState::OnRep_SpellPoint(int32 OldSpellPoint)
+{
+	PlayerSpellPointChangedDelegate.Broadcast(SpellPoint);
+}
+
+void AHASPlayerState::SetSpellPoint(int32 NewSpellPoint)
+{
+	SpellPoint = NewSpellPoint;
+	PlayerSpellPointChangedDelegate.Broadcast(SpellPoint);
 }

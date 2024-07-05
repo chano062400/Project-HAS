@@ -37,6 +37,10 @@ public:
 
 	void RemoveAllDebuffEffect();
 
+	void AbilityLevelUp(const FGameplayTag& AbilityTag);
+
+	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);
+	
 	FGameplayTag FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	FGameplayTag FindStatusTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);

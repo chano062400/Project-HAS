@@ -144,6 +144,22 @@ void AHASCharacter::SetAttributePoint(int32 NewAttributePoint)
 	return PS->SetAttributePoint(NewAttributePoint);
 }
 
+int32 AHASCharacter::GetSpellPoint()
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->GetSpellPoint();
+}
+
+void AHASCharacter::SetSpellPoint(int32 NewSpellPoint)
+{
+	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();
+	check(PS);
+
+	return PS->SetSpellPoint(NewSpellPoint);
+}
+
 UAttributeSet* AHASCharacter::GetAttributeSet()
 {
 	AHASPlayerState* PS = GetPlayerState<AHASPlayerState>();

@@ -15,4 +15,6 @@ class HAS_API UHASAbility_FireBall : public UHASGameplayDamageAbility
 public:
 	
 	//virtual void SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming) override;
+
+	virtual FString GetAbilityDescription(int32 InAbilityLevel) override;
 };

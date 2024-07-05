@@ -28,6 +28,8 @@ public:
 	virtual int32 GetXP() = 0;
 	virtual int32 GetAttributePoint() = 0;
 	virtual void SetAttributePoint(int32 NewAttributePoint) = 0;
+	virtual int32 GetSpellPoint() = 0;
+	virtual void SetSpellPoint(int32 NewSpellPoint) = 0;
 	virtual UAttributeSet* GetAttributeSet() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)

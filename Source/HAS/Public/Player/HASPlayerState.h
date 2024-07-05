@@ -71,6 +71,18 @@ public:
 
 	FPlayerStatChangedSignature PlayerAttributePointChangedDelegate;
 
+	/* Spell Point */
+
+	UFUNCTION()
+	void OnRep_SpellPoint(int32 OldSpellPoint);
+
+	void SetSpellPoint(int32 NewSpellPoint);
+
+	FORCEINLINE int32 GetSpellPoint() { return SpellPoint; }
+
+	FPlayerStatChangedSignature PlayerSpellPointChangedDelegate;
+
+
 private:
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
@@ -82,4 +94,6 @@ private:
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_AttributePoint)
 	int32 AttributePoint = 0;
 
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_SpellPoint)
+	int32 SpellPoint = 0;
 };

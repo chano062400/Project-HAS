@@ -20,4 +20,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Radius;
 
+	virtual FString GetAbilityDescription(int32 InAbilityLevel) override;
 };

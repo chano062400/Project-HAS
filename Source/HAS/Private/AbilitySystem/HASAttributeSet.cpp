@@ -215,6 +215,7 @@ void UHASAttributeSet::HandleXP(FEffectProperties& Props)
 			int32 PlayerNewXP = PlayerInterface->GetXP() + EnemyXPReward;
 			int32 PlayerNewLevel = UHASAbilitySystemBlueprintLibrary::GetLevelByXP(Props.SourceAvatarActor, PlayerNewXP);
 			int32 PlayerAttributePoint = PlayerInterface->GetAttributePoint();
+			int32 PlayerSpellPoint = PlayerInterface->GetSpellPoint();
 
 			const int32 NumOfLevelUp = PlayerNewLevel - PlayerLevel;
 
@@ -223,7 +224,8 @@ void UHASAttributeSet::HandleXP(FEffectProperties& Props)
 			{
 				// MMC_MaxHealth,Mana 공식에 Level 값이 있으므로, 변경 전에 Level을 올려줌.
 				PlayerInterface->SetLevel(PlayerNewLevel);
-				PlayerInterface->SetAttributePoint(PlayerAttributePoint + 5);
+				PlayerInterface->SetAttributePoint(PlayerAttributePoint + 5 * NumOfLevelUp);
+				PlayerInterface->SetSpellPoint(PlayerSpellPoint + 3 * NumOfLevelUp);
 
 				// 핵심 스텟 + 1, Vigor, Intelligence 값이 변경됨에 따라 MMC_MaxHealth,Mana를 호출하여 MaxHealth,Mana Attribute값 변경 -> PostAttributeChange() 호출
 				Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, 1.f);
