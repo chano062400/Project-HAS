@@ -5,7 +5,12 @@
 #include "AbilitySystem/Data/ClassInfoDataAsset.h"
 #include "HASAbilitySystemComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityUpdateSignature, FGameplayAbilitySpec& /* AbilitySpec */, bool /* bIsStartAbility */);
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityUpdateSignature, FGameplayAbilitySpec& /* AbilitySpec */);
+
+DECLARE_MULTICAST_DELEGATE(FStartAbilitiesGivenSignature);
+
+DECLARE_DELEGATE_OneParam(FForEachAbilitySignature, const FGameplayAbilitySpec&);
+
 
 /**
  * 
@@ -16,6 +21,14 @@ class HAS_API UHASAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
+
+	FStartAbilitiesGivenSignature StartAbilitiesGivenDelegate;
+
+	FAbilityUpdateSignature AbilityUpdateDelegate;
+
+	FForEachAbilitySignature ForEachAbilityDelegate;
+
+	bool bIsGivenStartAbilities = false;
 
 	void AbilityActorInfoSet();
 
@@ -39,6 +52,16 @@ public:
 
 	void AbilityLevelUp(const FGameplayTag& AbilityTag);
 
+	void ForEachAbility(const FForEachAbilitySignature& Delegate);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateAbility(const FGameplayTag& AbilityTag);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAbility(FGameplayAbilitySpec AbilitySpec);
+
+	virtual void OnRep_ActivateAbilities() override;
+
 	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);
 	
 	FGameplayTag FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
@@ -47,8 +70,4 @@ public:
 
 	int32 FindPlayerLevelByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
-	FAbilityUpdateSignature AbilityUpdateDelegate;
-
-	UFUNCTION(Client, Reliable)
-	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 };

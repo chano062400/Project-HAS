@@ -10,6 +10,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "HASGameplayTags.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UHASAbilitySystemBlueprintLibrary::SetCriticalHit(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, bool bIsCriticalHit)
 {
@@ -228,3 +229,13 @@ FGameplayEffectContextHandle UHASAbilitySystemBlueprintLibrary::ApplyDamageEffec
 
 	return EffectContextHandle;
 }
+
+FHASAbilityInfo UHASAbilitySystemBlueprintLibrary::FindAbilityInfoByTag(UObject* WorldContextObject, const FGameplayTag& AbilityTag)
+{
+	if (AHASGameModeBase* GameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return GameMode->AbilityInformation->FindAbilityInfoByTag(AbilityTag);
+	}
+	return FHASAbilityInfo();
+}
+

@@ -7,6 +7,7 @@
 #include "HASAbilitySystemBlueprintLibrary.generated.h"
 
 struct FHASDamageEffectParams;
+struct FHASAbilityInfo;
 
 /**
  * 
@@ -80,4 +81,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static FGameplayEffectContextHandle ApplyDamageEffectParams(const FHASDamageEffectParams& Params);
+
+	UFUNCTION(BlueprintCallable)
+	static FHASAbilityInfo FindAbilityInfoByTag(UObject* WorldContextObject, const FGameplayTag& AbilityTag);
+
 };

@@ -1,5 +1,6 @@
 #include "UI/WidgetController/HASWidgetController.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 void UHASWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& WCParams)
 {
@@ -22,19 +23,20 @@ void UHASWidgetController::BroadcastInitialAbilityInfo()
 	// StartAbilities Info Broadcast
 	if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
 	{
-		HASASC->AbilityUpdateDelegate.AddLambda(
-			[this, HASASC](FGameplayAbilitySpec& InAbilitySpec, bool bIsStartAbility)
+		if (!HASASC->bIsGivenStartAbilities) return;
+		FForEachAbilitySignature ForEachAbilityDelegate;
+		ForEachAbilityDelegate.BindLambda(
+			[HASASC, this](const FGameplayAbilitySpec& InAbilitySpec)
 			{
-				if (bIsStartAbility)
-				{
-					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
-					FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
-					Info.AbilityLevel = InAbilitySpec.Level;
-					Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
-					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
-					AbilityInfoDelegate.Broadcast(Info);
-				}
+				const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
+				FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
+				Info.AbilityLevel = InAbilitySpec.Level;
+				Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
+				Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
+				AbilityInfoDelegate.Broadcast(Info);
 			}
 		);
+
+		HASASC->ForEachAbility(ForEachAbilityDelegate);
 	}
 }

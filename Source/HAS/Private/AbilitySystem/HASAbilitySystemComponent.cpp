@@ -33,9 +33,12 @@ void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<
 			AbilitySpec.DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
 
 			GiveAbility(AbilitySpec);
-			AbilityUpdateDelegate.Broadcast(AbilitySpec, true);
 		}
 	}
+
+	bIsGivenStartAbilities = true;
+
+	StartAbilitiesGivenDelegate.Broadcast();
 }
 
 void UHASAbilitySystemComponent::AddHitReactAbility(TSubclassOf<UGameplayAbility> HitReactAbility)
@@ -168,7 +171,65 @@ void UHASAbilitySystemComponent::AbilityLevelUp(const FGameplayTag& AbilityTag)
 
 		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
 
-		AbilityUpdateDelegate.Broadcast(*AbilitySpec, false);
+		AbilityUpdateDelegate.Broadcast(*AbilitySpec);
+
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
+}
+
+void UHASAbilitySystemComponent::ForEachAbility(const FForEachAbilitySignature& Delegate)
+{
+	FScopedAbilityListLock AbilityListLock(*this);
+
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (Delegate.IsBound())
+		{
+			Delegate.Execute(AbilitySpec);
+		}
+	}
+}
+
+void UHASAbilitySystemComponent::ServerUpdateAbility_Implementation(const FGameplayTag& AbilityTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
+	{
+		if (IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(GetAvatarActor()))
+		{
+			int32 CurSpellPoint = PlayerInterface->GetSpellPoint();
+			PlayerInterface->SetSpellPoint(CurSpellPoint - 1);
+		}
+
+		FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
+		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
+		{
+			AbilitySpec->DynamicAbilityTags.RemoveTag(FHASGameplayTags::Get().Status_UnLocked);
+			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
+		}
+
+		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
+
+		ClientUpdateAbility(*AbilitySpec);
+
+		/** Call to mark that an ability spec has been modified */
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
+}
+
+void UHASAbilitySystemComponent::ClientUpdateAbility_Implementation(FGameplayAbilitySpec AbilitySpec)
+{
+	AbilityUpdateDelegate.Broadcast(AbilitySpec);
+	GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, FString::Printf(TEXT("Client RPC")));
+}
+
+void UHASAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	if (!bIsGivenStartAbilities)
+	{
+		bIsGivenStartAbilities = true;
+		StartAbilitiesGivenDelegate.Broadcast();
 	}
 }
 
@@ -251,7 +312,3 @@ void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 	}
 }
 
-void UHASAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle)
-{
-
-}

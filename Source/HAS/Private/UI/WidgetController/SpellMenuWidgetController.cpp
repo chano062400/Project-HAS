@@ -3,6 +3,7 @@
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/HASGameplayDamageAbility.h"
 #include "Player/HASPlayerState.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 void USpellMenuWidgetController::BroadcastInitialValues()
 {
@@ -15,10 +16,8 @@ void USpellMenuWidgetController::BindCallBacks()
 	if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
 	{
 		HASASC->AbilityUpdateDelegate.AddLambda(
-			[this, HASASC](FGameplayAbilitySpec& InAbilitySpec, bool bIsStartAbility)
+			[this, HASASC](FGameplayAbilitySpec& InAbilitySpec)
 			{
-				if (!bIsStartAbility)
-				{
 					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
 					FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
 					Info.AbilityLevel = InAbilitySpec.Level;
@@ -26,9 +25,10 @@ void USpellMenuWidgetController::BindCallBacks()
 					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
 					//Info.Ability = Cast<UHASGameplayDamageAbility>(InAbilitySpec.Ability);
 					AbilityInfoDelegate.Broadcast(Info);
-				}
 			}
 		);
+
+		HASASC->StartAbilitiesGivenDelegate.AddUObject(this, &USpellMenuWidgetController::BroadcastInitialAbilityInfo);
 	}
 
 	if (AHASPlayerState* HASPS = Cast<AHASPlayerState>(PS))
@@ -51,7 +51,7 @@ void USpellMenuWidgetController::SpellBoxPressed(const FGameplayTag& AbilityTag)
 
 		if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
 		{
-			HASASC->AbilityLevelUp(AbilityTag);
+			HASASC->ServerUpdateAbility(AbilityTag);
 		}
 	}
 }

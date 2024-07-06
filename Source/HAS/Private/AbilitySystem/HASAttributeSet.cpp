@@ -228,9 +228,9 @@ void UHASAttributeSet::HandleXP(FEffectProperties& Props)
 				PlayerInterface->SetSpellPoint(PlayerSpellPoint + 3 * NumOfLevelUp);
 
 				// 핵심 스텟 + 1, Vigor, Intelligence 값이 변경됨에 따라 MMC_MaxHealth,Mana를 호출하여 MaxHealth,Mana Attribute값 변경 -> PostAttributeChange() 호출
-				Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, 1.f);
-				Props.SourceASC->ApplyModToAttribute(GetIntelligenceAttribute(), EGameplayModOp::Additive, 1.f);
-				Props.SourceASC->ApplyModToAttribute(GetDexterityAttribute(), EGameplayModOp::Additive, 1.f);
+				Props.SourceASC->ApplyModToAttribute(GetVigorAttribute(), EGameplayModOp::Additive, NumOfLevelUp);
+				Props.SourceASC->ApplyModToAttribute(GetIntelligenceAttribute(), EGameplayModOp::Additive, NumOfLevelUp);
+				Props.SourceASC->ApplyModToAttribute(GetDexterityAttribute(), EGameplayModOp::Additive, NumOfLevelUp);
 
 			}
 

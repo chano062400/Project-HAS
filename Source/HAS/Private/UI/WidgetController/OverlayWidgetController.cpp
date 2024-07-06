@@ -3,11 +3,10 @@
 #include "Player/HASPlayerState.h"
 #include "AbilitySystem/Data/LevelXPInfo.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	// 다운 캐스팅
-	// WidgetController - UAttributeSet
 	UHASAttributeSet* HASAttributeSet = CastChecked<UHASAttributeSet>(AS);
 	{
 		MaxHealthChanged.Broadcast(HASAttributeSet->GetMaxHealth());
@@ -65,6 +64,21 @@ void UOverlayWidgetController::BindCallBacks()
 					ManaChanged.Broadcast(Data.NewValue);
 				}
 			);
+
+			HASASC->AbilityUpdateDelegate.AddLambda(
+				[this, HASASC](FGameplayAbilitySpec& InAbilitySpec)
+				{
+					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
+					FHASAbilityInfo Info = UHASAbilitySystemBlueprintLibrary::FindAbilityInfoByTag(HASASC->GetAvatarActor(), AbilityTag);
+					Info.AbilityLevel = InAbilitySpec.Level;
+					Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
+					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
+					AbilityInfoDelegate.Broadcast(Info);
+				}
+			);
+
+			if (HASASC->bIsGivenStartAbilities) BroadcastInitialAbilityInfo();
+			else HASASC->StartAbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastInitialAbilityInfo);
 		}
 	}
 
