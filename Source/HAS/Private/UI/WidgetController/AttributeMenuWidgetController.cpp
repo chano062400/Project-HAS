@@ -70,7 +70,8 @@ void UAttributeMenuWidgetController::UseAttributePointPressed(const FGameplayTag
 					if (pair.Key.MatchesTagExact(AttributeTag))
 					{
 						// +버튼을 누른 Attribute를 1증가하고, Attribute Point는 1감소.
-						HASASC->ApplyModToAttribute(pair.Value, EGameplayModOp::Additive, 1);
+						HASASC->ServerUpdateAttribute(pair.Value, EGameplayModOp::Additive, 1.f);
+
 						PlayerInterface->SetAttributePoint(PlayerInterface->GetAttributePoint() - 1);
 					}
 				}

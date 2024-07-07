@@ -22,6 +22,9 @@ public:
 
 	virtual void BindCallBacks() override;
 
+	UFUNCTION(BlueprintCallable)
+	void OnDropped(const FGameplayTag& AbilityTag, const FGameplayTag& InputTag);
+
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedSignature MaxHealthChanged;
 

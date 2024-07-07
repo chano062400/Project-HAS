@@ -118,6 +118,11 @@ void AHASCharacter::SetLevel(int32 NewLevel)
 	PS->SetLevel(NewLevel);
 
 	MulticastPlayLevelUpEffect();
+
+	if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		HASASC->ServerUpdateAbilityStatus(NewLevel);
+	}
 }
 
 int32 AHASCharacter::GetXP()

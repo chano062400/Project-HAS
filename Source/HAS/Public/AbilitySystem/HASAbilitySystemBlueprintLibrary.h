@@ -85,4 +85,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static FHASAbilityInfo FindAbilityInfoByTag(UObject* WorldContextObject, const FGameplayTag& AbilityTag);
 
+	UFUNCTION(BlueprintCallable)
+	static UAbilityInfo* GetAbilityInfo(UObject* WorldContextObject);
+
 };

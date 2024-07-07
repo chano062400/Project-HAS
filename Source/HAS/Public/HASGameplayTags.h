@@ -38,6 +38,7 @@ public:
 	FGameplayTag Input_2;
 	FGameplayTag Input_3;
 	FGameplayTag Input_4;
+	FGameplayTag Input_None;
 
 	/* Status Tag */
 
@@ -61,6 +62,7 @@ public:
 	FGameplayTag Ability_RangedAttack;
 	FGameplayTag Ability_Dodge;
 	FGameplayTag Ability_XP;
+	FGameplayTag Ability_None;
 	
 	/* Montage Tag */
 

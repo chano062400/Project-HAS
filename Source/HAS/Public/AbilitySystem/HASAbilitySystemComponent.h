@@ -7,6 +7,8 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityUpdateSignature, FGameplayAbilitySpec& /* AbilitySpec */);
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityEquipSignature, FGameplayAbilitySpec& /* AbilitySpec */, const FGameplayTag /* PrevInputTag */);
+
 DECLARE_MULTICAST_DELEGATE(FStartAbilitiesGivenSignature);
 
 DECLARE_DELEGATE_OneParam(FForEachAbilitySignature, const FGameplayAbilitySpec&);
@@ -27,7 +29,9 @@ public:
 	FAbilityUpdateSignature AbilityUpdateDelegate;
 
 	FForEachAbilitySignature ForEachAbilityDelegate;
-
+	
+	FAbilityEquipSignature AbilityEquipDelegate;
+	
 	bool bIsGivenStartAbilities = false;
 
 	void AbilityActorInfoSet();
@@ -55,19 +59,44 @@ public:
 	void ForEachAbility(const FForEachAbilitySignature& Delegate);
 
 	UFUNCTION(Server, Reliable)
-	void ServerUpdateAbility(const FGameplayTag& AbilityTag);
+	void ServerUpdateAbilityStatus(int32 Level);
+
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAbilityStatus(FGameplayAbilitySpec AbilitySpec);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAbility(const FGameplayTag& AbilityTag);
 	
 	UFUNCTION(Client, Reliable)
-	void ClientUpdateAbility(FGameplayAbilitySpec AbilitySpec);
+	void ClientUpgradeAbility(FGameplayAbilitySpec AbilitySpec);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateAttribute(const FGameplayAttribute& Attribute, EGameplayModOp::Type ModOp, float Value);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateAbilityInput(const FGameplayTag& AbilityTag, const FGameplayTag& InputTag);
+
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAbilityInput(FGameplayAbilitySpec InAbilitySpec, const FGameplayTag& PrevInputTag);
 
 	virtual void OnRep_ActivateAbilities() override;
 
-	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);
+	FGameplayAbilitySpec* FindAbilitySpecByInputTag(const FGameplayTag& InputTag);
+
+	FGameplayAbilitySpec* FindAbilitySpecByAbilityTag(const FGameplayTag& AbilityTag);
 	
 	FGameplayTag FindAbilityTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	FGameplayTag FindStatusTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
+	FGameplayTag FindInputTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
+
 	int32 FindPlayerLevelByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 
+	bool IsEquippedAbility(const FGameplayAbilitySpec& AbilitySpec);
+
+	void ClearInput(FGameplayAbilitySpec* AbilitySpec);
+
+	void UnEquipAbility(FGameplayAbilitySpec* AbilitySpec);
 };
+

@@ -92,6 +92,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Input.4"),
 		FString("4 Input Tag")
 	);
+		
+	GameplayTags.Input_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.None"),
+		FString("None Input Tag")
+	);
 	
 	/* Status Tag */
 
@@ -167,6 +172,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Ability_XP = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.XP"),
 		FString("XP Passive Ability Tag")
+	);
+				
+	GameplayTags.Ability_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.None"),
+		FString("None Ability Tag")
 	);
 
 	/* Montage Tag */

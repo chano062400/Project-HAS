@@ -4,6 +4,7 @@
 #include "AbilitySystem/Data/LevelXPInfo.h"
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
+#include "HASGameplayTags.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -65,14 +66,18 @@ void UOverlayWidgetController::BindCallBacks()
 				}
 			);
 
-			HASASC->AbilityUpdateDelegate.AddLambda(
-				[this, HASASC](FGameplayAbilitySpec& InAbilitySpec)
+			HASASC->AbilityEquipDelegate.AddLambda(
+				[this, HASASC](FGameplayAbilitySpec& InAbilitySpec, const FGameplayTag& PrevInputTag)
 				{
+					FHASAbilityInfo PrevInfo;
+					PrevInfo.InputTag = PrevInputTag;
+					PrevInfo.StatusTag = FHASGameplayTags::Get().Status_Locked;
+					AbilityInfoDelegate.Broadcast(PrevInfo);
+
 					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
-					FHASAbilityInfo Info = UHASAbilitySystemBlueprintLibrary::FindAbilityInfoByTag(HASASC->GetAvatarActor(), AbilityTag);
-					Info.AbilityLevel = InAbilitySpec.Level;
+					FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
+					Info.InputTag = HASASC->FindInputTagByAbilitySpec(InAbilitySpec);
 					Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
-					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
 					AbilityInfoDelegate.Broadcast(Info);
 				}
 			);
@@ -102,5 +107,13 @@ void UOverlayWidgetController::BindCallBacks()
 				PlayerLevelChangedDelegate.Broadcast(NewLevel, true);
 			}
 		);
+	}
+}
+
+void UOverlayWidgetController::OnDropped(const FGameplayTag& AbilityTag, const FGameplayTag& InputTag)
+{
+	if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
+	{
+		HASASC->ServerUpdateAbilityInput(AbilityTag, InputTag);
 	}
 }

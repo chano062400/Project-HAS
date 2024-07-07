@@ -31,7 +31,6 @@ void UHASWidgetController::BroadcastInitialAbilityInfo()
 				const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
 				FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
 				Info.AbilityLevel = InAbilitySpec.Level;
-				Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
 				Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
 				AbilityInfoDelegate.Broadcast(Info);
 			}

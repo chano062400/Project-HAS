@@ -7,6 +7,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Interfaces/HASCombatInterface.h"
 #include "Interfaces/HASPlayerInterface.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UHASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -154,7 +156,7 @@ void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
 
 void UHASAbilitySystemComponent::AbilityLevelUp(const FGameplayTag& AbilityTag)
 {
-	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(AbilityTag))
 	{
 		if (IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(GetAvatarActor()))
 		{
@@ -190,9 +192,39 @@ void UHASAbilitySystemComponent::ForEachAbility(const FForEachAbilitySignature& 
 	}
 }
 
-void UHASAbilitySystemComponent::ServerUpdateAbility_Implementation(const FGameplayTag& AbilityTag)
+void UHASAbilitySystemComponent::ServerUpdateAbilityStatus_Implementation(int32 Level)
 {
-	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
+	if (UAbilityInfo* AbilityInfo = UHASAbilitySystemBlueprintLibrary::GetAbilityInfo(GetAvatarActor()))
+	{
+		for (const FHASAbilityInfo& Info : AbilityInfo->AbilityInformation)
+		{
+			if (Info.StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Locked))
+			{
+				if (Info.RequirementLevel > Level) return;
+
+				// 요구 레벨이 충족하면 배울 수 있는 상태 UnLocked Status가 되고 GiveAbility.
+				FGameplayAbilitySpec AbilitySpec(Info.Ability.Get(), 0.f);
+
+				AbilitySpec.DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnLocked);
+				AbilitySpec.SourceObject = GetAvatarActor();
+				GiveAbility(AbilitySpec);
+
+				ClientUpdateAbilityStatus(AbilitySpec);
+
+				MarkAbilitySpecDirty(AbilitySpec);
+			}
+		}
+	}
+}
+
+void UHASAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(FGameplayAbilitySpec AbilitySpec)
+{
+	AbilityUpdateDelegate.Broadcast(AbilitySpec);
+}
+
+void UHASAbilitySystemComponent::ServerUpgradeAbility_Implementation(const FGameplayTag& AbilityTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(AbilityTag))
 	{
 		if (IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(GetAvatarActor()))
 		{
@@ -203,23 +235,75 @@ void UHASAbilitySystemComponent::ServerUpdateAbility_Implementation(const FGamep
 		FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
 		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
 		{
-			AbilitySpec->DynamicAbilityTags.RemoveTag(FHASGameplayTags::Get().Status_UnLocked);
-			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
+			AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
+			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
 		}
 
 		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
 
-		ClientUpdateAbility(*AbilitySpec);
+		ClientUpgradeAbility(*AbilitySpec);
 
-		/** Call to mark that an ability spec has been modified */
 		MarkAbilitySpecDirty(*AbilitySpec);
 	}
 }
 
-void UHASAbilitySystemComponent::ClientUpdateAbility_Implementation(FGameplayAbilitySpec AbilitySpec)
+void UHASAbilitySystemComponent::ClientUpgradeAbility_Implementation(FGameplayAbilitySpec AbilitySpec)
 {
 	AbilityUpdateDelegate.Broadcast(AbilitySpec);
-	GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, FString::Printf(TEXT("Client RPC")));
+}
+
+void UHASAbilitySystemComponent::ServerUpdateAttribute_Implementation(const FGameplayAttribute& Attribute, EGameplayModOp::Type ModOp, float Value)
+{
+	ApplyModToAttribute(Attribute, ModOp, Value);
+}
+
+void UHASAbilitySystemComponent::ServerUpdateAbilityInput_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& InputTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(AbilityTag))
+	{
+		const FGameplayTag CurInputTag = FindInputTagByAbilitySpec(*AbilitySpec);
+		const FGameplayTag NewInputTag = InputTag;
+		const FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
+
+		//  Lock이나 UnLock Status라면 return.
+		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnEquipped) || StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Equipped))
+		{
+			// 이미 장착된 Input에 장착하려면
+			if (FGameplayAbilitySpec* ChangeAbilitySpec = FindAbilitySpecByInputTag(NewInputTag))
+			{
+				// 원래 장착돼있던 Ability 장착 해제.
+				ChangeAbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*ChangeAbilitySpec));
+
+				ChangeAbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*ChangeAbilitySpec));
+				ChangeAbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
+
+				ClientUpdateAbilityInput(*ChangeAbilitySpec, NewInputTag);
+
+				MarkAbilitySpecDirty(*ChangeAbilitySpec);
+			}
+
+			// 장착돼있는 Ability라면.
+			if (IsEquippedAbility(*AbilitySpec))
+			{
+				AbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*AbilitySpec));
+			}
+
+			AbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*AbilitySpec));
+			AbilitySpec->DynamicAbilityTags.AddTag(InputTag);
+			
+			AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
+			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
+		}
+		ClientUpdateAbilityInput(*AbilitySpec, CurInputTag);
+
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
+}
+
+void UHASAbilitySystemComponent::ClientUpdateAbilityInput_Implementation(FGameplayAbilitySpec InAbilitySpec, const FGameplayTag& PrevInputTag)
+{
+	AbilityEquipDelegate.Broadcast(InAbilitySpec, PrevInputTag);
+	AbilityUpdateDelegate.Broadcast(InAbilitySpec);
 }
 
 void UHASAbilitySystemComponent::OnRep_ActivateAbilities()
@@ -233,7 +317,25 @@ void UHASAbilitySystemComponent::OnRep_ActivateAbilities()
 	}
 }
 
-FGameplayAbilitySpec* UHASAbilitySystemComponent::FindAbilitySpecByTag(const FGameplayTag& AbilityTag)
+FGameplayAbilitySpec* UHASAbilitySystemComponent::FindAbilitySpecByInputTag(const FGameplayTag& InputTag)
+{
+	FScopedAbilityListLock AbilityListLock(*this);
+
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		for (const FGameplayTag& Tag : AbilitySpec.DynamicAbilityTags)
+		{
+			if (Tag.MatchesTagExact(InputTag))
+			{
+				return &AbilitySpec;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+FGameplayAbilitySpec* UHASAbilitySystemComponent::FindAbilitySpecByAbilityTag(const FGameplayTag& AbilityTag)
 {
 	FScopedAbilityListLock AbilityListLock(*this);
 
@@ -255,7 +357,7 @@ FGameplayTag UHASAbilitySystemComponent::FindAbilityTagByAbilitySpec(const FGame
 {
 	if (AbilitySpec.Ability)
 	{
-		for (FGameplayTag AbilityTag : AbilitySpec.Ability->AbilityTags)
+		for (const FGameplayTag& AbilityTag : AbilitySpec.Ability->AbilityTags)
 		{
 			if (AbilityTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Ability"))))
 			{
@@ -268,9 +370,21 @@ FGameplayTag UHASAbilitySystemComponent::FindAbilityTagByAbilitySpec(const FGame
 
 FGameplayTag UHASAbilitySystemComponent::FindStatusTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
 {
-	for (FGameplayTag Tag : AbilitySpec.DynamicAbilityTags)
+	for (const FGameplayTag& Tag : AbilitySpec.DynamicAbilityTags)
 	{
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Status"))))
+		{
+			return Tag;
+		}
+	}
+	return FGameplayTag();
+}
+
+FGameplayTag UHASAbilitySystemComponent::FindInputTagByAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	for (const FGameplayTag& Tag : AbilitySpec.DynamicAbilityTags)
+	{
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input"))))
 		{
 			return Tag;
 		}
@@ -285,6 +399,24 @@ int32 UHASAbilitySystemComponent::FindPlayerLevelByAbilitySpec(const FGameplayAb
 		return IHASCombatInterface::Execute_GetLevel(AbilitySpec.SourceObject.Get());
 	}
 	return 0;
+}
+
+bool UHASAbilitySystemComponent::IsEquippedAbility(const FGameplayAbilitySpec& AbilitySpec)
+{
+	return AbilitySpec.DynamicAbilityTags.HasTag(FGameplayTag::RequestGameplayTag(FName("Input")));
+}
+
+void UHASAbilitySystemComponent::ClearInput(FGameplayAbilitySpec* AbilitySpec)
+{
+	// 장착 해제.(Remove input Tag)
+	AbilitySpec->DynamicAbilityTags.RemoveTag(FGameplayTag::RequestGameplayTag(FName("Input")));
+}
+
+void UHASAbilitySystemComponent::UnEquipAbility(FGameplayAbilitySpec* AbilitySpec)
+{
+	// Status - UnEquipped로 변경.
+	AbilitySpec->DynamicAbilityTags.RemoveTag(FGameplayTag::RequestGameplayTag(FName("Status")));
+	AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
 }
 
 void UHASAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)

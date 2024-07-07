@@ -239,3 +239,12 @@ FHASAbilityInfo UHASAbilitySystemBlueprintLibrary::FindAbilityInfoByTag(UObject*
 	return FHASAbilityInfo();
 }
 
+UAbilityInfo* UHASAbilitySystemBlueprintLibrary::GetAbilityInfo(UObject* WorldContextObject)
+{
+	if (AHASGameModeBase* GameMode = Cast<AHASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return GameMode->AbilityInformation;
+	}
+	return nullptr;
+}
+

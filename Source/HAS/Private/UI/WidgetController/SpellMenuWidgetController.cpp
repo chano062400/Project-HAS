@@ -18,13 +18,13 @@ void USpellMenuWidgetController::BindCallBacks()
 		HASASC->AbilityUpdateDelegate.AddLambda(
 			[this, HASASC](FGameplayAbilitySpec& InAbilitySpec)
 			{
-					const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
-					FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
-					Info.AbilityLevel = InAbilitySpec.Level;
-					Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
-					Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
-					//Info.Ability = Cast<UHASGameplayDamageAbility>(InAbilitySpec.Ability);
-					AbilityInfoDelegate.Broadcast(Info);
+				const FGameplayTag AbilityTag = HASASC->FindAbilityTagByAbilitySpec(InAbilitySpec);
+				FHASAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
+				Info.AbilityLevel = InAbilitySpec.Level;
+				Info.StatusTag = HASASC->FindStatusTagByAbilitySpec(InAbilitySpec);
+				Info.PlayerLevel = HASASC->FindPlayerLevelByAbilitySpec(InAbilitySpec);
+				//Info.Ability = Cast<UHASGameplayDamageAbility>(InAbilitySpec.Ability);
+				AbilityInfoDelegate.Broadcast(Info);
 			}
 		);
 
@@ -51,7 +51,7 @@ void USpellMenuWidgetController::SpellBoxPressed(const FGameplayTag& AbilityTag)
 
 		if (UHASAbilitySystemComponent* HASASC = Cast<UHASAbilitySystemComponent>(ASC))
 		{
-			HASASC->ServerUpdateAbility(AbilityTag);
+			HASASC->ServerUpgradeAbility(AbilityTag);
 		}
 	}
 }
