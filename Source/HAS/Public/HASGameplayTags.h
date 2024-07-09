@@ -69,6 +69,7 @@ public:
 	FGameplayTag Cooldown_FireBall;
 	FGameplayTag Cooldown_FireWall;
 	FGameplayTag Cooldown_FireMeteor;
+	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */
 

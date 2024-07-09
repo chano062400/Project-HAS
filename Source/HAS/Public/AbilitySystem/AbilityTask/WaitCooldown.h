@@ -40,4 +40,5 @@ public:
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
 	FGameplayTag CooldownTag;
+
 };

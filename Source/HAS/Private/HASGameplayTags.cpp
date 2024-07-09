@@ -195,6 +195,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.FireMeteor"),
 		FString("FireMeteor Cooldown Tag")
 	);
+		
+	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.None"),
+		FString("None Cooldown Tag")
+	);
 
 	/* Montage Tag */
 
