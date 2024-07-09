@@ -64,6 +64,12 @@ public:
 	FGameplayTag Ability_XP;
 	FGameplayTag Ability_None;
 	
+	/* Cooldown Tag */
+
+	FGameplayTag Cooldown_FireBall;
+	FGameplayTag Cooldown_FireWall;
+	FGameplayTag Cooldown_FireMeteor;
+	
 	/* Montage Tag */
 
 	FGameplayTag Montage_FireBall;

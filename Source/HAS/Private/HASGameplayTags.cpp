@@ -178,6 +178,23 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.None"),
 		FString("None Ability Tag")
 	);
+	
+	/* Cooldown Tag */
+
+	GameplayTags.Cooldown_FireBall= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.FireBall"),
+		FString("FireBall Cooldown Tag")
+	);
+	
+	GameplayTags.Cooldown_FireWall= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.FireWall"),
+		FString("FireWall Cooldown Tag")
+	);
+	
+	GameplayTags.Cooldown_FireMeteor= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.FireMeteor"),
+		FString("FireMeteor Cooldown Tag")
+	);
 
 	/* Montage Tag */
 

@@ -198,20 +198,25 @@ void UHASAbilitySystemComponent::ServerUpdateAbilityStatus_Implementation(int32 
 	{
 		for (const FHASAbilityInfo& Info : AbilityInfo->AbilityInformation)
 		{
-			if (Info.StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Locked))
+			// 이미 등록된 Ability는 건너뜀.(이미 UnLocked상태 이상이기 때문.)
+			if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(Info.AbilityTag))
 			{
-				if (Info.RequirementLevel > Level) return;
+				continue;
+			}
+			else if (Info.StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Locked))
+			{
+				if (Info.RequirementLevel > Level) continue;
 
 				// 요구 레벨이 충족하면 배울 수 있는 상태 UnLocked Status가 되고 GiveAbility.
-				FGameplayAbilitySpec AbilitySpec(Info.Ability.Get(), 0.f);
+				FGameplayAbilitySpec NewAbilitySpec(Info.Ability.Get(), 0.f);
 
-				AbilitySpec.DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnLocked);
-				AbilitySpec.SourceObject = GetAvatarActor();
-				GiveAbility(AbilitySpec);
+				NewAbilitySpec.DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnLocked);
+				NewAbilitySpec.SourceObject = GetAvatarActor();
+				GiveAbility(NewAbilitySpec);
 
-				ClientUpdateAbilityStatus(AbilitySpec);
+				ClientUpdateAbilityStatus(NewAbilitySpec);
 
-				MarkAbilitySpecDirty(AbilitySpec);
+				MarkAbilitySpecDirty(NewAbilitySpec);
 			}
 		}
 	}
@@ -236,7 +241,7 @@ void UHASAbilitySystemComponent::ServerUpgradeAbility_Implementation(const FGame
 		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
 		{
 			AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
-			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
+			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
 		}
 
 		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
