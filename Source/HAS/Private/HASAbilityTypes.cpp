@@ -61,9 +61,13 @@ bool FHASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, boo
 		{
 			RepBits |= 1 << 13;
 		}
+		if (!Knockback.IsZero())
+		{
+			RepBits |= 1 << 14;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 14);
+	Ar.SerializeBits(&RepBits, 15);
 
 	if (RepBits & (1 << 0))
 	{
@@ -139,6 +143,10 @@ bool FHASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, boo
 	if (RepBits & (1 << 13))
 	{
 		Ar << DebuffDamage;
+	}
+	if (RepBits & (1 << 14))
+	{
+		Knockback.NetSerialize(Ar, Map, bOutSuccess);
 	}
 	if (Ar.IsLoading())
 	{

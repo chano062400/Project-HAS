@@ -55,5 +55,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
 	float DebuffDamage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float KnockbackMagnitude;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "DamageParams")
+	float KnockbackChance;
 
 };

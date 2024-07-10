@@ -66,6 +66,8 @@ FHASDamageEffectParams UHASGameplayDamageAbility::MakeDamageEffectParams(AActor*
 	Params.DebuffDuration = DebuffDuration;
 	Params.DebuffFrequency = DebuffFrequency;
 	Params.DebuffDamage = DebuffDamage;
+	Params.KnockbackChance = KnockbackChance;
+	Params.KnockbackMagnitude = KnockbackMagnitude;
 
 	return Params;
 }

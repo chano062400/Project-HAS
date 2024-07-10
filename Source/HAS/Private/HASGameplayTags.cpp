@@ -148,6 +148,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Fire.FireMeteor"),
 		FString("FireMeteor Ability Tag")
 	);
+			
+	GameplayTags.Ability_Lightning_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Lightning.LightningBlast"),
+		FString("LightningBlast Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -195,6 +200,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.FireMeteor"),
 		FString("FireMeteor Cooldown Tag")
 	);
+			
+	GameplayTags.Cooldown_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.LightningBlast"),
+		FString("LightningBlast Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -216,6 +226,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.FireMeteor"),
 		FString("FireMeteor Montage Tag")
+	);
+		
+	GameplayTags.Montage_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.LightningBlast"),
+		FString("LightningBlast Montage Tag")
 	);
 	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -309,6 +324,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_FireWall = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.FireWall"),
 		FString("FireWall GameplayCue Tag")
+	);
+		
+	GameplayTags.GameplayCue_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.LightningBlast "),
+		FString("LightningBlast GameplayCue Tag")
 	);
 	
 	GameplayTags.GameplayCue_MagicCircle_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(

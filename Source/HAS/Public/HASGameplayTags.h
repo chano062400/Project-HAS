@@ -57,6 +57,7 @@ public:
 	FGameplayTag Ability_Fire_FireBall;
 	FGameplayTag Ability_Fire_FireWall;
 	FGameplayTag Ability_Fire_FireMeteor;
+	FGameplayTag Ability_Lightning_LightningBlast;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
@@ -69,6 +70,7 @@ public:
 	FGameplayTag Cooldown_FireBall;
 	FGameplayTag Cooldown_FireWall;
 	FGameplayTag Cooldown_FireMeteor;
+	FGameplayTag Cooldown_LightningBlast;
 	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */
@@ -76,6 +78,7 @@ public:
 	FGameplayTag Montage_FireBall;
 	FGameplayTag Montage_FireWall;
 	FGameplayTag Montage_FireMeteor;
+	FGameplayTag Montage_LightningBlast;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
 	FGameplayTag Montage_RangedAttack;
@@ -106,6 +109,7 @@ public:
 	
 	FGameplayTag GameplayCue_HitReact;
 	FGameplayTag GameplayCue_FireWall;
+	FGameplayTag GameplayCue_LightningBlast;
 	FGameplayTag GameplayCue_MagicCircle_FireMeteor;
 	FGameplayTag GameplayCue_Impact_FireBall;;
 	FGameplayTag GameplayCue_Impact_FireMeteor;

@@ -135,6 +135,23 @@ void UHASAbilitySystemBlueprintLibrary::SetDebuffDamage(UPARAM(ref)FGameplayEffe
 	}
 }
 
+void UHASAbilitySystemBlueprintLibrary::SetKnockback(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockback)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		HASEffectContext->SetKnockback(InKnockback);
+	}
+}
+
+FVector UHASAbilitySystemBlueprintLibrary::GetKnockback(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return HASEffectContext->GetKnockback();
+	}
+	return FVector::ZeroVector;
+}
+
 void UHASAbilitySystemBlueprintLibrary::GetActorsWithinRadius(UObject* WorldContextObject, TArray<AActor*>& OutOverlapingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin)
 {
 	FCollisionQueryParams CollisionParams;
@@ -218,6 +235,8 @@ FGameplayEffectContextHandle UHASAbilitySystemBlueprintLibrary::ApplyDamageEffec
 	EffectContextHandle.AddSourceObject(Params.WorldContextObejct);
 
 	FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
+
+	SetKnockback(EffectContextHandle, Params.Knockback);
 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageType, Params.BaseDamage);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, FHASGameplayTags::Get().Debuff_Chance, Params.DebuffChance);

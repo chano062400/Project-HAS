@@ -148,9 +148,9 @@ void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data
 
 		OutProps.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
 
-		if (OutProps.TargetController)
+		if (OutProps.TargetAvatarActor)
 		{
-			OutProps.TargetCharacter = Cast<ACharacter>(OutProps.TargetController->GetPawn());
+			OutProps.TargetCharacter = Cast<ACharacter>(OutProps.TargetAvatarActor);
 		}
 
 		OutProps.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OutProps.TargetAvatarActor);
@@ -187,10 +187,16 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 
-			bool bIsApplyDebuff = UHASAbilitySystemBlueprintLibrary::IsApplyDebuff(Props.EffectContextHandle);
+			const bool bIsApplyDebuff = UHASAbilitySystemBlueprintLibrary::IsApplyDebuff(Props.EffectContextHandle);
 			if (bIsApplyDebuff)
 			{
 				HandleDebuff(Props);
+			}
+
+			const FVector& Knockback = UHASAbilitySystemBlueprintLibrary::GetKnockback(Props.EffectContextHandle);
+			if (!Knockback.IsNearlyZero())
+			{
+				Props.TargetCharacter->LaunchCharacter(Knockback, true, true);	
 			}
 		}
 	}
