@@ -181,7 +181,7 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 		{
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FHASGameplayTags::Get().Ability_HitReact);
-			
+
 			OnAttackedDelegate.Broadcast(Props.SourceAvatarActor);
 
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
@@ -193,11 +193,12 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 				HandleDebuff(Props);
 			}
 
-			const FVector& Knockback = UHASAbilitySystemBlueprintLibrary::GetKnockback(Props.EffectContextHandle);
-			if (!Knockback.IsNearlyZero())
+			/*float KnockbackForce = UHASAbilitySystemBlueprintLibrary::GetKnockbackForce(Props.EffectContextHandle);
+			if (KnockbackForce > 0.f)
 			{
-				Props.TargetCharacter->LaunchCharacter(Knockback, true, true);	
-			}
+				
+				Props.SourceCharacter->SetActorLocation()
+			}*/
 		}
 	}
 }

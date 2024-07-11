@@ -21,4 +21,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float BlastRadius;
+
 };

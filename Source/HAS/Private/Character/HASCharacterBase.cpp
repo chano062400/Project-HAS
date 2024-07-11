@@ -122,7 +122,7 @@ FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGamepla
 
 void AHASCharacterBase::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 {
-	NewCount ? GetCharacterMovement()->MaxWalkSpeed = 0.f : GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	//NewCount ? GetCharacterMovement()->MaxWalkSpeed = 0.f : GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
 void AHASCharacterBase::DebuffTagEvent(const FGameplayTag Tag, int32 NewCount)
