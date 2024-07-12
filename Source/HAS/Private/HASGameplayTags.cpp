@@ -158,6 +158,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Lightning.LightningShield"),
 		FString("LightningShield Ability Tag")
 	);
+			
+	GameplayTags.Ability_Ice_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Ice.FrostNova"),
+		FString("FrostNova Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -215,6 +220,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.LightningShield"),
 		FString("LightningShield Cooldown Tag")
 	);
+			
+	GameplayTags.Cooldown_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.FrostNova"),
+		FString("FrostNova Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -245,6 +255,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		
 	GameplayTags.Montage_LightningShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.LightningShield"),
+		FString("LightningShield Montage Tag")
+	);
+		
+	GameplayTags.Montage_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.FrostNova"),
 		FString("LightningShield Montage Tag")
 	);
 	
@@ -332,6 +347,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Debuff_ElectricShock = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Debuff.ElectricShock"),
 		FString("Lightning Debuff Tag")
+	);
+		
+	GameplayTags.Debuff_Freeze = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Freeze"),
+		FString("Freeze Debuff Tag")
 	);
 
 	/* GameplayCue Tag */
