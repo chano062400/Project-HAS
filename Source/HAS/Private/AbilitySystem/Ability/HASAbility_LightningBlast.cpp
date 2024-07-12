@@ -8,7 +8,9 @@
 
 FString UHASAbility_LightningBlast::GetAbilityDescription(int32 InAbilityLevel)
 {
-	return FString();
+	return FString::Printf(TEXT(
+	"<Title> Lightning Blast </> \n\n <Level> Rank : %d / 5 </> \n\n Releases a huge bolt of lightning, dealing <Damage>%.2f</> damage to nearby enemies and pushing them away"),
+	InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel));
 }
 
 void UHASAbility_LightningBlast::LightningBlast()

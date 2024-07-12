@@ -118,4 +118,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> BurnDebuffComponent;
 	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> ElectricShockDebuffComponent;
+	
 };

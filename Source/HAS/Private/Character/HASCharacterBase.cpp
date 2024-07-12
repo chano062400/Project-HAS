@@ -17,7 +17,12 @@ AHASCharacterBase::AHASCharacterBase()
 	BurnDebuffComponent->SetupAttachment(GetMesh());
 	BurnDebuffComponent->bAutoActivate = false;
 
+	ElectricShockDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Electric Shock Debuff Component"));
+	ElectricShockDebuffComponent->SetupAttachment(GetMesh());
+	ElectricShockDebuffComponent->bAutoActivate = false;
+
 	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_Burn, BurnDebuffComponent});
+	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_ElectricShock, ElectricShockDebuffComponent});
 }
 
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const

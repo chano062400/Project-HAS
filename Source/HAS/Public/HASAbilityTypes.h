@@ -50,8 +50,6 @@ struct FHASDamageEffectParams
 	UPROPERTY(BlueprintReadWrite)
 	float KnockbackChance = 0.f;
 
-	UPROPERTY(BlueprintReadWrite)
-	FVector Knockback = FVector::ZeroVector;
 };
 
 USTRUCT(BlueprintType)

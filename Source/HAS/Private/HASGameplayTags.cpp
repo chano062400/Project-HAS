@@ -153,6 +153,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Lightning.LightningBlast"),
 		FString("LightningBlast Ability Tag")
 	);
+			
+	GameplayTags.Ability_Lightning_LightningShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Lightning.LightningShield"),
+		FString("LightningShield Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -205,6 +210,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.LightningBlast"),
 		FString("LightningBlast Cooldown Tag")
 	);
+			
+	GameplayTags.Cooldown_LightningShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.LightningShield"),
+		FString("LightningShield Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -231,6 +241,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.LightningBlast"),
 		FString("LightningBlast Montage Tag")
+	);
+		
+	GameplayTags.Montage_LightningShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.LightningShield"),
+		FString("LightningShield Montage Tag")
 	);
 	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -313,6 +328,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Debuff.Burn"),
 		FString("Fire Debuff Tag")
 	);
+		
+	GameplayTags.Debuff_ElectricShock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.ElectricShock"),
+		FString("Lightning Debuff Tag")
+	);
 
 	/* GameplayCue Tag */
 
@@ -357,5 +377,6 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Physical);
 
 	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn });
+	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Lightning, GameplayTags.Debuff_ElectricShock });
 
 }
