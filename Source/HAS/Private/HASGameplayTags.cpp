@@ -398,5 +398,6 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn });
 	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Lightning, GameplayTags.Debuff_ElectricShock });
+	GameplayTags.DamageToDebuff.Add({ GameplayTags.Damage_Ice, GameplayTags.Debuff_Freeze });
 
 }

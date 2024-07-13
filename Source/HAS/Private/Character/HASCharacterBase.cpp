@@ -23,6 +23,7 @@ AHASCharacterBase::AHASCharacterBase()
 
 	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_Burn, BurnDebuffComponent});
 	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_ElectricShock, ElectricShockDebuffComponent});
+	DebuffTagToNiagara.Add({ FHASGameplayTags::Get().Debuff_Freeze, nullptr });
 }
 
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
@@ -130,20 +131,40 @@ void AHASCharacterBase::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)
 	//NewCount ? GetCharacterMovement()->MaxWalkSpeed = 0.f : GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
+void AHASCharacterBase::MulticastFreezeDebuffHandle_Implementation(bool bIsFrozen)
+{
+	if (bIsFrozen)
+	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		PlayFreezeEffect();
+	}
+	else
+	{
+		ReturnToDefaultMaterial();
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_NavWalking);
+	}
+}
+
 void AHASCharacterBase::DebuffTagEvent(const FGameplayTag Tag, int32 NewCount)
 {
 	for (TTuple<FGameplayTag, UNiagaraComponent*> pair : DebuffTagToNiagara)
 	{
-		if (pair.Key.MatchesTagExact(Tag))
+		if (Tag.MatchesTagExact(FHASGameplayTags::Get().Debuff_Freeze))
 		{
 			if (NewCount > 0)
 			{
-				pair.Value->Activate();
+				MulticastFreezeDebuffHandle(true);
 			}
-			// Á×À¸¸é Debuff
 			else
 			{
-				pair.Value->Deactivate();
+				MulticastFreezeDebuffHandle(false);
+			}
+		}
+		else
+		{
+			if (Tag.MatchesTagExact(pair.Key))
+			{
+				NewCount > 0 ? pair.Value->Activate() : pair.Value->Deactivate();
 			}
 		}
 	}

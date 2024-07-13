@@ -76,3 +76,8 @@ void AHASEffectActor::Destroyed()
 	}
 }
 
+void AHASEffectActor::SetDamageEffectTargetASC(UAbilitySystemComponent* AbilitySystemComponent)
+{
+	DamageEffectParams.TargetASC = AbilitySystemComponent;
+}
+

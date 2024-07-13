@@ -28,6 +28,9 @@ protected:
 
 	virtual void Destroyed() override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetDamageEffectTargetASC(UAbilitySystemComponent* AbilitySystemComponent);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	bool bIsPotion = true;
 

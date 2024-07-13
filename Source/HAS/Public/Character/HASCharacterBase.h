@@ -65,6 +65,15 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayDieEffect(int32 MaterialIndex);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastFreezeDebuffHandle(bool bIsFrozen);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayFreezeEffect();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ReturnToDefaultMaterial();
 
 	UPROPERTY(EditAnywhere)
 	float BaseWalkSpeed = 250.f;
@@ -96,6 +105,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 DieEffectMaterialIndex;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> FreezeEffectMI;
 
 	UPROPERTY(EditAnywhere, Category = "Class")
 	ECharacterClass CharacterClass = ECharacterClass::ECC_None;
