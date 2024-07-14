@@ -70,6 +70,7 @@ public:
 	
 	/* Cooldown Tag */
 
+	FGameplayTag Cooldown_Dash;
 	FGameplayTag Cooldown_FireBall;
 	FGameplayTag Cooldown_FireWall;
 	FGameplayTag Cooldown_FireMeteor;

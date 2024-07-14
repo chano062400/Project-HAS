@@ -201,6 +201,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	
 	/* Cooldown Tag */
 
+	GameplayTags.Cooldown_Dash= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Dash"),
+		FString("Dash Cooldown Tag")
+	);
+	
 	GameplayTags.Cooldown_FireBall= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.FireBall"),
 		FString("FireBall Cooldown Tag")
