@@ -60,6 +60,7 @@ public:
 	FGameplayTag Ability_Lightning_LightningBlast;
 	FGameplayTag Ability_Lightning_LightningShield;
 	FGameplayTag Ability_Ice_FrostNova;
+	FGameplayTag Ability_Ice_IceTornado;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
@@ -75,6 +76,7 @@ public:
 	FGameplayTag Cooldown_LightningBlast;
 	FGameplayTag Cooldown_LightningShield;
 	FGameplayTag Cooldown_FrostNova;
+	FGameplayTag Cooldown_IceTornado;
 	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */
@@ -85,6 +87,7 @@ public:
 	FGameplayTag Montage_LightningBlast;
 	FGameplayTag Montage_LightningShield;
 	FGameplayTag Montage_FrostNova;
+	FGameplayTag Montage_IceTornado;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
 	FGameplayTag Montage_RangedAttack;

@@ -163,6 +163,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Ice.FrostNova"),
 		FString("FrostNova Ability Tag")
 	);
+			
+	GameplayTags.Ability_Ice_IceTornado = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Ice.IceTornado"),
+		FString("IceTornado Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -225,6 +230,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.FrostNova"),
 		FString("FrostNova Cooldown Tag")
 	);
+				
+	GameplayTags.Cooldown_IceTornado = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.IceTornado"),
+		FString("IceTornado Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -260,7 +270,12 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		
 	GameplayTags.Montage_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.FrostNova"),
-		FString("LightningShield Montage Tag")
+		FString("FrostNova Montage Tag")
+	);
+		
+	GameplayTags.Montage_IceTornado = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.IceTornado"),
+		FString("IceTornado Montage Tag")
 	);
 	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
