@@ -78,3 +78,4 @@ void AHASPlayerState::SetSpellPoint(int32 NewSpellPoint)
 	SpellPoint = NewSpellPoint;
 	PlayerSpellPointChangedDelegate.Broadcast(SpellPoint);
 }
+

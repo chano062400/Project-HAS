@@ -26,6 +26,8 @@ UHASAttributeSet::UHASAttributeSet()
 	TagToAttribute.Add( Tag.Attribute_Secondary_CriticalChance, GetCriticalChanceAttribute() );
 	TagToAttribute.Add( Tag.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute() );
 	TagToAttribute.Add( Tag.Attribute_Secondary_MaxMana, GetMaxManaAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Secondary_HealthRegeneration, GetHealthRegenerationAttribute() );
+	TagToAttribute.Add( Tag.Attribute_Secondary_ManaRegeneration, GetManaRegenerationAttribute() );
 
 	/* Vital Attributes */
 	TagToAttribute.Add( Tag.Attribute_Vital_Health, GetHealthAttribute() );
@@ -323,6 +325,16 @@ void UHASAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 void UHASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, MaxMana, OldMaxMana);
+}
+
+void UHASAttributeSet::OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, HealthRegeneration, OldHealthRegeneration);
+}
+
+void UHASAttributeSet::OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UHASAttributeSet, ManaRegeneration, OldManaRegeneration);
 }
 
 void UHASAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor)

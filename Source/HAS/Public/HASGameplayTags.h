@@ -28,6 +28,8 @@ public:
 	FGameplayTag Attribute_Secondary_CriticalResistance;
 	FGameplayTag Attribute_Secondary_MaxHealth;
 	FGameplayTag Attribute_Secondary_MaxMana;
+	FGameplayTag Attribute_Secondary_HealthRegeneration;
+	FGameplayTag Attribute_Secondary_ManaRegeneration;
 
 	/* Input Tag */
 

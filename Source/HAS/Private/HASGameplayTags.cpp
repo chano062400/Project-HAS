@@ -55,6 +55,16 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Attribute.Secondary.MaxMana"),
 		FString("Max Mana Attribute")
 	);
+	
+	GameplayTags.Attribute_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Secondary.HealthRegeneration"),
+		FString("Health Regeneration Attribute")
+	);
+	
+	GameplayTags.Attribute_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Secondary.ManaRegeneration"),
+		FString("Mana Regeneration Attribute")
+	);
 
 	/* Input Tag */
 

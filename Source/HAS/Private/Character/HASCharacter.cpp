@@ -69,6 +69,8 @@ void AHASCharacter::InitAbilityActorInfo()
 	// BroadcastInitialValue하기 전에 StartAttributeEffect 적용.
 	InitializeDefaultAttributes();
 
+	ApplyRegenerationEffect(RegenerationEffectClass);
+
 	if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
 	{
 		if (AHASHUD* HASHUD = Cast<AHASHUD>(HASPlayerController->GetHUD()))
@@ -77,6 +79,18 @@ void AHASCharacter::InitAbilityActorInfo()
 		}
 	}
 
+}
+
+void AHASCharacter::ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass)
+{
+	if (!HasAuthority()) return;
+
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, EffectContextHandle);
+
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 }
 
 void AHASCharacter::MulticastPlayLevelUpEffect_Implementation()

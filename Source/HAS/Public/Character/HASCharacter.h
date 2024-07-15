@@ -28,6 +28,8 @@ public:
 	
 	virtual void InitAbilityActorInfo() override;
 
+	void ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayLevelUpEffect();
 
@@ -76,4 +78,6 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpEffectComponent;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> RegenerationEffectClass;
 };

@@ -82,7 +82,6 @@ public:
 
 	FPlayerStatChangedSignature PlayerSpellPointChangedDelegate;
 
-
 private:
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
