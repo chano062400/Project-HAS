@@ -71,8 +71,3 @@ FHASDamageEffectParams UHASGameplayDamageAbility::MakeDamageEffectParams(AActor*
 
 	return Params;
 }
-
-FString UHASGameplayDamageAbility::GetAbilityDescription(int32 InAbilityLevel)
-{
-	return FString();
-}

@@ -6,6 +6,7 @@
 #include "AbilityInfo.generated.h"
 
 class UHASGameplayDamageAbility;
+class UHASGameplayAbility;
 
 USTRUCT(BlueprintType)
 struct FHASAbilityInfo
@@ -43,7 +44,7 @@ struct FHASAbilityInfo
 	int32 PlayerLevel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<UHASGameplayDamageAbility> Ability;
+	TSubclassOf<UHASGameplayAbility> Ability;
 };
 
 /**

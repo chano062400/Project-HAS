@@ -168,6 +168,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Lightning.LightningShield"),
 		FString("LightningShield Ability Tag")
 	);
+				
+	GameplayTags.Ability_Lightning_Teleport = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Lightning.Teleport"),
+		FString("Teleport Ability Tag")
+	);
 			
 	GameplayTags.Ability_Ice_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.Ice.FrostNova"),
@@ -241,6 +246,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("LightningShield Cooldown Tag")
 	);
 			
+	GameplayTags.Cooldown_Teleport = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Teleport"),
+		FString("Teleport Cooldown Tag")
+	);
+			
 	GameplayTags.Cooldown_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.FrostNova"),
 		FString("FrostNova Cooldown Tag")
@@ -281,6 +291,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_LightningShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.LightningShield"),
 		FString("LightningShield Montage Tag")
+	);
+		
+	GameplayTags.Montage_Teleport = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Teleport"),
+		FString("Teleport Montage Tag")
 	);
 		
 	GameplayTags.Montage_FrostNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -399,6 +414,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.LightningBlast "),
 		FString("LightningBlast GameplayCue Tag")
+	);
+		
+	GameplayTags.GameplayCue_Teleport = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Teleport "),
+		FString("Teleport GameplayCue Tag")
 	);
 	
 	GameplayTags.GameplayCue_MagicCircle_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(

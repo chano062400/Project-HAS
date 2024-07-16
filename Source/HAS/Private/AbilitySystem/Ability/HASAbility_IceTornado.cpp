@@ -7,3 +7,4 @@ FString UHASAbility_IceTornado::GetAbilityDescription(int32 InAbilityLevel)
 	), InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel), DebuffChance
 		);
 }
+

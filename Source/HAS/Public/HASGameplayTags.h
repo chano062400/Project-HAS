@@ -61,6 +61,7 @@ public:
 	FGameplayTag Ability_Fire_FireMeteor;
 	FGameplayTag Ability_Lightning_LightningBlast;
 	FGameplayTag Ability_Lightning_LightningShield;
+	FGameplayTag Ability_Lightning_Teleport;
 	FGameplayTag Ability_Ice_FrostNova;
 	FGameplayTag Ability_Ice_IceTornado;
 	FGameplayTag Ability_HitReact;
@@ -78,6 +79,7 @@ public:
 	FGameplayTag Cooldown_FireMeteor;
 	FGameplayTag Cooldown_LightningBlast;
 	FGameplayTag Cooldown_LightningShield;
+	FGameplayTag Cooldown_Teleport;
 	FGameplayTag Cooldown_FrostNova;
 	FGameplayTag Cooldown_IceTornado;
 	FGameplayTag Cooldown_None;
@@ -89,6 +91,7 @@ public:
 	FGameplayTag Montage_FireMeteor;
 	FGameplayTag Montage_LightningBlast;
 	FGameplayTag Montage_LightningShield;
+	FGameplayTag Montage_Teleport;
 	FGameplayTag Montage_FrostNova;
 	FGameplayTag Montage_IceTornado;
 	FGameplayTag Montage_HitReact;
@@ -124,10 +127,12 @@ public:
 	FGameplayTag GameplayCue_HitReact;
 	FGameplayTag GameplayCue_FireWall;
 	FGameplayTag GameplayCue_LightningBlast;
+	FGameplayTag GameplayCue_Teleport;
 	FGameplayTag GameplayCue_MagicCircle_FireMeteor;
 	FGameplayTag GameplayCue_Impact_FireBall;;
 	FGameplayTag GameplayCue_Impact_FireMeteor;
 	FGameplayTag GameplayCue_Impact_ElectricArrow;
+	
 
 	TArray<FGameplayTag> DamageTypes;
 	TMap<FGameplayTag, FGameplayTag> DamageToDebuff;

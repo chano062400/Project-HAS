@@ -29,9 +29,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	FHASDamageEffectParams MakeDamageEffectParams(AActor* TargetActor);
 
-	UFUNCTION(BlueprintCallable)
-	virtual FString GetAbilityDescription(int32 InAbilityLevel);
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASProjectile> ProjectileClass;
 

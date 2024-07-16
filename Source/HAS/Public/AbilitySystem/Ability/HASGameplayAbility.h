@@ -15,6 +15,9 @@ class HAS_API UHASGameplayAbility : public UGameplayAbility
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	virtual FString GetAbilityDescription(int32 InAbilityLevel);
+
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
 };
