@@ -5,6 +5,7 @@
 #include "HASPlayerInterface.generated.h"
 
 class UAttributeSet;
+class AHASMagicCircle;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -31,9 +32,12 @@ public:
 	virtual int32 GetSpellPoint() = 0;
 	virtual void SetSpellPoint(int32 NewSpellPoint) = 0;
 	virtual UAttributeSet* GetAttributeSet() = 0;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetCastIceBeamLoop(bool bInCastIceBeamLoop);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
+	AHASMagicCircle* ShowMagicCircle(UMaterialInterface* DecalMaterial);
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void HideMagicCircle();

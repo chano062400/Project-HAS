@@ -35,7 +35,7 @@ public:
 	void ClientShowFloatingDamageText(float Damage, AActor* TargetActor, bool bIsCritical);
 
 	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
+	AHASMagicCircle* ShowMagicCircle(UMaterialInterface* DecalMaterial);
 
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();

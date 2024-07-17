@@ -183,6 +183,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.Ice.IceTornado"),
 		FString("IceTornado Ability Tag")
 	);
+			
+	GameplayTags.Ability_Ice_IceBeam = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Ice.IceBeam"),
+		FString("IceBeam Ability Tag")
+	);
 	
 	GameplayTags.Ability_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.HitReact"),
@@ -260,6 +265,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.IceTornado"),
 		FString("IceTornado Cooldown Tag")
 	);
+					
+	GameplayTags.Cooldown_IceBeam = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.IceBeam"),
+		FString("IceBeam Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -306,6 +316,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_IceTornado = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.IceTornado"),
 		FString("IceTornado Montage Tag")
+	);
+		
+	GameplayTags.Montage_IceBeam = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.IceBeam"),
+		FString("IceBeam Montage Tag")
 	);
 	
 	GameplayTags.Montage_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -414,6 +429,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_LightningBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.LightningBlast "),
 		FString("LightningBlast GameplayCue Tag")
+	);
+			
+	GameplayTags.GameplayCue_IceBeam = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.IceBeam "),
+		FString("IceBeam GameplayCue Tag")
 	);
 		
 	GameplayTags.GameplayCue_Teleport = UGameplayTagsManager::Get().AddNativeGameplayTag(

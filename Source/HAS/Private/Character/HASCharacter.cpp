@@ -187,12 +187,12 @@ UAttributeSet* AHASCharacter::GetAttributeSet()
 	return PS->GetAttributeSet();
 }
 
-void AHASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+AHASMagicCircle* AHASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
 {
 	AHASPlayerController* PC = Cast<AHASPlayerController>(GetController());
 	check(PC);
 
-	PC->ShowMagicCircle(DecalMaterial);
+	return PC->ShowMagicCircle(DecalMaterial);
 }
 
 void AHASCharacter::HideMagicCircle_Implementation()
@@ -201,4 +201,9 @@ void AHASCharacter::HideMagicCircle_Implementation()
 	check(PC);
 
 	PC->HideMagicCircle();
+}
+
+void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
+{
+	bCastIceBeamLoop = bInCastIcemBeamLoop;
 }

@@ -64,6 +64,7 @@ public:
 	FGameplayTag Ability_Lightning_Teleport;
 	FGameplayTag Ability_Ice_FrostNova;
 	FGameplayTag Ability_Ice_IceTornado;
+	FGameplayTag Ability_Ice_IceBeam;
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
@@ -82,6 +83,7 @@ public:
 	FGameplayTag Cooldown_Teleport;
 	FGameplayTag Cooldown_FrostNova;
 	FGameplayTag Cooldown_IceTornado;
+	FGameplayTag Cooldown_IceBeam;
 	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */
@@ -94,6 +96,7 @@ public:
 	FGameplayTag Montage_Teleport;
 	FGameplayTag Montage_FrostNova;
 	FGameplayTag Montage_IceTornado;
+	FGameplayTag Montage_IceBeam;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
 	FGameplayTag Montage_RangedAttack;
@@ -128,6 +131,7 @@ public:
 	FGameplayTag GameplayCue_FireWall;
 	FGameplayTag GameplayCue_LightningBlast;
 	FGameplayTag GameplayCue_Teleport;
+	FGameplayTag GameplayCue_IceBeam;
 	FGameplayTag GameplayCue_MagicCircle_FireMeteor;
 	FGameplayTag GameplayCue_Impact_FireBall;;
 	FGameplayTag GameplayCue_Impact_FireMeteor;

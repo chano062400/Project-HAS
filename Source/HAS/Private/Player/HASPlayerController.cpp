@@ -23,7 +23,7 @@ AHASPlayerController::AHASPlayerController()
 
 }
 
-void AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
+AHASMagicCircle* AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (IsValid(MagicCircleDecalComponent))
 	{
@@ -32,7 +32,9 @@ void AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 		{
 			MagicCircle->MagicCircleComponent->SetDecalMaterial(DecalMaterial);
 		}
+		return MagicCircle;
 	}
+	return nullptr;
 }
 
 void AHASPlayerController::HideMagicCircle()

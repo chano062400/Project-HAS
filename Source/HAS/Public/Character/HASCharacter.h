@@ -9,6 +9,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
 class UNiagaraComponent;
+class AHASMagicCircle;
 
 /**
  * 
@@ -55,21 +56,24 @@ public:
 
 	virtual UAttributeSet* GetAttributeSet() override;
 
-	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
+	virtual AHASMagicCircle* ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
 
 	virtual void HideMagicCircle_Implementation() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	virtual void SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsDodging = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCastIceBeamLoop = false;
 
 protected:
 
-private:
-
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> Camera;
 	
 	UPROPERTY(VisibleAnywhere)
@@ -80,4 +84,5 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> RegenerationEffectClass;
+
 };
