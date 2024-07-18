@@ -10,6 +10,7 @@
 #include "HASGameplayTags.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystem/HASAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -78,6 +79,14 @@ void AHASCharacter::InitAbilityActorInfo()
 			HASHUD->InitOverlay(HASPlayerController, HASPlayerState, AbilitySystemComponent, AttributeSetComp);
 		}
 	}
+
+}
+
+void AHASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AHASCharacter, bCastIceBeamLoop);
 
 }
 

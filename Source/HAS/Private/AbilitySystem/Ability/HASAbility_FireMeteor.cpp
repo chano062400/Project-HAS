@@ -37,8 +37,24 @@ void UHASAbility_FireMeteor::SpawnMeteor(const FVector& TargetLocation)
 
 FString UHASAbility_FireMeteor::GetAbilityDescription(int32 InAbilityLevel)
 {
+	float ManaCost = GetManaCost(InAbilityLevel);
+	float Cooldown = GetCooldown(InAbilityLevel);
+
 	return FString::Printf(TEXT(
-		"<Title> Fire Meteor </> \n\n <Level> Rank : %d / 5 </> \n\n Meteors fall from the sky, dealing <Damage>%.2f</> Fire damage to enemies within the range based on where the meteor fell and causing a debuff with a <Debuff>%.2f</> chance.</>"),
-		InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel), DebuffChance
+		"<Title> Fire Meteor </> \n\n"
+		
+		"<Level> Rank : %d / 5 </> \n\n"
+		
+		"Meteors fall from the sky, dealing <Damage>%.2f</> Fire damage to enemies within the range based on where the meteor fell and causing a debuff with a <Debuff>%.2f</> chance.</>"
+	
+		"<Cost> Cost : %.2f</> \n"
+
+		"<Cooldown> Cooldown : %.2f</>"
+	),
+		InAbilityLevel,
+		Damage.GetValueAtLevel(InAbilityLevel),
+		DebuffChance,
+		ManaCost,
+		Cooldown
 	);
 }

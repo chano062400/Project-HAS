@@ -29,6 +29,8 @@ public:
 	
 	virtual void InitAbilityActorInfo() override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	void ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass);
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -65,7 +67,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsDodging = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
 	bool bCastIceBeamLoop = false;
 
 protected:

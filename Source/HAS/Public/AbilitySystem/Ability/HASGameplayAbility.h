@@ -18,6 +18,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual FString GetAbilityDescription(int32 InAbilityLevel);
 
+	virtual float GetManaCost(float InAbilityLevel);
+
+	virtual float GetCooldown(float InAbilityLevel);
+
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
 };

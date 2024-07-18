@@ -8,9 +8,25 @@
 
 FString UHASAbility_LightningBlast::GetAbilityDescription(int32 InAbilityLevel)
 {
+	float ManaCost = GetManaCost(InAbilityLevel);
+	float Cooldown = GetCooldown(InAbilityLevel);
+
 	return FString::Printf(TEXT(
-	"<Title> Lightning Blast </> \n\n <Level> Rank : %d / 5 </> \n\n Releases a huge bolt of lightning, dealing <Damage>%.2f</> damage to nearby enemies and pushing them away"),
-	InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel));
+	"<Title> Lightning Blast </> \n\n"
+		
+	"<Level> Rank : %d / 5 </> \n\n"
+		
+	"Releases a huge bolt of lightning, dealing <Damage>%.2f</> damage to nearby enemies and pushing them away"
+	
+	"<Cost> Cost : %.2f</> \n"
+
+	"<Cooldown> Cooldown : %.2f</>"
+	),
+	InAbilityLevel, 
+	Damage.GetValueAtLevel(InAbilityLevel),
+	ManaCost,
+	Cooldown
+	);
 }
 
 void UHASAbility_LightningBlast::LightningBlast()

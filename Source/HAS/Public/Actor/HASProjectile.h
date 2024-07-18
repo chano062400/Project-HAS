@@ -71,9 +71,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag ImpactGameplayCueTag;
 
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag TrailGameplayCueTag;
-
 	bool bHit = false;
 };
 

@@ -17,7 +17,7 @@ public:
 	virtual FString GetAbilityDescription(int32 InAbilityLevel) override;
 
 	UFUNCTION(BlueprintCallable)
-	void IceBeamTrace(float AttackRadius, float AttackRange);
+	void BeamTrace(float BeamRadius, float BeamLength);
 
 	UPROPERTY(EditDefaultsOnly)
 	bool bDebugTrace = false;

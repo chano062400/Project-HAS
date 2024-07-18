@@ -77,7 +77,7 @@ void AHASProjectile::Destroyed()
 		LoopingSoundComponent->Stop();
 		LoopingSoundComponent->DestroyComponent();
 	}
-	// 클라이언트에서 Destroy가 먼저 발생한 경우.
+	// 서버에서 Destroy가 먼저 발생한 경우.
 	if (!bHit && !HasAuthority()) OnHit();
 
 	Super::Destroyed();

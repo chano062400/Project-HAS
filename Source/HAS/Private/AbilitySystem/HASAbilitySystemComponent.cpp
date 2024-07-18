@@ -151,6 +151,8 @@ void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
 	FGameplayTagContainer TagContainer;
 	// Debuff Tag를 모두 추가.
 	TagContainer.AddTag(FHASGameplayTags::Get().Debuff_Burn);
+	TagContainer.AddTag(FHASGameplayTags::Get().Debuff_ElectricShock);
+	TagContainer.AddTag(FHASGameplayTags::Get().Debuff_Freeze);
 	RemoveActiveEffectsWithGrantedTags(TagContainer);
 }
 

@@ -91,7 +91,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSetComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")

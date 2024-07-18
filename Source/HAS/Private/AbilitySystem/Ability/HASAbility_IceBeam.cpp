@@ -3,49 +3,91 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interfaces/HASCombatInterface.h"
+#include "HASGameplayTags.h"
+#include "Kismet/KismetMathLibrary.h"
 
 FString UHASAbility_IceBeam::GetAbilityDescription(int32 InAbilityLevel)
 {
+	float ManaCost = GetManaCost(InAbilityLevel);
+	float Cooldown = GetCooldown(InAbilityLevel);
+
 	return FString::Printf(TEXT(
-		"<Title> Ice Beam </> \n\n <Level> Rank : %d / 5 </> \n\n While pressed, releases an IceBeam in the direction of the player's mouse, dealing <Damage>%.2f</> damage and applying a debuff with a <Debuff>%.2f</> chance"),
-		InAbilityLevel, Damage.GetValueAtLevel(InAbilityLevel), DebuffChance
+		"<Title> Ice Beam </> \n\n"
+		
+		"<Level> Rank : %d / 5 </> \n\n"
+		
+		"While pressed, releases an IceBeam in the direction of the player's mouse, dealing <Damage>%.2f</> damage and applying a debuff with a <Debuff>%.2f</> chance"
+	
+		"<Cost> Cost : %.2f</> \n"
+
+		"<Cooldown> Cooldown : %.2f</>"
+	),
+		InAbilityLevel,
+		Damage.GetValueAtLevel(InAbilityLevel),
+		DebuffChance,
+		ManaCost,
+		Cooldown
 	);
 }
 
-void UHASAbility_IceBeam::IceBeamTrace(float AttackRadius, float AttackRange)
+void UHASAbility_IceBeam::BeamTrace(float BeamRadius, float BeamLength)
 {
-	TArray<FHitResult> HitResults;
+	if (!HasAuthority(&CurrentActivationInfo)) return;
 
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.AddUnique(GetAvatarActorFromActorInfo());
+	TArray<FOverlapResult> OutOverlaps;
 
-	ETraceTypeQuery TypeQuery = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel2);
-
-	const bool bResult = UKismetSystemLibrary::CapsuleTraceMulti(
-		GetAvatarActorFromActorInfo(),
-		GetAvatarActorFromActorInfo()->GetActorLocation(),
-		GetAvatarActorFromActorInfo()->GetActorLocation() + GetAvatarActorFromActorInfo()->GetActorForwardVector() * AttackRange,
-		AttackRadius,
-		AttackRange * 0.5f + AttackRadius,
-		TypeQuery,
-		false,
-		ActorsToIgnore,
-		bDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
-		HitResults,
-		true
-	);
-
-	FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);
-
-	if (HitResults.Num() > 0)
+	FCollisionQueryParams Params(NAME_None, false, GetAvatarActorFromActorInfo());
+	
+	if (GetAvatarActorFromActorInfo()->Implements<UHASCombatInterface>())
 	{
-		for (FHitResult HitResult : HitResults)
+		const FVector StaffLoc = IHASCombatInterface::Execute_GetWeaponSocketLocation(GetAvatarActorFromActorInfo(), FHASGameplayTags::Get().WeaponSocket_Staff);
+		StaffLoc.Rotation() = UKismetMathLibrary::MakeRotFromZ(GetAvatarActorFromActorInfo()->GetActorForwardVector());
+
+		const bool bResult = GetWorld()->OverlapMultiByChannel(
+			OutOverlaps,
+			StaffLoc + GetAvatarActorFromActorInfo()->GetActorForwardVector() * BeamLength * 0.5f,
+			UKismetMathLibrary::MakeRotFromZ(GetAvatarActorFromActorInfo()->GetActorForwardVector()).Quaternion(),
+			ECollisionChannel::ECC_GameTraceChannel2,
+			FCollisionShape::MakeCapsule(BeamRadius, BeamLength * 0.5f + BeamRadius),
+			Params
+		);
+
+//#if ENABLE_DRAW_DEBUG
+//
+//		FVector TraceVec = GetAvatarActorFromActorInfo()->GetActorForwardVector() * BeamLength;
+//		FVector Center = StaffLoc + TraceVec * 0.5f;
+//		float HalfHeight = BeamLength * 0.5f + BeamRadius;
+//		FQuat CapsuleRot = UKismetMathLibrary::MakeRotFromZ(GetAvatarActorFromActorInfo()->GetActorForwardVector()).Quaternion();
+//		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+//		float DebugLifeTime = 3.0f;
+//
+//		DrawDebugCapsule
+//		(
+//			GetWorld(),
+//			Center,
+//			HalfHeight,
+//			BeamRadius,
+//			CapsuleRot,
+//			DrawColor,
+//			false,
+//			DebugLifeTime
+//		);
+//
+//#endif
+
+		FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);
+
+		if (OutOverlaps.Num() > 0)
 		{
-			if (HitResult.bBlockingHit)
+			for (FOverlapResult Result : OutOverlaps)
 			{
-				DamageEffectParams.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
+				if (UHASAbilitySystemBlueprintLibrary::IsFriend(GetAvatarActorFromActorInfo(), Result.GetActor())) continue;
+
+				DamageEffectParams.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Result.GetActor());
 
 				UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
+
 			}
 		}
 	}
