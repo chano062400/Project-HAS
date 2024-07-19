@@ -45,16 +45,16 @@ FString UHASAbility_FireMeteor::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level> Rank : %d / 5 </> \n\n"
 		
-		"Meteors fall from the sky, dealing <Damage>%.2f</> Fire damage to enemies within the range based on where the meteor fell and causing a debuff with a <Debuff>%.2f</> chance.</>"
+		"Meteors fall from the sky, dealing <Damage>%.2f</> Fire damage to enemies within the range based on where the meteor fell and causing a debuff with a <Debuff>%.2f</> chance.</>\n\n"
 	
-		"<Cost> Cost : %.2f</> \n"
+		" Cost : <Cost>%.2f</> \n"
 
-		"<Cooldown> Cooldown : %.2f</>"
+		" Cooldown : <Cooldown>%.2f</>"
 	),
 		InAbilityLevel,
 		Damage.GetValueAtLevel(InAbilityLevel),
 		DebuffChance,
-		ManaCost,
+		-ManaCost,
 		Cooldown
 	);
 }

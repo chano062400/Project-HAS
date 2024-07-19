@@ -10,15 +10,15 @@ FString UHASAbility_FrostNova::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level>Rank : %d / 5</> \n\n"
 		
-		"Sends a torrent of frost into the ground, permanently freezing nearby enemies."
+		"Sends a torrent of frost into the ground, definitively freezing nearby enemies.\n\n"
 	
-		"<Cost> Cost : %.2f</> \n"
+		" Cost : <Cost>%.2f</> \n"
 
-		"<Cooldown> Cooldown : %.2f</>"
+		" Cooldown : <Cooldown>%.2f</>"
 	
 	),
 		InAbilityLevel,
-		ManaCost,
+		-ManaCost,
 		Cooldown
 	);
 }

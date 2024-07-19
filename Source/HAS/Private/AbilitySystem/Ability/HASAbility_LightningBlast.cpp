@@ -16,15 +16,15 @@ FString UHASAbility_LightningBlast::GetAbilityDescription(int32 InAbilityLevel)
 		
 	"<Level> Rank : %d / 5 </> \n\n"
 		
-	"Releases a huge bolt of lightning, dealing <Damage>%.2f</> damage to nearby enemies and pushing them away"
+	"Releases a huge bolt of lightning, dealing <Damage>%.2f</> damage to nearby enemies and pushing them away \n\n" 
 	
-	"<Cost> Cost : %.2f</> \n"
+	" Cost : <Cost>%.2f</> \n"
 
-	"<Cooldown> Cooldown : %.2f</>"
+	" Cooldown : <Cooldown>%.2f</>"
 	),
 	InAbilityLevel, 
 	Damage.GetValueAtLevel(InAbilityLevel),
-	ManaCost,
+	-ManaCost,
 	Cooldown
 	);
 }

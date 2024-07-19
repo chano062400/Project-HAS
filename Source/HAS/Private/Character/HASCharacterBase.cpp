@@ -181,13 +181,7 @@ void AHASCharacterBase::Die()
 
 void AHASCharacterBase::MulticastHandleDie_Implementation()
 {
-	
-
-	FDetachmentTransformRules Rules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
-	Weapon->DetachFromComponent(Rules);
-	Weapon->SetSimulatePhysics(true);
-	Weapon->SetEnableGravity(true);
-	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	Weapon->DestroyComponent();
 
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);

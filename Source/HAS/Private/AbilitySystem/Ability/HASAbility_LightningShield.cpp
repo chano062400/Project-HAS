@@ -10,16 +10,16 @@ FString UHASAbility_LightningShield::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level> Rank : %d / 5</> \n\n"
 		
-		"Summons a strong magnetic field that surrounds the player, inflicts <Damage>%.2f</> damage to enemies that come into contact with the magnetic field, and applies a debuff with a <Debuff>%.2f</> chance."
+		"Summons a strong magnetic field that surrounds the player, inflicts <Damage>%.2f</> damage to enemies that come into contact with the magnetic field, and applies a debuff with a <Debuff>%.2f</> chance.\n\n"
 		
-		"<Cost> Cost : %.2f</> \n"
+		" Cost : <Cost>%.2f</> \n"
 
-		"<Cooldown> Cooldown : %.2f</>"
+		" Cooldown : <Cooldown>%.2f</>"
 	),
 		InAbilityLevel,
 		Damage.GetValueAtLevel(InAbilityLevel),
 		DebuffChance,
-		ManaCost,
+		-ManaCost,
 		Cooldown
 	);
 }

@@ -11,14 +11,14 @@ FString UHASAbility_Teleport::GetAbilityDescription(int32 InAbilityLevel)
         
         "<Level> Rank : %d / 5 </> \n\n"
         
-        "Becomes lightning and moves to the target location."
+        "Becomes lightning and moves to the target location.\n\n"
         
-        "<Cost> Cost : %.2f</> \n"
+        "Cost : <Cost>%.2f</> \n"
 
-        "<Cooldown> Cooldown : %.2f</>"
+        "Cooldown : <Cooldown>%.2f</>"
     ),
         InAbilityLevel,
-        ManaCost,
+        -ManaCost,
         Cooldown
     );
 }

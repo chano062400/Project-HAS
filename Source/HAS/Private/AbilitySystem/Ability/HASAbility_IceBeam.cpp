@@ -17,16 +17,16 @@ FString UHASAbility_IceBeam::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level> Rank : %d / 5 </> \n\n"
 		
-		"While pressed, releases an IceBeam in the direction of the player's mouse, dealing <Damage>%.2f</> damage and applying a debuff with a <Debuff>%.2f</> chance"
+		"While pressed, releases an IceBeam in the direction of the player's mouse, dealing <Damage>%.2f</> damage and applying a debuff with a <Debuff>%.2f</> chance\n\n"
 	
-		"<Cost> Cost : %.2f</> \n"
+		" Cost : <Cost>%.2f</> \n"
 
-		"<Cooldown> Cooldown : %.2f</>"
+		" Cooldown : <Cooldown>%.2f</>"
 	),
 		InAbilityLevel,
 		Damage.GetValueAtLevel(InAbilityLevel),
 		DebuffChance,
-		ManaCost,
+		-ManaCost,
 		Cooldown
 	);
 }

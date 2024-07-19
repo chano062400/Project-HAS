@@ -10,16 +10,16 @@ FString UHASAbility_IceTornado::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level> Rank : %d / 5 </> \n\n"
 		
-		"Summons a tornado that follows the player. Deals <Damage>%.2f</> damage to enemies it touches while moving, and applies a debuff with a <Debuff>%.2f</> chance."
+		"Summons a tornado that follows the player. Deals <Damage>%.2f</> damage to enemies it touches while moving, and applies a debuff with a <Debuff>%.2f</> chance.\n\n"
 
-		"<Cost> Cost : %.2f</> \n"
+		" Cost : <Cost>%.2f</> \n"
 
-		"<Cooldown> Cooldown : %.2f</>"
+		" Cooldown : <Cooldown>%.2f</>"
 	), 
 		InAbilityLevel,
 		Damage.GetValueAtLevel(InAbilityLevel),
 		DebuffChance,
-		ManaCost,
+		-ManaCost,
 		Cooldown
 	);
 }
