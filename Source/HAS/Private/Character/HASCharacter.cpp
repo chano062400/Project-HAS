@@ -59,7 +59,6 @@ void AHASCharacter::InitAbilityActorInfo()
 	checkf(HASPlayerState, TEXT("Can't find PlayerState"));
 
 	HASPlayerState->AbilitySystemComponent->InitAbilityActorInfo(HASPlayerState, this);
-	Cast<UHASAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	// 업 캐스팅
 	// HASCHaracter - UAbilitySystemComponent, HASPlayerState - UHASAbilitySystemComponent.

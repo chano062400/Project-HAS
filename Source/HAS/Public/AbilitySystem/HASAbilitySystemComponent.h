@@ -34,8 +34,6 @@ public:
 	
 	bool bIsGivenStartAbilities = false;
 
-	void AbilityActorInfoSet();
-
 	void AddStartAbilitiesByInputTag(TArray<TSubclassOf<UGameplayAbility>> StartAbilities);
 
 	void AddHitReactAbility(TSubclassOf<UGameplayAbility> HitReactAbility);
@@ -53,8 +51,6 @@ public:
 	void AddCommonAbilities();
 
 	void RemoveAllDebuffEffect();
-
-	void AbilityLevelUp(const FGameplayTag& AbilityTag);
 
 	void ForEachAbility(const FForEachAbilitySignature& Delegate);
 

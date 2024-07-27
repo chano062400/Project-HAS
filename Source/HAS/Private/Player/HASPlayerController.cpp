@@ -326,7 +326,7 @@ void AHASPlayerController::AutoRun()
 
 	if (APawn* ControlledPawn = GetPawn())
 	{
-		// Spline Point에서 거리가 가장 가까운 Point를 반환..
+		//  거리가 가장 가까운 SplinePoint를 반환..
 		const FVector ClosestSplinePoint = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
 		
 		// 방향 설정.

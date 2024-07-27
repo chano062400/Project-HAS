@@ -33,7 +33,11 @@ FString UHASAbility_IceBeam::GetAbilityDescription(int32 InAbilityLevel)
 
 void UHASAbility_IceBeam::BeamTrace(float BeamRadius, float BeamLength)
 {
-	if (!HasAuthority(&CurrentActivationInfo)) return;
+	if (GetCurrentActorInfo()->PlayerController.IsValid())
+	{
+		bool bIsServer = GetCurrentActorInfo()->PlayerController->HasAuthority();
+		if (!bIsServer) return;
+	}
 
 	TArray<FOverlapResult> OutOverlaps;
 

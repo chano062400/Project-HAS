@@ -10,14 +10,6 @@
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 
-void UHASAbilitySystemComponent::AbilityActorInfoSet()
-{
-	/* Called on server whenever a GE is applied to self. This includes instant and duration based GEs. 
-	FOnGameplayEffectAppliedDelegate OnGameplayEffectAppliedDelegateToSelf; */
-	/*OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UHASAbilitySystemComponent::ClientEffectApplied);*/
-}
-
-
 // StartAbility를 등록할 때마다 Broadcast.
 void UHASAbilitySystemComponent::AddStartAbilitiesByInputTag(TArray<TSubclassOf<UGameplayAbility>> StartAbilities)
 {
@@ -156,31 +148,6 @@ void UHASAbilitySystemComponent::RemoveAllDebuffEffect()
 	RemoveActiveEffectsWithGrantedTags(TagContainer);
 }
 
-void UHASAbilitySystemComponent::AbilityLevelUp(const FGameplayTag& AbilityTag)
-{
-	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(AbilityTag))
-	{
-		if (IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(GetAvatarActor()))
-		{
-			int32 CurSpellPoint = PlayerInterface->GetSpellPoint();
-			PlayerInterface->SetSpellPoint(CurSpellPoint - 1);
-		}
-
-		FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
-		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
-		{
-			AbilitySpec->DynamicAbilityTags.RemoveTag(FHASGameplayTags::Get().Status_UnLocked);
-			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
-		}
-
-		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
-
-		AbilityUpdateDelegate.Broadcast(*AbilitySpec);
-
-		MarkAbilitySpecDirty(*AbilitySpec);
-	}
-}
-
 void UHASAbilitySystemComponent::ForEachAbility(const FForEachAbilitySignature& Delegate)
 {
 	FScopedAbilityListLock AbilityListLock(*this);
@@ -235,6 +202,8 @@ void UHASAbilitySystemComponent::ServerUpgradeAbility_Implementation(const FGame
 	{
 		if (IHASPlayerInterface* PlayerInterface = Cast<IHASPlayerInterface>(GetAvatarActor()))
 		{
+			if (AbilitySpec->Level >= 5) return;
+
 			int32 CurSpellPoint = PlayerInterface->GetSpellPoint();
 			PlayerInterface->SetSpellPoint(CurSpellPoint - 1);
 		}
@@ -272,7 +241,7 @@ void UHASAbilitySystemComponent::ServerUpdateAbilityInput_Implementation(const F
 		const FGameplayTag NewInputTag = InputTag;
 		const FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
 
-		//  Lock이나 UnLock Status라면 return.
+		// 배운 스킬인지
 		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnEquipped) || StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Equipped))
 		{
 			// 이미 장착된 Input에 장착하려면
@@ -280,7 +249,6 @@ void UHASAbilitySystemComponent::ServerUpdateAbilityInput_Implementation(const F
 			{
 				// 원래 장착돼있던 Ability 장착 해제.
 				ChangeAbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*ChangeAbilitySpec));
-
 				ChangeAbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*ChangeAbilitySpec));
 				ChangeAbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
 

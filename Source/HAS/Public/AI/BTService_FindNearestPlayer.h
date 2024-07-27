@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float CriteriaDIstance = 500.f;
 
+	UPROPERTY(EditAnywhere)
+	float AggroTime = 3.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FBlackboardKeySelector TargetActorSelector;
 

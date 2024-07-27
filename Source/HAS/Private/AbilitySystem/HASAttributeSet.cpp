@@ -66,20 +66,18 @@ void UHASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	FEffectProperties EffectProps;
 	SetEffectProps(Data, EffectProps);
 
-	/*if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, GetHealthAttribute().GetName());
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-	}*/
+	}
 	if (Data.EvaluatedData.Attribute == GetInComingDamageAttribute())
 	{
 		HandleIncomingDamage(EffectProps);
 	}
-	/*if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Blue, GetManaAttribute().GetName());
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
-	}*/
+	}
 }
 
 void UHASAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
@@ -178,7 +176,6 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 		{
 			HandleXP(Props);
 		}
-		// HitReact
 		else
 		{
 			FGameplayTagContainer TagContainer;
@@ -194,13 +191,6 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 			{
 				HandleDebuff(Props);
 			}
-
-			/*float KnockbackForce = UHASAbilitySystemBlueprintLibrary::GetKnockbackForce(Props.EffectContextHandle);
-			if (KnockbackForce > 0.f)
-			{
-				
-				Props.SourceCharacter->SetActorLocation()
-			}*/
 		}
 	}
 }

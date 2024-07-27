@@ -50,13 +50,13 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 				BBComp->SetValueAsObject(FName("ChaseTarget"), DamageCauser);
 
 				FTimerHandle HitHandle;
-				// 3초 뒤 어그로 해제.
+				// 어그로 해제.
 				GetWorld()->GetTimerManager().SetTimer(HitHandle, [BBComp]
 					{
 						BBComp->SetValueAsBool(FName("IsHit"), false);
 						BBComp->SetValueAsObject(FName("ChaseTarget"), nullptr);
 					},
-					3.f,
+					AggroTime,
 					false);
 				Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 			}
