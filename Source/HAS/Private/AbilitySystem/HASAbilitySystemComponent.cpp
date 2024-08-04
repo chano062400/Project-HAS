@@ -206,20 +206,21 @@ void UHASAbilitySystemComponent::ServerUpgradeAbility_Implementation(const FGame
 
 			int32 CurSpellPoint = PlayerInterface->GetSpellPoint();
 			PlayerInterface->SetSpellPoint(CurSpellPoint - 1);
+
+
+			FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
+			if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
+			{
+				AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
+				AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
+			}
+
+			AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
+
+			ClientUpgradeAbility(*AbilitySpec);
+
+			MarkAbilitySpecDirty(*AbilitySpec);
 		}
-
-		FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
-		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnLocked))
-		{
-			AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
-			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_UnEquipped);
-		}
-
-		AbilitySpec->Level = FMath::Clamp(AbilitySpec->Level + 1, 0, 5);
-
-		ClientUpgradeAbility(*AbilitySpec);
-
-		MarkAbilitySpecDirty(*AbilitySpec);
 	}
 }
 
@@ -237,14 +238,14 @@ void UHASAbilitySystemComponent::ServerUpdateAbilityInput_Implementation(const F
 {
 	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByAbilityTag(AbilityTag))
 	{
-		const FGameplayTag CurInputTag = FindInputTagByAbilitySpec(*AbilitySpec);
+		const FGameplayTag PrevInputTag = FindInputTagByAbilitySpec(*AbilitySpec);
 		const FGameplayTag NewInputTag = InputTag;
 		const FGameplayTag StatusTag = FindStatusTagByAbilitySpec(*AbilitySpec);
 
 		// 배운 스킬인지
 		if (StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_UnEquipped) || StatusTag.MatchesTagExact(FHASGameplayTags::Get().Status_Equipped))
 		{
-			// 이미 장착된 Input에 장착하려면
+			// 이미 다른 Ability가 장착된 Input Key에 장착하려면
 			if (FGameplayAbilitySpec* ChangeAbilitySpec = FindAbilitySpecByInputTag(NewInputTag))
 			{
 				// 원래 장착돼있던 Ability 장착 해제.
@@ -263,13 +264,12 @@ void UHASAbilitySystemComponent::ServerUpdateAbilityInput_Implementation(const F
 				AbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*AbilitySpec));
 			}
 
-			AbilitySpec->DynamicAbilityTags.RemoveTag(FindInputTagByAbilitySpec(*AbilitySpec));
-			AbilitySpec->DynamicAbilityTags.AddTag(InputTag);
+			AbilitySpec->DynamicAbilityTags.AddTag(NewInputTag);
 			
 			AbilitySpec->DynamicAbilityTags.RemoveTag(FindStatusTagByAbilitySpec(*AbilitySpec));
 			AbilitySpec->DynamicAbilityTags.AddTag(FHASGameplayTags::Get().Status_Equipped);
 		}
-		ClientUpdateAbilityInput(*AbilitySpec, CurInputTag);
+		ClientUpdateAbilityInput(*AbilitySpec, PrevInputTag);
 
 		MarkAbilitySpecDirty(*AbilitySpec);
 	}
