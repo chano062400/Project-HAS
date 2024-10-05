@@ -13,7 +13,6 @@ DECLARE_MULTICAST_DELEGATE(FStartAbilitiesGivenSignature);
 
 DECLARE_DELEGATE_OneParam(FForEachAbilitySignature, const FGameplayAbilitySpec&);
 
-
 /**
  * 
  */

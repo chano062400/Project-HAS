@@ -18,7 +18,7 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 		FVector SocketLocation = IHASCombatInterface::Execute_GetWeaponSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 
 		FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
-		Rotation.Pitch = 0.f; // 직선으로 날아감.
+		Rotation.Pitch = 0.f;
 
 		FTransform SpawnTransform;
 		SpawnTransform.SetRotation(Rotation.Quaternion());

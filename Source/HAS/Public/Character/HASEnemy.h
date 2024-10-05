@@ -45,6 +45,8 @@ public:
 
 	virtual	void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 
+	virtual FEnemyInfo GetTargetInfo_Implementation() override;
+
 	/* Enemy Interface */
 
 	virtual ECharacterClass GetCharacterClass() override { return CharacterClass; }
@@ -68,4 +70,5 @@ private:
 
 	UPROPERTY()
 	AActor* CombatTarget = nullptr;
+
 };

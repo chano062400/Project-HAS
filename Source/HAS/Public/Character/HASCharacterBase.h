@@ -133,4 +133,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> ElectricShockDebuffComponent;
 	
+
 };

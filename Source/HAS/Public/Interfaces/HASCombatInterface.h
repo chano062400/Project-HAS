@@ -23,6 +23,23 @@ struct FMontageInfo
 
 };
 
+USTRUCT(BlueprintType)
+struct FEnemyInfo
+{
+	FEnemyInfo() : Name(FName()), Level(int32()), HealthRatio(float()) {}
+
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	FName Name;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 Level;
+
+	UPROPERTY(BlueprintReadOnly)
+	float HealthRatio;
+};
+
 UINTERFACE(MinimalAPI)
 class UHASCombatInterface : public UInterface
 {
@@ -61,6 +78,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FEnemyInfo GetTargetInfo();
 
 	virtual void Die() = 0;
 

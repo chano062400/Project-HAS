@@ -183,5 +183,4 @@ public:
 	TMap<FGameplayTag, FGameplayAttribute> TagToAttribute;
 
 	bool bLevelUp = false;
-
 };

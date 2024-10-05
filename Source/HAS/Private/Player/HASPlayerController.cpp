@@ -23,6 +23,11 @@ AHASPlayerController::AHASPlayerController()
 
 }
 
+void AHASPlayerController::ClientShowEnemyInfo_Implementation(FEnemyInfo Info, int32 PlayerLevel)
+{
+	EnemyInfo.Broadcast(Info, PlayerLevel);
+}
+
 AHASMagicCircle* AHASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (IsValid(MagicCircleDecalComponent))
@@ -294,8 +299,8 @@ void AHASPlayerController::CursorTrace()
 			// 다른 엑터에 커서.
 			else 
 			{
-				ThisActor->HighlightActor();
 				LastActor->UnHighlightActor();
+				ThisActor->HighlightActor();
 			}
 		}
 		// 밖에 있다가 Actor에 커서를 갖다 댐.

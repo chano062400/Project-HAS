@@ -22,5 +22,4 @@ class HAS_API IHASEnemyInterface
 public:
 
 	virtual ECharacterClass GetCharacterClass() = 0;
-
 };

@@ -60,6 +60,30 @@ void AHASEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 	CombatTarget = InCombatTarget;
 }
 
+FEnemyInfo AHASEnemy::GetTargetInfo_Implementation()
+{
+	FEnemyInfo EnemyInfo;
+	switch (CharacterClass)
+	{
+		case ECharacterClass::ECC_Archer:
+			EnemyInfo.Name = FName("Skeleton Archer");
+			break;
+		case ECharacterClass::ECC_Warrior:
+			EnemyInfo.Name = FName("Skeleton Warrior");
+			break;
+	}
+
+	EnemyInfo.Level = Level;
+	if (UHASAttributeSet* HASAS = Cast<UHASAttributeSet>(AttributeSetComp))
+	{
+		float Health = HASAS->GetHealth();
+		float MaxHealth = HASAS->GetMaxHealth();
+		EnemyInfo.HealthRatio = Health / MaxHealth;
+	}
+
+	return EnemyInfo;
+}
+
 void AHASEnemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

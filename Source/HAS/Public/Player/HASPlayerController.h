@@ -15,6 +15,8 @@ class AHASMagicCircle;
 class UHASInputInfo;
 class UHASAbilityInfo;
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FEnemyInfoSignature, FEnemyInfo, /*ThisActor*/ int32 /*PlayerLevel*/);
+
 /**
  * 
  */
@@ -33,6 +35,9 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClientShowFloatingDamageText(float Damage, AActor* TargetActor, bool bIsCritical);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientShowEnemyInfo(FEnemyInfo Info, int32 PlayerLevel);
 
 	UFUNCTION(BlueprintCallable)
 	AHASMagicCircle* ShowMagicCircle(UMaterialInterface* DecalMaterial);
@@ -41,6 +46,8 @@ public:
 	void HideMagicCircle();
 
 	void UpdateMagicCircle();
+
+	FEnemyInfoSignature EnemyInfo;
 
 protected:
 

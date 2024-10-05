@@ -287,14 +287,33 @@ void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
 	// Player가 공격할 때
 	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.SourceASC->AbilityActorInfo.Get()->PlayerController))
 	{
-		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical);
+		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical); 
+		if (Props.SourceAvatarActor->Implements<UHASCombatInterface>())
+		{
+			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.SourceAvatarActor))
+			{
+				int32 PlayerLevel = Interface->Execute_GetLevel(Props.SourceAvatarActor);
+				FEnemyInfo Info = Interface->Execute_GetTargetInfo(Props.TargetAvatarActor);
+				PC->ClientShowEnemyInfo(Info, PlayerLevel);
+			}
+		}
 	}
 
 	// Enemy가 공격할 때
 	if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.TargetController))
 	{
-		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical);
+		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical); 
+		if (Props.TargetAvatarActor->Implements<UHASCombatInterface>())
+		{
+			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
+			{
+				int32 PlayerLevel = Interface->Execute_GetLevel(Props.TargetAvatarActor);
+				FEnemyInfo Info = Interface->Execute_GetTargetInfo(Props.SourceAvatarActor);
+				PC->ClientShowEnemyInfo(Info, PlayerLevel);
+			}
+		}
 	}
+
 }
 
 void UHASAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const

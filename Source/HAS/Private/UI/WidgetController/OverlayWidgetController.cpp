@@ -5,6 +5,7 @@
 #include "AbilitySystem/HASAbilitySystemComponent.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "HASGameplayTags.h"
+#include "Player/HASPlayerController.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -108,6 +109,17 @@ void UOverlayWidgetController::BindCallBacks()
 			}
 		);
 	}
+
+	if (AHASPlayerController* HASPC = Cast<AHASPlayerController>(PC))
+	{
+		HASPC->EnemyInfo.AddLambda(
+			[this, HASPC](FEnemyInfo Info, int32 PlayerLevel)
+			{
+				EnemyInfoDelegate.Broadcast(Info, PlayerLevel);
+			}
+		);
+	}
+
 }
 
 void UOverlayWidgetController::OnDropped(const FGameplayTag& AbilityTag, const FGameplayTag& InputTag)
