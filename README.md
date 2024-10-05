@@ -17,6 +17,9 @@
 #### 프로젝트 참여 인원 - 개인 제작
 
 #### 활용 스킬 - C++, Unreal Engine5, GAS 프레임워크
+
+#### 노션 링크 - https://wary-birth-aca.notion.site/Project-HAS-8d9b5696b55a495685e40b6bdff00611?pvs=4
+
 ---
 ### 플레이 영상
 [![Video Label](http://img.youtube.com/vi/PiiKiwZ-IkY/0.jpg)](https://www.youtube.com/watch?v=PiiKiwZ-IkY) 
