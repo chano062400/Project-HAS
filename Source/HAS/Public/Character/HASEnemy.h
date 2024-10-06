@@ -9,6 +9,7 @@
 class UWidgetComponent;
 class UBehaviorTree;
 class AHASAIController;
+class AHASEffectActor;
 
 /**
  * 
@@ -68,7 +69,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<AHASAIController> HASAIController;
 
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<AHASEffectActor>> SpawnActorClasses;
+
 	UPROPERTY()
 	AActor* CombatTarget = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DropChance = 75.f;
 
 };

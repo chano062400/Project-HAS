@@ -9,6 +9,7 @@ class UGameplayEffect;
 class USphereComponent;
 struct FScalableFloat;
 class UNiagaraSystem;
+class UWidgetComponent;
 
 UCLASS()
 class HAS_API AHASEffectActor : public AActor
@@ -57,5 +58,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> LoopingSound;
 
+	UPROPERTY(EditDefaultsOnly)
+	float SpawnImpulse = 200.f;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> NameWidget;
 };

@@ -9,6 +9,7 @@
 #include "AI/HASAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "HASEffectActor.h"
 
 AHASEnemy::AHASEnemy()
 {
@@ -35,6 +36,14 @@ void AHASEnemy::Die()
 	HealthBarWidget->SetVisibility(false);
 	/*if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);*/
 	if (HasAuthority()) HASAIController->BehaviorTree->StopTree();
+
+	bool bDrop = DropChance >= FMath::RandRange(0,100);
+	if (bDrop && HasAuthority())
+	{
+		int32 RandIdx = FMath::RandRange(0, SpawnActorClasses.Num() - 1);
+		FVector SpawnLocation = FVector(GetActorLocation().X, GetActorLocation().Y + 50.f, GetActorLocation().Z + 50.f);
+		AHASEffectActor* SpawnedActor = GetWorld()->SpawnActor<AHASEffectActor>(SpawnActorClasses[RandIdx], SpawnLocation, GetActorRotation());
+	}
 	Super::Die();
 }
 

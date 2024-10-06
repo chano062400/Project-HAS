@@ -5,6 +5,7 @@
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
 
 AHASEffectActor::AHASEffectActor()
 {
@@ -14,13 +15,16 @@ AHASEffectActor::AHASEffectActor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
 	Mesh->SetGenerateOverlapEvents(true);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Mesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Mesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(Mesh);
 
+	NameWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Name Widget"));
+	NameWidget->SetupAttachment(Mesh);
+	NameWidget->SetVisibility(true);
 }
 
 void AHASEffectActor::BeginPlay()
@@ -35,11 +39,19 @@ void AHASEffectActor::BeginPlay()
 
 		if (LoopingSound) LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 	}
+	else
+	{
+		SetActorRotation(FRotator(45.f, 0.f, 0.f));
+		Mesh->SetSimulatePhysics(true);
+		Mesh->SetEnableGravity(true);
+		Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
+	}
 }
 
 void AHASEffectActor::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!bIsPotion && OtherActor->ActorHasTag(FName("Player"))) return;
+	if (bIsPotion && OtherActor->ActorHasTag(FName("Enemy"))) return;
 
 	if (HasAuthority())
 	{
