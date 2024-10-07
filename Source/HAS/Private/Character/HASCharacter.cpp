@@ -11,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/HASAttributeSet.h"
 #include "Net/UnrealNetwork.h"
+#include "Actor/HASItem.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -214,4 +215,9 @@ void AHASCharacter::HideMagicCircle_Implementation()
 void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 {
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
+}
+
+void AHASCharacter::ServerRequestAddToInventory_Implementation(AHASItem* ItemToAdd)
+{
+	ItemToAdd->ServerAddToInventory(ItemToAdd->ItemStruct);
 }

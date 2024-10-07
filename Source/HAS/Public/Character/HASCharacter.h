@@ -10,6 +10,7 @@ class UCameraComponent;
 class UGroomComponent;
 class UNiagaraComponent;
 class AHASMagicCircle;
+class AHASItem;
 
 /**
  * 
@@ -69,6 +70,9 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
 	bool bCastIceBeamLoop = false;
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerRequestAddToInventory(AHASItem* ItemToAdd);
 
 protected:
 

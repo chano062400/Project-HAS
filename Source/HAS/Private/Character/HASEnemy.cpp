@@ -9,7 +9,7 @@
 #include "AI/HASAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "HASEffectActor.h"
+#include "Actor/HASItem.h"
 
 AHASEnemy::AHASEnemy()
 {
@@ -38,11 +38,11 @@ void AHASEnemy::Die()
 	if (HasAuthority()) HASAIController->BehaviorTree->StopTree();
 
 	bool bDrop = DropChance >= FMath::RandRange(0,100);
-	if (bDrop && HasAuthority())
+	if (HasAuthority() && bDrop && SpawnItemClasses.Num() > 0)
 	{
-		int32 RandIdx = FMath::RandRange(0, SpawnActorClasses.Num() - 1);
+		int32 RandIdx = FMath::RandRange(0, SpawnItemClasses.Num() - 1);
 		FVector SpawnLocation = FVector(GetActorLocation().X, GetActorLocation().Y + 50.f, GetActorLocation().Z + 50.f);
-		AHASEffectActor* SpawnedActor = GetWorld()->SpawnActor<AHASEffectActor>(SpawnActorClasses[RandIdx], SpawnLocation, GetActorRotation());
+		AHASItem* SpawnedItem = GetWorld()->SpawnActor<AHASItem>(SpawnItemClasses[RandIdx], SpawnLocation, GetActorRotation());
 	}
 	Super::Die();
 }

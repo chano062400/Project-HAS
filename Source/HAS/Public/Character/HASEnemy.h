@@ -9,7 +9,7 @@
 class UWidgetComponent;
 class UBehaviorTree;
 class AHASAIController;
-class AHASEffectActor;
+class AHASItem;
 
 /**
  * 
@@ -70,7 +70,7 @@ private:
 	TObjectPtr<AHASAIController> HASAIController;
 
 	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<AHASEffectActor>> SpawnActorClasses;
+	TArray<TSubclassOf<AHASItem>> SpawnItemClasses;
 
 	UPROPERTY()
 	AActor* CombatTarget = nullptr;

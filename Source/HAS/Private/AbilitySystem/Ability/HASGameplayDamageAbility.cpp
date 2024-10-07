@@ -33,7 +33,8 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 
 
 		Projectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
-
+		Projectile->DamageEffectParams.SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

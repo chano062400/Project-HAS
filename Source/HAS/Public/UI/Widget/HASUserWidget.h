@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Actor/HASItem.h"
 #include "HASUserWidget.generated.h"
 
 /**
@@ -20,6 +21,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
 	
+	UPROPERTY(BlueprintReadOnly)
+	FItemStruct ItemStruct;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AHASItem> ThisItem;
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent)

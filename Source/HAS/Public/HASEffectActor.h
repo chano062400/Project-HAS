@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "HASAbilityTypes.h"
+#include "Engine/DataTable.h"
 #include "HASEffectActor.generated.h"
 
 class UGameplayEffect;
@@ -10,6 +11,7 @@ class USphereComponent;
 struct FScalableFloat;
 class UNiagaraSystem;
 class UWidgetComponent;
+
 
 UCLASS()
 class HAS_API AHASEffectActor : public AActor
@@ -32,9 +34,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SetDamageEffectTargetASC(UAbilitySystemComponent* AbilitySystemComponent);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	bool bIsPotion = true;
-
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	float LifeSpan;
 
@@ -52,15 +51,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<USoundBase> LoopingSound;
 
-	UPROPERTY(EditDefaultsOnly)
-	float SpawnImpulse = 200.f;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UWidgetComponent> NameWidget;
 };
