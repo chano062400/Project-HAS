@@ -134,6 +134,14 @@ void AHASPlayerController::OpenAttributeMenu()
 				Widget->RemoveFromParent();
 			}
 		}
+		if (bOpenedInventory)
+		{
+			if (UHASUserWidget* Widget = HASHUD->InventoryWidget)
+			{
+				bOpenedInventory = false;
+				Widget->RemoveFromParent();
+			}
+		}
 	}
 }
 
@@ -170,6 +178,55 @@ void AHASPlayerController::OpenSpellMenu()
 			if (UHASUserWidget* Widget = HASHUD->AttributeMenuWidget)
 			{
 				bOpenedAttributeMenu = false;
+				Widget->RemoveFromParent();
+			}
+		}
+		if (bOpenedInventory)
+		{
+			if (UHASUserWidget* Widget = HASHUD->InventoryWidget)
+			{
+				bOpenedInventory = false;
+				Widget->RemoveFromParent();
+			}
+		}
+	}
+}
+
+void AHASPlayerController::OpenInventory()
+{
+	if (AHASHUD* HASHUD = GetHUD<AHASHUD>())
+	{
+		check(HASHUD->InventoryWidget);
+
+		if (!bOpenedInventory)
+		{
+			bOpenedInventory = true;
+
+			if (UHASUserWidget* Widget = HASHUD->InventoryWidget)
+			{
+				Widget->AddToViewport();
+			}
+		}
+		else
+		{
+			bOpenedInventory= false;
+			HASHUD->InventoryWidget->RemoveFromParent();
+		}
+
+		if (bOpenedAttributeMenu)
+		{
+			if (UHASUserWidget* Widget = HASHUD->AttributeMenuWidget)
+			{
+				bOpenedAttributeMenu = false;
+				Widget->RemoveFromParent();
+			}
+		}
+		
+		if (bOpenedSpellMenu)
+		{
+			if (UHASUserWidget* Widget = HASHUD->SpellMenuWidget)
+			{
+				bOpenedSpellMenu = false;
 				Widget->RemoveFromParent();
 			}
 		}
@@ -373,6 +430,7 @@ void AHASPlayerController::SetupInputComponent()
 		HASEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHASPlayerController::Move);
 		HASEnhancedInputComponent->BindAction(AttributeMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenAttributeMenu);
 		HASEnhancedInputComponent->BindAction(SpellMenuAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenSpellMenu);
+		HASEnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Triggered, this, &AHASPlayerController::OpenInventory);
 		HASEnhancedInputComponent->BindAction(ShiftPressedAction, ETriggerEvent::Started, this, &AHASPlayerController::ShiftPressed);
 		HASEnhancedInputComponent->BindAction(ShiftReleasedAction, ETriggerEvent::Completed, this, &AHASPlayerController::ShiftReleased);
 		HASEnhancedInputComponent->BindAbilityAction(InputInfo, this, &AHASPlayerController::AbilityInputTagPressed, &AHASPlayerController::AbilityInputTagReleased, &AHASPlayerController::AbilityInputTagHeld);

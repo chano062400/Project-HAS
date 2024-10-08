@@ -28,6 +28,8 @@ public:
 
 	void InitSpellMenu(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
+	void InitInventory();
+
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
@@ -75,5 +77,14 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;
+
+	/* Inventory */
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widget|SpellMenu")
+	TSubclassOf<UHASUserWidget> InventoryWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UHASUserWidget> InventoryWidget;
+
 
 };

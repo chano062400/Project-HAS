@@ -62,6 +62,8 @@ private:
 	void OpenAttributeMenu();
 	
 	void OpenSpellMenu();
+	
+	void OpenInventory();
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 
@@ -80,6 +82,8 @@ private:
 	bool bOpenedAttributeMenu = false;
 
 	bool bOpenedSpellMenu = false;
+	
+	bool bOpenedInventory = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputMappingContext> HASMappingContext;
@@ -92,6 +96,9 @@ private:
 		
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> SpellMenuAction;
+		
+	UPROPERTY(EditDefaultsOnly, Category = "input")
+	TObjectPtr<UInputAction> InventoryAction;
 		
 	UPROPERTY(EditDefaultsOnly, Category = "input")
 	TObjectPtr<UInputAction> ShiftPressedAction;

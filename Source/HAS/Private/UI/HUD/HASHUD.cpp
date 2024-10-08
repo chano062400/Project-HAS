@@ -56,6 +56,8 @@ void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 	
 	InitSpellMenu(PC, PS, ASC, AS);
 
+	InitInventory();
+
 	Widget->AddToViewport();
 
 }
@@ -90,4 +92,10 @@ void AHASHUD::InitSpellMenu(APlayerController* PC, APlayerState* PS, UAbilitySys
 	
 	SpellMenuWidget->SetWidgetController(WidgetController);
 	SpellMenuWidgetController->BroadcastInitialValues();
+}
+
+void AHASHUD::InitInventory()
+{
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), InventoryWidgetClass);
+	InventoryWidget = Cast<UHASUserWidget>(Widget);
 }

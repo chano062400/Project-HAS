@@ -25,10 +25,20 @@ enum class EItemType : uint8
 {
 	EIT_None UMETA(DisplayName = "None"),
 	EIT_Potion UMETA(DisplayName = "Potion"),
-	EIT_Staff UMETA(DisplayName = "Staff"),
-	EIT_Shoes UMETA(DisplayName = "Shoes"),
+	EIT_Equipment UMETA(DisplayName = "Equipment"),
 	EIT_Gold UMETA(DisplayName = "Gold"),
 	EIT_MAX UMETA(DisplayName = "MAX")
+};
+
+UENUM(BlueprintType)
+enum class EEquipmentType : uint8
+{
+	EET_None UMETA(DisplayName = "None"),
+	EET_Staff UMETA(DisplayName = "Staff"),
+	EET_Armor UMETA(DisplayName = "Armor"),
+	EET_Shoes UMETA(DisplayName = "Shoes"),
+	EET_Ring UMETA(DisplayName = "Ring"),
+	EET_MAX UMETA(DisplayName = "MAX")
 };
 
 UENUM(BlueprintType)
@@ -49,14 +59,17 @@ struct FItemStruct
 	FDataTableRowHandle ItemHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 Quantity;
+	int32 Quantity = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EItemType ItemType = EItemType::EIT_None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EEquipmentType EquipeMentType = EEquipmentType::EET_None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EItemRarity Rarity = EItemRarity::EIT_None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EItemType ItemType = EItemType::EIT_None;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EPotionType PotionType = EPotionType::EPT_None;
 
@@ -74,16 +87,26 @@ struct FItemInfo : public FTableRowBase
 	FText Description;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 StackSize;
+	int32 MaxStackSize;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Power;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Price;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UTexture2D> Thumbnail;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UStaticMesh> Mesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UGameplayEffect> UseEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UGameplayAbility> GrantedAbility;
+
 };
 UCLASS()
 class HAS_API AHASItem : public AActor
@@ -97,7 +120,7 @@ public:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerAddToInventory(const FItemStruct& InItemStruct);
 
-	UPROPERTY(EditAnywhere, Category = "Item")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	FItemStruct ItemStruct;
 
 protected:

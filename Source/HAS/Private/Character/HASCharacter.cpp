@@ -12,6 +12,8 @@
 #include "AbilitySystem/HASAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 #include "Actor/HASItem.h"
+#include "Inventory/HASInventoryComponent.h"
+#include "UI/WIdget/HASUserWidget.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -29,6 +31,8 @@ AHASCharacter::AHASCharacter()
 	LevelUpEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUp Effect"));
 	LevelUpEffectComponent->SetupAttachment(GetRootComponent());
 	LevelUpEffectComponent->bAutoActivate = false;
+
+	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
 }
 
 void AHASCharacter::PossessedBy(AController* NewController)
@@ -217,7 +221,31 @@ void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
 }
 
-void AHASCharacter::ServerRequestAddToInventory_Implementation(AHASItem* ItemToAdd)
+void AHASCharacter::ServerAddToInventory_Implementation(AHASItem* ItemToAdd)
 {
-	ItemToAdd->ServerAddToInventory(ItemToAdd->ItemStruct);
+	Inventory->ServerAddItem(ItemToAdd);
+	ClientUpdateInventory();
+}
+
+void AHASCharacter::ServerUpdateInventory_Implementation()
+{
+	
+}
+
+void AHASCharacter::ClientUpdateInventory_Implementation()
+{
+	InventoryUpdate.Broadcast();
+}
+
+void AHASCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
+	//{
+	//	if (AHASHUD* HASHUD = Cast<AHASHUD>(HASPlayerController->GetHUD()))
+	//	{
+	//		HASHUD->InventoryWidget->UpdateInventory();
+	//	}
+	//}
 }

@@ -45,8 +45,8 @@ void AHASItem::BeginPlay()
 
 	if (UHASUserWidget* Widget = Cast<UHASUserWidget>(NameWidget->GetUserWidgetObject()))
 	{
-		Widget->ItemStruct = ItemStruct;
 		Widget->ThisItem = this;
+		Widget->ThisItemStruct = ItemStruct;
 	}
 
 	SetActorRotation(FRotator(45.f, 0.f, 0.f));

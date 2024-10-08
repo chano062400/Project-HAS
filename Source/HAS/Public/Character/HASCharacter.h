@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Character/HASCharacterBase.h"
 #include "Interfaces/HASPlayerInterface.h"
+#include "Inventory/HASInventoryComponent.h"
 #include "HASCharacter.generated.h"
 
 class USpringArmComponent;
@@ -11,6 +12,8 @@ class UGroomComponent;
 class UNiagaraComponent;
 class AHASMagicCircle;
 class AHASItem;
+
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
 
 /**
  * 
@@ -72,9 +75,23 @@ public:
 	bool bCastIceBeamLoop = false;
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerRequestAddToInventory(AHASItem* ItemToAdd);
+	void ServerAddToInventory(AHASItem* ItemToAdd);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateInventory();
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateInventory();
+
+	UPROPERTY(BlueprintAssignable)
+	FInventoryUpdateSignature InventoryUpdate;
+
+	UFUNCTION(BlueprintCallable)
+	UHASInventoryComponent* GetInventoryComponent() { return Inventory; }
 
 protected:
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArm;
@@ -91,4 +108,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> RegenerationEffectClass;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UHASInventoryComponent> Inventory;
 };
