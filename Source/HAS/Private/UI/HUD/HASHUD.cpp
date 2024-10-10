@@ -3,6 +3,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/SpellMenuWidgetController.h"
+#include "UI/WidgetController/InventoryWidgetController.h"
 
 UOverlayWidgetController* AHASHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
@@ -38,6 +39,17 @@ USpellMenuWidgetController* AHASHUD::GetSpellMenuWidgetController(const FWidgetC
 	return SpellMenuWidgetController;
 }
 
+UInventoryWidgetController* AHASHUD::GetInventoryWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (InventoryWidgetController == nullptr)
+	{
+		InventoryWidgetController = NewObject<UInventoryWidgetController>(this, InventoryWidgetControllerClass);
+		InventoryWidgetController->SetWidgetControllerParams(WCParams);
+		InventoryWidgetController->BindCallBacks();
+	}
+	return InventoryWidgetController;
+}
+
 void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
 	checkf(OverlayWidgetClass, TEXT("Can't find OverlayWidgetClass"));
@@ -56,7 +68,7 @@ void AHASHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 	
 	InitSpellMenu(PC, PS, ASC, AS);
 
-	InitInventory();
+	InitInventory(PC, PS, ASC, AS);
 
 	Widget->AddToViewport();
 
@@ -94,8 +106,18 @@ void AHASHUD::InitSpellMenu(APlayerController* PC, APlayerState* PS, UAbilitySys
 	SpellMenuWidgetController->BroadcastInitialValues();
 }
 
-void AHASHUD::InitInventory()
+void AHASHUD::InitInventory(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
+	check(InventoryWidgetClass);
+	check(InventoryWidgetControllerClass);
+
 	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), InventoryWidgetClass);
 	InventoryWidget = Cast<UHASUserWidget>(Widget);
+
+	const FWidgetControllerParams WCParams(PC, PS, ASC, AS);
+
+	UInventoryWidgetController* WidgetController = GetInventoryWidgetController(WCParams);
+
+	InventoryWidget->SetWidgetController(WidgetController);
+	InventoryWidgetController->BroadcastInitialValues();
 }

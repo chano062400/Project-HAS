@@ -15,10 +15,10 @@ struct FAllItems
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FItemStruct> Equipment;
+	TArray<AHASItem*> Equipment;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FItemStruct> Potion;
+	TArray<AHASItem*> Potion;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -33,20 +33,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FInventoryUpdateSignature InventoryUpdate;
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerAddItem(AHASItem* ItemToAdd);
 
-	UFUNCTION(Server, Reliable)
-	void ServerRemoveItem(AHASItem* ItemToRemove);
-	
-	UFUNCTION(Server, Reliable)
-	void ServerUpdateInventory();
-	
-	UFUNCTION(Client, Reliable)
-	void ClientUpdateInventory();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateInventory();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerDropItem(AHASItem* ItemToDrop);
 
 protected:
 	
@@ -58,6 +49,12 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Inventory, meta = (AllowPrivateAccess = true), BlueprintReadOnly)
 	FAllItems Inventory;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASItem> DefaultEquipmentClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASItem> DefaultPotionClass;
 
 	UFUNCTION()
 	void OnRep_Inventory();

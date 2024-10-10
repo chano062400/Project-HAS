@@ -55,6 +55,16 @@ struct FItemStruct
 {
 	GENERATED_BODY()
 
+	bool operator==(const FItemStruct& InItemStruct)
+	{
+		if (ItemType != InItemStruct.ItemType) return false;
+		if (EquipeMentType != InItemStruct.EquipeMentType) return false;
+		if (PotionType != InItemStruct.PotionType) return false;
+		if (Rarity != InItemStruct.Rarity) return false;
+		if (Quantity != InItemStruct.Quantity) return false;
+		return true;
+	}
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FDataTableRowHandle ItemHandle;
 
@@ -72,7 +82,6 @@ struct FItemStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EPotionType PotionType = EPotionType::EPT_None;
-
 };
 
 USTRUCT(BlueprintType)
@@ -129,7 +138,6 @@ protected:
 
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 
 private:
 

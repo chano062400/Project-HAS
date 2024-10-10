@@ -21,10 +21,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
 	
-	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn= "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
 	FItemStruct ThisItemStruct;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Inventory")
 	TObjectPtr<AHASItem> ThisItem;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

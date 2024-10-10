@@ -33,6 +33,7 @@ AHASCharacter::AHASCharacter()
 	LevelUpEffectComponent->bAutoActivate = false;
 
 	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
+	Inventory->SetIsReplicated(true);
 }
 
 void AHASCharacter::PossessedBy(AController* NewController)
@@ -221,31 +222,8 @@ void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
 }
 
-void AHASCharacter::ServerAddToInventory_Implementation(AHASItem* ItemToAdd)
-{
-	Inventory->ServerAddItem(ItemToAdd);
-	ClientUpdateInventory();
-}
-
-void AHASCharacter::ServerUpdateInventory_Implementation()
-{
-	
-}
-
-void AHASCharacter::ClientUpdateInventory_Implementation()
-{
-	InventoryUpdate.Broadcast();
-}
-
 void AHASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//if (AHASPlayerController* HASPlayerController = Cast<AHASPlayerController>(GetController()))
-	//{
-	//	if (AHASHUD* HASHUD = Cast<AHASHUD>(HASPlayerController->GetHUD()))
-	//	{
-	//		HASHUD->InventoryWidget->UpdateInventory();
-	//	}
-	//}
 }

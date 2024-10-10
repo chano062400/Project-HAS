@@ -22,5 +22,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAbilityInfo> AbilityInformation;
-	
+
 };

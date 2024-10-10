@@ -5,11 +5,13 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "Net/UnrealNetwork.h"
 
 AHASItem::AHASItem()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
+	SetReplicateMovement(true);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
@@ -49,11 +51,13 @@ void AHASItem::BeginPlay()
 		Widget->ThisItemStruct = ItemStruct;
 	}
 
-	SetActorRotation(FRotator(45.f, 0.f, 0.f));
-	Mesh->SetSimulatePhysics(true);
-	Mesh->SetEnableGravity(true);
-	Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
-	
+	if (HasAuthority())
+	{
+		SetActorRotation(FRotator(45.f, 0.f, 0.f));
+		Mesh->SetSimulatePhysics(true);
+		Mesh->SetEnableGravity(true);
+		Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
+	}
 }
 
 void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -82,3 +86,4 @@ void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		}
 	}
 }
+

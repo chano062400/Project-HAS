@@ -11,6 +11,7 @@ class UAttributeSet;
 struct FWidgetControllerParams;
 class UAttributeMenuWidgetController;
 class USpellMenuWidgetController;
+class UInventoryWidgetController;
 
 /**
  * 
@@ -28,13 +29,15 @@ public:
 
 	void InitSpellMenu(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
-	void InitInventory();
+	void InitInventory(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
 
 	USpellMenuWidgetController* GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
+	
+	UInventoryWidgetController* GetInventoryWidgetController(const FWidgetControllerParams& WCParams);
 
 	/* Overlay Widget */
 
@@ -80,11 +83,17 @@ public:
 
 	/* Inventory */
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widget|SpellMenu")
+	UPROPERTY(EditDefaultsOnly, Category = "InventoryMenu")
 	TSubclassOf<UHASUserWidget> InventoryWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UHASUserWidget> InventoryWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "InventoryMenu")
+	TSubclassOf<UInventoryWidgetController> InventoryWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UInventoryWidgetController> InventoryWidgetController;
 
 
 };

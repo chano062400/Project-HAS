@@ -13,8 +13,6 @@ class UNiagaraComponent;
 class AHASMagicCircle;
 class AHASItem;
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
-
 /**
  * 
  */
@@ -73,18 +71,6 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
 	bool bCastIceBeamLoop = false;
-
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerAddToInventory(AHASItem* ItemToAdd);
-
-	UFUNCTION(Server, Reliable)
-	void ServerUpdateInventory();
-	
-	UFUNCTION(Client, Reliable)
-	void ClientUpdateInventory();
-
-	UPROPERTY(BlueprintAssignable)
-	FInventoryUpdateSignature InventoryUpdate;
 
 	UFUNCTION(BlueprintCallable)
 	UHASInventoryComponent* GetInventoryComponent() { return Inventory; }
