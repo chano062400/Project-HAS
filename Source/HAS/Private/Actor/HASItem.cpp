@@ -30,20 +30,18 @@ AHASItem::AHASItem()
 	NameWidget->SetVisibility(true);
 }
 
-void AHASItem::ServerAddToInventory_Implementation(const FItemStruct& InItemStruct)
-{
-	Destroy();
-}
-
 void AHASItem::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHASItem::OnSphereOverlap);
 
-	FName Name = ItemStruct.ItemHandle.RowName;
-	FItemInfo* ItemInfo = ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(Name, "");
-	Mesh->SetStaticMesh(ItemInfo->Mesh);
+	if (IsValid(ItemStruct.ItemHandle.DataTable))
+	{
+		FName Name = ItemStruct.ItemHandle.RowName;
+		FItemInfo* ItemInfo = ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(Name, "");
+		Mesh->SetStaticMesh(ItemInfo->Mesh);
+	}
 
 	if (UHASUserWidget* Widget = Cast<UHASUserWidget>(NameWidget->GetUserWidgetObject()))
 	{
@@ -51,13 +49,11 @@ void AHASItem::BeginPlay()
 		Widget->ThisItemStruct = ItemStruct;
 	}
 
-	if (HasAuthority())
-	{
-		SetActorRotation(FRotator(45.f, 0.f, 0.f));
-		Mesh->SetSimulatePhysics(true);
-		Mesh->SetEnableGravity(true);
-		Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
-	}
+	SetActorRotation(FRotator(45.f, 0.f, 0.f));
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetEnableGravity(true);
+	Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
+
 }
 
 void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -87,3 +83,9 @@ void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	}
 }
 
+void AHASItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AHASItem, ItemStruct, COND_OwnerOnly);
+}

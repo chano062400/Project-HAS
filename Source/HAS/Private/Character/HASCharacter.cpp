@@ -221,9 +221,3 @@ void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 {
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
 }
-
-void AHASCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-}

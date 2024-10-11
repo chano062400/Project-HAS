@@ -126,10 +126,7 @@ public:
 	
 	AHASItem();
 
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerAddToInventory(const FItemStruct& InItemStruct);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadOnly, Category = "Item")
 	FItemStruct ItemStruct;
 
 protected:
@@ -138,6 +135,8 @@ protected:
 
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
 

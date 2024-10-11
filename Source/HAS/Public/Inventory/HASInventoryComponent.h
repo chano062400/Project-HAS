@@ -9,18 +9,6 @@ class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
 
-USTRUCT(BlueprintType)
-struct FAllItems
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly)
-	TArray<AHASItem*> Equipment;
-
-	UPROPERTY(BlueprintReadOnly)
-	TArray<AHASItem*> Potion;
-};
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HAS_API UHASInventoryComponent : public UActorComponent
 {
@@ -44,11 +32,16 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	//virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 private:
 
-	UPROPERTY(ReplicatedUsing = OnRep_Inventory, meta = (AllowPrivateAccess = true), BlueprintReadOnly)
-	FAllItems Inventory;
+	UPROPERTY(ReplicatedUsing = OnRep_Equipment, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<AHASItem*> Equipment;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Potion, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<AHASItem*> Potion;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASItem> DefaultEquipmentClass;
@@ -57,6 +50,9 @@ private:
 	TSubclassOf<AHASItem> DefaultPotionClass;
 
 	UFUNCTION()
-	void OnRep_Inventory();
+	void OnRep_Equipment();
+
+	UFUNCTION()
+	void OnRep_Potion();
 
 };
