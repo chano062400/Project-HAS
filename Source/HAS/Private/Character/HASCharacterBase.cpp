@@ -9,6 +9,8 @@ AHASCharacterBase::AHASCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	bReplicates = true;
+
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;

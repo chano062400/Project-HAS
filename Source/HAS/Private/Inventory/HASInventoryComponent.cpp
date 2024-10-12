@@ -7,41 +7,17 @@
 UHASInventoryComponent::UHASInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;	
-	/**
-	* When true the replication system will only replicate the registered subobjects list
-	* When false the replication system will instead call the virtual ReplicateSubObjects() function where the subobjects need to be manually replicated.
-	*/
-
 }
 
 void UHASInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (GetOwner()->HasAuthority())
 	{
-		Equipment.Init(nullptr, 33);
-		Potion.Init(nullptr, 33);
-
-		//for (int idx = 0; idx < 33; idx++)
-		//{
-		//	// Equipment 아이템 생성 및 등록
-		//	AHASItem* NewEquipment = NewObject<AHASItem>(this, DefaultEquipmentClass);
-		//	if (NewEquipment)
-		//	{
-		//		NewEquipment->SetReplicates(true);
-		//		Equipment[idx] = NewEquipment;
-		//	}
-
-		//	// Potion 아이템 생성 및 등록
-		//	AHASItem* NewPotion = NewObject<AHASItem>(this, DefaultPotionClass);
-		//	if (NewPotion)
-		//	{
-		//		NewPotion->SetReplicates(true);
-		//		Potion[idx] = NewPotion;
-		//	}
-		//}
-
+		FItemStruct ItemStruct;
+		Equipment.Init(ItemStruct, 33);
+		Potion.Init(ItemStruct, 33);
 	}
 }
 
@@ -52,114 +28,95 @@ void UHASInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Equipment, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Potion, COND_OwnerOnly);
 }
-//
-//bool UHASInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
-//{
-//	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
-//
-//	for (int32 Idx = 0; Idx != Potion.Num(); Idx++)
-//	{
-//		AHASItem* Item = Equipment[Idx];
-//		if (!IsValid(Item)) continue;
-//		WroteSomething |= Channel->ReplicateSubobject(Item, *Bunch, *RepFlags);
-//	}
-//
-//	for (int32 Idx = 0; Idx != Potion.Num(); Idx++)
-//	{
-//		AHASItem* Item = Potion[Idx];
-//		if (!IsValid(Item)) continue;
-//		WroteSomething |= Channel->ReplicateSubobject(Item, *Bunch, *RepFlags);
-//	}
-//
-//	return WroteSomething;
-//}
+
+void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct)
+{
+	FTransform DropTransform = FTransform(GetOwner()->GetActorRotation(), GetOwner()->GetActorLocation(), FVector(1.f, 1.f, 1.f));
+
+	AHASItem* DropItem = GetWorld()->SpawnActorDeferred<AHASItem>(
+		ItemClass,
+		DropTransform,
+		nullptr,
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+	);
+	DropItem->ItemStruct = InItemStruct;
+	DropItem->FinishSpawning(DropTransform);
+}
 
 void UHASInventoryComponent::OnRep_Equipment()
 {
-	InventoryUpdate.Broadcast();
+	EquipmentUpdate.Broadcast();
 }
 
 void UHASInventoryComponent::OnRep_Potion()
 {
-	InventoryUpdate.Broadcast();
+	PotionUpdate.Broadcast();
 }
 
 void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 {
-	FDataTableRowHandle DataTableHandle = ItemToAdd->ItemStruct.ItemHandle;
+	int32 CanAddIdx;
+	int32 AmountToAdd;
 
-	EItemType ItemType = ItemToAdd->ItemStruct.ItemType;
-	int32 CanAddIdx = Equipment.Num() - 1;
-	int32 AmountToAdd = ItemToAdd->ItemStruct.Quantity;
-
-	if (ItemType == EItemType::EIT_Equipment)
+	if (ItemToAdd->ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
+		CanAddIdx = Equipment.Num();
 		for (int32 idx = 0; idx < Equipment.Num(); idx++)
 		{
-			if (Equipment[idx] == nullptr)
+			if (Equipment[idx].Quantity == 0)
 			{
 				CanAddIdx = FMath::Min(CanAddIdx, idx);
 			}
 		}
-		Equipment[CanAddIdx] = ItemToAdd;
-		Equipment[CanAddIdx]->ItemStruct.Quantity = ItemToAdd->ItemStruct.Quantity;
-		InventoryUpdate.Broadcast();
+
+		Equipment[CanAddIdx] = ItemToAdd->ItemStruct;
+		EquipmentUpdate.Broadcast();
 	}
-	else if (ItemType == EItemType::EIT_Potion)
+	else if (ItemToAdd->ItemStruct.ItemType == EItemType::EIT_Potion)
 	{
-		for (int32 idx = 0; idx < Equipment.Num(); idx++)
+		CanAddIdx = Potion.Num();
+		for (int32 idx = 0; idx < Potion.Num(); idx++)
 		{
-			AHASItem* CurItem = Potion[idx];
-			if (CurItem->ItemStruct.PotionType == EPotionType::EPT_None)
+			
+			if (Potion[idx].PotionType == EPotionType::EPT_None)
 			{
 				CanAddIdx = FMath::Min(CanAddIdx, idx);
 			}
 
 			// 같은 아이템이 있다면
-			if (DataTableHandle.RowName == CurItem->ItemStruct.ItemHandle.RowName)
+			if (ItemToAdd->ItemStruct.ItemHandle.RowName == Potion[idx].ItemHandle.RowName)
 			{
-				FItemInfo* ItemInfo = DataTableHandle.DataTable->FindRow<FItemInfo>(DataTableHandle.RowName, "");
+				FItemInfo* ItemInfo = ItemToAdd->ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(ItemToAdd->ItemStruct.ItemHandle.RowName, "");
 
-				int32 EmptyQuantity = ItemInfo->MaxStackSize - CurItem->ItemStruct.Quantity;
-				CurItem->ItemStruct.Quantity = FMath::Min(EmptyQuantity, ItemToAdd->ItemStruct.Quantity);
+				int32 EmptyQuantity = ItemInfo->MaxStackSize - Potion[idx].Quantity;
+				Potion[idx].Quantity = FMath::Min(EmptyQuantity, ItemToAdd->ItemStruct.Quantity);
 				AmountToAdd = ItemToAdd->ItemStruct.Quantity - EmptyQuantity;
 			}
 		}
 		ItemToAdd->ItemStruct.Quantity = AmountToAdd;
-		Potion[CanAddIdx] = ItemToAdd;
-		InventoryUpdate.Broadcast();
+		Potion[CanAddIdx] = ItemToAdd->ItemStruct;
+		PotionUpdate.Broadcast();
 	}
 
 	ItemToAdd->Destroy();
 }
 
-void UHASInventoryComponent::ServerDropItem_Implementation(AHASItem* ItemToDrop)
+void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
 {
-	FTransform DropTransform = FTransform(GetOwner()->GetActorRotation(), GetOwner()->GetActorLocation(), FVector(1.f, 1.f, 1.f));
+	if (ItemStruct.Quantity == 0) return;
 
-	if (ItemToDrop->ItemStruct.ItemType == EItemType::EIT_Equipment)
+	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
-		for (int idx = 0; idx < Equipment.Num(); idx++)
-		{
-			AHASItem* CurItem = Equipment[idx];
-			if (ItemToDrop->ItemStruct == CurItem->ItemStruct)
-			{
-				CurItem->ItemStruct = FItemStruct();
-				AHASItem* DropItem = GetWorld()->SpawnActorDeferred<AHASItem>(
-					AHASItem::StaticClass(),
-					DropTransform,
-					nullptr,
-					nullptr,
-					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-				);
-				DropItem->ItemStruct = ItemToDrop->ItemStruct;
-				DropItem->FinishSpawning(DropTransform);
-			}
-		}
+		Equipment[Index] = FItemStruct();
+		SpawnItem(EquipmentClass, ItemStruct);
+		EquipmentUpdate.Broadcast();
 	}
 	else
 	{
-	
+		Potion[Index] = FItemStruct();
+		SpawnItem(PotionClass, ItemStruct);
+		PotionUpdate.Broadcast();
 	}
 }
 

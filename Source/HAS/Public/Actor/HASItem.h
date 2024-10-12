@@ -8,6 +8,7 @@
 class UWidgetComponent;
 class UGameplayEffect;
 class USphereComponent;
+class UHASUserWidget;
 
 UENUM(BlueprintType)
 enum class EItemRarity : uint8
@@ -47,6 +48,7 @@ enum class EPotionType : uint8
 	EPT_None UMETA(DisplayName = "None"),
 	EPT_Health UMETA(DisplayName = "Health"),
 	EPT_Mana UMETA(DisplayName = "Mana"),
+	EPT_Int UMETA(DisplayName = "Intelligence"),
 	EPT_MAX UMETA(DisplayName = "MAX")
 };
 
@@ -117,7 +119,7 @@ struct FItemInfo : public FTableRowBase
 	TObjectPtr<UGameplayAbility> GrantedAbility;
 
 };
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class HAS_API AHASItem : public AActor
 {
 	GENERATED_BODY()
@@ -126,7 +128,7 @@ public:
 	
 	AHASItem();
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadOnly, Category = "Item")
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_ItemStruct, BlueprintReadOnly, Category = "Item")
 	FItemStruct ItemStruct;
 
 protected:
@@ -142,6 +144,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> EffectClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UHASUserWidget> ItemNameWidgetClass;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
@@ -155,5 +160,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> NameWidget;
 
+	UFUNCTION()
+	void OnRep_ItemStruct();
 
 };

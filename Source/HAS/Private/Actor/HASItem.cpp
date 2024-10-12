@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Interfaces/HASCombatInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "Inventory/HASInventoryComponent.h"
 
 AHASItem::AHASItem()
 {
@@ -26,8 +27,9 @@ AHASItem::AHASItem()
 	Sphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
 	NameWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Name Widget"));
-	NameWidget->SetupAttachment(Mesh);
+	NameWidget->SetupAttachment(Mesh);;
 	NameWidget->SetVisibility(true);
+	
 }
 
 void AHASItem::BeginPlay()
@@ -36,24 +38,38 @@ void AHASItem::BeginPlay()
 
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHASItem::OnSphereOverlap);
 
+	if (UHASUserWidget* Widget = Cast<UHASUserWidget>(NameWidget->GetUserWidgetObject()))
+	{
+		Widget->ThisItemStruct = ItemStruct;
+		Widget->ThisItem = this;
+	}
+
+	// DataTable 서버에만 존재.
+	if (HasAuthority())
+	{
+		if (IsValid(ItemStruct.ItemHandle.DataTable))
+		{
+			FName Name = ItemStruct.ItemHandle.RowName;
+			FItemInfo* ItemInfo = ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(Name, "");
+			Mesh->SetStaticMesh(ItemInfo->Mesh);
+		}
+
+		SetActorRotation(FRotator(45.f, 0.f, 0.f));
+		Mesh->SetSimulatePhysics(true);
+		Mesh->SetEnableGravity(true);
+		Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
+	}
+
+}
+
+void AHASItem::OnRep_ItemStruct()
+{
 	if (IsValid(ItemStruct.ItemHandle.DataTable))
 	{
 		FName Name = ItemStruct.ItemHandle.RowName;
 		FItemInfo* ItemInfo = ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(Name, "");
 		Mesh->SetStaticMesh(ItemInfo->Mesh);
 	}
-
-	if (UHASUserWidget* Widget = Cast<UHASUserWidget>(NameWidget->GetUserWidgetObject()))
-	{
-		Widget->ThisItem = this;
-		Widget->ThisItemStruct = ItemStruct;
-	}
-
-	SetActorRotation(FRotator(45.f, 0.f, 0.f));
-	Mesh->SetSimulatePhysics(true);
-	Mesh->SetEnableGravity(true);
-	Mesh->AddImpulse(FVector(0.f, 0.f, SpawnImpulse));
-
 }
 
 void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -87,5 +103,5 @@ void AHASItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(AHASItem, ItemStruct, COND_OwnerOnly);
+	DOREPLIFETIME(AHASItem, ItemStruct);
 }
