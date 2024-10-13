@@ -14,6 +14,7 @@
 #include "Actor/HASItem.h"
 #include "Inventory/HASInventoryComponent.h"
 #include "UI/WIdget/HASUserWidget.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -30,6 +31,10 @@ AHASCharacter::AHASCharacter()
 	LevelUpEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUp Effect"));
 	LevelUpEffectComponent->SetupAttachment(GetRootComponent());
 	LevelUpEffectComponent->bAutoActivate = false;
+
+	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
+	SceneCaptureComponent2D->SetupAttachment(GetMesh());
+	SceneCaptureComponent2D->ShowOnlyActorComponents(this);
 
 	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
 	Inventory->SetIsReplicated(true);
@@ -219,4 +224,12 @@ void AHASCharacter::HideMagicCircle_Implementation()
 void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 {
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
+}
+
+void AHASCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SceneCaptureComponent2D->ShowOnlyActorComponents(this);
+	SceneCaptureComponent2D->CaptureScene();
 }

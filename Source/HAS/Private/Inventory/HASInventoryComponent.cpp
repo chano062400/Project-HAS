@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Character/HASCharacter.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 UHASInventoryComponent::UHASInventoryComponent()
 {
@@ -32,6 +33,7 @@ void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& Ite
 		if(AHASCharacter* Player = Cast<AHASCharacter>(GetOwner()))
 		{
 			Player->GetWeapon()->SetSkeletalMesh(Info->StaffMesh);
+			Player->GetSceneCaptureComponent2D()->CaptureScene();
 		}
 		Equipment[Index] = FItemStruct();
 		EquipmentUpdate.Broadcast();

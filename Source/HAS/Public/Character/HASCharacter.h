@@ -12,6 +12,7 @@ class UGroomComponent;
 class UNiagaraComponent;
 class AHASMagicCircle;
 class AHASItem;
+class USceneCaptureComponent2D;
 
 /**
  * 
@@ -75,7 +76,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UHASInventoryComponent* GetInventoryComponent() { return Inventory; }
 
+	USceneCaptureComponent2D* GetSceneCaptureComponent2D() { return SceneCaptureComponent2D; }
+
+
 protected:
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArm;
@@ -94,4 +100,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UHASInventoryComponent> Inventory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<USceneCaptureComponent2D> SceneCaptureComponent2D;
 };
