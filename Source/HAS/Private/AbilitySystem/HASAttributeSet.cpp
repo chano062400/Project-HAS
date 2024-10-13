@@ -253,6 +253,7 @@ void UHASAttributeSet::HandleDebuff(FEffectProperties& Props)
 	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	Effect->DurationMagnitude = FGameplayEffectModifierMagnitude(DebuffDuration);
 	Effect->Period = DebuffFrequency;
+	Effect->bExecutePeriodicEffectOnApplication = false;
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;
 

@@ -20,15 +20,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
-	
-	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Inventory")
-	FItemStruct ThisItemStruct;
-
-	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Inventory")
-	TObjectPtr<AHASItem> ThisItem;
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void UpdateInventory();
 
 protected:
 

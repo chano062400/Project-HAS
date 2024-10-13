@@ -78,6 +78,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float BaseWalkSpeed = 250.f;
 
+	USkeletalMeshComponent* GetWeapon() { return Weapon; }
+
 protected:
 
 	virtual void BeginPlay() override;

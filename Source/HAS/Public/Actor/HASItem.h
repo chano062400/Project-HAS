@@ -48,7 +48,8 @@ enum class EPotionType : uint8
 	EPT_None UMETA(DisplayName = "None"),
 	EPT_Health UMETA(DisplayName = "Health"),
 	EPT_Mana UMETA(DisplayName = "Mana"),
-	EPT_Int UMETA(DisplayName = "Intelligence"),
+	EPT_Elixir UMETA(DisplayName = "Elixir"),
+	EPT_Speed UMETA(DisplayName = "Speed"),
 	EPT_MAX UMETA(DisplayName = "MAX")
 };
 
@@ -56,16 +57,6 @@ USTRUCT(BlueprintType)
 struct FItemStruct
 {
 	GENERATED_BODY()
-
-	bool operator==(const FItemStruct& InItemStruct)
-	{
-		if (ItemType != InItemStruct.ItemType) return false;
-		if (EquipeMentType != InItemStruct.EquipeMentType) return false;
-		if (PotionType != InItemStruct.PotionType) return false;
-		if (Rarity != InItemStruct.Rarity) return false;
-		if (Quantity != InItemStruct.Quantity) return false;
-		return true;
-	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FDataTableRowHandle ItemHandle;
@@ -94,8 +85,8 @@ struct FItemInfo : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName Name;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText Description;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FString Description;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxStackSize;
@@ -111,12 +102,15 @@ struct FItemInfo : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UStaticMesh> Mesh;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USkeletalMesh> StaffMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UGameplayEffect> UseEffect;
+	TArray<TSubclassOf<UGameplayEffect>> UseEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UGameplayAbility> GrantedAbility;
+	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 
 };
 UCLASS(BlueprintType, Blueprintable)
@@ -142,9 +136,6 @@ protected:
 
 private:
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> EffectClass;
-	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UHASUserWidget> ItemNameWidgetClass;
 

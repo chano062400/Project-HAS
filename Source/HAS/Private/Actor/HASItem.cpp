@@ -1,6 +1,6 @@
 #include "Actor/HASItem.h"
 #include "Components/WidgetComponent.h"
-#include "UI/Widget/HASUserWidget.h"
+#include "UI/Widget/HASInventoryWidget.h"
 #include "Components/SphereComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -38,7 +38,7 @@ void AHASItem::BeginPlay()
 
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHASItem::OnSphereOverlap);
 
-	if (UHASUserWidget* Widget = Cast<UHASUserWidget>(NameWidget->GetUserWidgetObject()))
+	if (UHASInventoryWidget* Widget = Cast<UHASInventoryWidget>(NameWidget->GetUserWidgetObject()))
 	{
 		Widget->ThisItemStruct = ItemStruct;
 		Widget->ThisItem = this;
@@ -76,9 +76,12 @@ void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if (ItemStruct.ItemType != EItemType::EIT_Potion || OtherActor->ActorHasTag(FName("Enemy"))) return;
 
+	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+	FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
+
 	if (HasAuthority())
 	{
-		if (ItemStruct.ItemType == EItemType::EIT_Potion)
+		if (ItemStruct.ItemType == EItemType::EIT_Potion && ItemStruct.PotionType != EPotionType::EPT_Elixir)
 		{
 			if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
@@ -86,12 +89,15 @@ void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 				{
 					if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(OtherActor))
 					{
-						int32 PlayerLevel = Interface->Execute_GetLevel(OtherActor);
-						FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
-						FGameplayEffectSpecHandle EffectSpecHandle = ASC->MakeOutgoingSpec(EffectClass, PlayerLevel, EffectContextHandle);
-						ASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+						for (const auto& Effect : Info->UseEffects)
+						{
+							int32 PlayerLevel = Interface->Execute_GetLevel(OtherActor);
+							FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
+							FGameplayEffectSpecHandle EffectSpecHandle = ASC->MakeOutgoingSpec(Effect, PlayerLevel, EffectContextHandle);
+							ASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
-						Destroy();
+							Destroy();
+						}
 					}
 				}
 			}

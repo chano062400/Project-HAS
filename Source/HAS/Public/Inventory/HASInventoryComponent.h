@@ -29,6 +29,9 @@ public:
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerDropItem(const FItemStruct& ItemStruct, int32 Index);
+	
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerUseItem(const FItemStruct& ItemStruct, int32 Index);
 
 	UPROPERTY(ReplicatedUsing = OnRep_Equipment, BlueprintReadOnly)
 	TArray<FItemStruct> Equipment;

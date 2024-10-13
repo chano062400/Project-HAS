@@ -3,10 +3,45 @@
 #include "Actor/HASItem.h"
 #include "Engine/DataTable.h"
 #include "Engine/ActorChannel.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "Character/HASCharacter.h"
 
 UHASInventoryComponent::UHASInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;	
+}
+
+void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
+{
+	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+	FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
+
+	for (const auto& Effect : Info->UseEffects)
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
+		{
+			FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), ASC->GetPredictionKeyForNewAction());
+		}
+	}
+
+	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
+	{
+		if(AHASCharacter* Player = Cast<AHASCharacter>(GetOwner()))
+		{
+			Player->GetWeapon()->SetSkeletalMesh(Info->StaffMesh);
+		}
+		Equipment[Index] = FItemStruct();
+		EquipmentUpdate.Broadcast();
+	}
+	else
+	{
+		Potion[Index].Quantity -= 1;
+		if (Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
+		PotionUpdate.Broadcast();
+	}
 }
 
 void UHASInventoryComponent::BeginPlay()
@@ -57,7 +92,7 @@ void UHASInventoryComponent::OnRep_Potion()
 void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 {
 	int32 CanAddIdx;
-	int32 AmountToAdd;
+	int32 AmountToAdd = ItemToAdd->ItemStruct.Quantity;
 
 	if (ItemToAdd->ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
@@ -89,13 +124,16 @@ void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 			{
 				FItemInfo* ItemInfo = ItemToAdd->ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(ItemToAdd->ItemStruct.ItemHandle.RowName, "");
 
-				int32 EmptyQuantity = ItemInfo->MaxStackSize - Potion[idx].Quantity;
-				Potion[idx].Quantity = FMath::Min(EmptyQuantity, ItemToAdd->ItemStruct.Quantity);
-				AmountToAdd = ItemToAdd->ItemStruct.Quantity - EmptyQuantity;
+				int32 CanAddAmount = ItemInfo->MaxStackSize - Potion[idx].Quantity;
+				Potion[idx].Quantity = FMath::Min(ItemInfo->MaxStackSize, Potion[idx].Quantity + ItemToAdd->ItemStruct.Quantity);		
+				AmountToAdd = ItemToAdd->ItemStruct.Quantity  - CanAddAmount;
 			}
 		}
-		ItemToAdd->ItemStruct.Quantity = AmountToAdd;
-		Potion[CanAddIdx] = ItemToAdd->ItemStruct;
+		if (AmountToAdd > 0)
+		{
+			ItemToAdd->ItemStruct.Quantity = AmountToAdd;
+			Potion[CanAddIdx] = ItemToAdd->ItemStruct;
+		}
 		PotionUpdate.Broadcast();
 	}
 
