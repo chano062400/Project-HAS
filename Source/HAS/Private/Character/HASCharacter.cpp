@@ -34,6 +34,7 @@ AHASCharacter::AHASCharacter()
 
 	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
 	SceneCaptureComponent2D->SetupAttachment(GetMesh());
+	SceneCaptureComponent2D->SetIsReplicated(true);
 
 	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
 	Inventory->SetIsReplicated(true);
@@ -95,6 +96,7 @@ void AHASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AHASCharacter, bCastIceBeamLoop);
+	DOREPLIFETIME_CONDITION(AHASCharacter, InventoryCharacter, COND_OwnerOnly);
 }
 
 void AHASCharacter::ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass)
@@ -127,7 +129,7 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
 	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
-		if (Weapon && WeaponMesh)
+		if (Weapon && WeaponMesh && InventoryCharacter)
 		{
 			WeaponMesh = Info->StaffMesh;
 			Weapon->SetSkeletalMesh(WeaponMesh);
@@ -135,6 +137,11 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 
 		for (const auto& Effect : Info->UseEffects)
 		{
+			if (PrevWeaponEffectHandle.IsValid())
+			{
+				AbilitySystemComponent->RemoveActiveGameplayEffect(PrevWeaponEffectHandle);
+			}
+
 			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
 
@@ -166,7 +173,7 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 				}
 			}
 
-			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+			PrevWeaponEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
 		}
 	}
 }
@@ -294,6 +301,11 @@ void AHASCharacter::BeginPlay()
 	Inventory->EquipmentUse.AddUObject(this, &AHASCharacter::ServerEquipmentUse);
 	Inventory->PotionUse.AddUObject(this, &AHASCharacter::ServerPotionUse);
 
+	ServerSpawnInventoryCharacter();
+}
+
+void AHASCharacter::ServerSpawnInventoryCharacter_Implementation()
+{
 	if (InventoryCharacterClass)
 	{
 		FTransform SpawnTransform;
@@ -306,7 +318,9 @@ void AHASCharacter::BeginPlay()
 			this,
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 		);
-		InventoryCharacter->SceneCaptureComponent2D->ShowOnlyActorComponents(this);
+		InventoryCharacter->Weapon->SetSkeletalMesh(WeaponMesh);
 		InventoryCharacter->FinishSpawning(SpawnTransform);
+		// 생성된 이후 호출해야 함.
+		InventoryCharacter->SceneCaptureComponent2D->ShowOnlyActorComponents(this);
 	}
 }

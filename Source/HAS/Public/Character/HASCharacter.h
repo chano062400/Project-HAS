@@ -88,6 +88,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(Server, Reliable)
+	void ServerSpawnInventoryCharacter();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArm;
 
@@ -112,7 +115,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASCharacter> InventoryCharacterClass;
 	
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TObjectPtr<AHASCharacter> InventoryCharacter;
 
+	FActiveGameplayEffectHandle PrevWeaponEffectHandle;
 };
