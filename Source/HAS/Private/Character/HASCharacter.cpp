@@ -34,7 +34,6 @@ AHASCharacter::AHASCharacter()
 
 	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
 	SceneCaptureComponent2D->SetupAttachment(GetMesh());
-	SceneCaptureComponent2D->ShowOnlyActorComponents(this);
 
 	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
 	Inventory->SetIsReplicated(true);
@@ -96,7 +95,6 @@ void AHASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AHASCharacter, bCastIceBeamLoop);
-
 }
 
 void AHASCharacter::ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass)
@@ -121,6 +119,69 @@ void AHASCharacter::MulticastPlayLevelUpEffect_Implementation()
 
 		LevelUpEffectComponent->SetWorldRotation(Rotation);
 		LevelUpEffectComponent->Activate(true);
+	}
+}
+
+void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStruct)
+{
+	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
+	{
+		if (Weapon && WeaponMesh)
+		{
+			WeaponMesh = Info->StaffMesh;
+			Weapon->SetSkeletalMesh(WeaponMesh);
+		}
+
+		for (const auto& Effect : Info->UseEffects)
+		{
+			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
+
+			float ApplyLevel = 1;
+
+			switch (ItemStruct.Rarity)
+			{
+			case EItemRarity::EIR_Common:
+				ApplyLevel *= 1.0f;
+				break;
+			case EItemRarity::EIR_Rare:
+				ApplyLevel *= 1.5f;
+				break;
+			case EItemRarity::EIR_Unique:
+				ApplyLevel *= 2.0f;
+				break;
+			case EItemRarity::EIR_Legendary:
+				ApplyLevel *= 3.0f;
+				break;
+			default:
+				break;
+			}
+
+			if (SpecHandle.IsValid())
+			{
+				if (FGameplayEffectSpec* EffectSpec = SpecHandle.Data.Get())
+				{
+					EffectSpec->SetLevel(ApplyLevel);
+				}
+			}
+
+			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+		}
+	}
+}
+
+void AHASCharacter::ServerPotionUse_Implementation(const FItemStruct& ItemStruct)
+{
+	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
+	{
+		for (const auto& Effect : Info->UseEffects)
+		{
+			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
+			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+		}
 	}
 }
 
@@ -230,6 +291,22 @@ void AHASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SceneCaptureComponent2D->ShowOnlyActorComponents(this);
-	SceneCaptureComponent2D->CaptureScene();
+	Inventory->EquipmentUse.AddUObject(this, &AHASCharacter::ServerEquipmentUse);
+	Inventory->PotionUse.AddUObject(this, &AHASCharacter::ServerPotionUse);
+
+	if (InventoryCharacterClass)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(FVector(0.f, 0.f, 0.f));
+		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
+
+		InventoryCharacter = GetWorld()->SpawnActorDeferred<AHASCharacter>(InventoryCharacterClass,
+			SpawnTransform,
+			this,
+			this,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+		);
+		InventoryCharacter->SceneCaptureComponent2D->ShowOnlyActorComponents(this);
+		InventoryCharacter->FinishSpawning(SpawnTransform);
+	}
 }

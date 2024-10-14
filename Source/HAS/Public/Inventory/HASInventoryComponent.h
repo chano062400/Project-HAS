@@ -8,6 +8,7 @@
 class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct& ItemStruct);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), BlueprintType, Blueprintable)
 class HAS_API UHASInventoryComponent : public UActorComponent
@@ -23,6 +24,10 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FInventoryUpdateSignature PotionUpdate;
+
+	FItemUsetSignature EquipmentUse;
+
+	FItemUsetSignature PotionUse;
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerAddItem(AHASItem* ItemToAdd);

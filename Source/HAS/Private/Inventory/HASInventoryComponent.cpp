@@ -18,28 +18,18 @@ void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& Ite
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
 	FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
 
-	for (const auto& Effect : Info->UseEffects)
-	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
-		{
-			FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
-			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
-			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), ASC->GetPredictionKeyForNewAction());
-		}
-	}
-
 	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
-		if(AHASCharacter* Player = Cast<AHASCharacter>(GetOwner()))
-		{
-			Player->GetWeapon()->SetSkeletalMesh(Info->StaffMesh);
-			Player->GetSceneCaptureComponent2D()->CaptureScene();
-		}
+		EquipmentUse.Broadcast(ItemStruct);
+
 		Equipment[Index] = FItemStruct();
 		EquipmentUpdate.Broadcast();
+
 	}
 	else
 	{
+		PotionUse.Broadcast(ItemStruct);
+
 		Potion[Index].Quantity -= 1;
 		if (Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
 		PotionUpdate.Broadcast();

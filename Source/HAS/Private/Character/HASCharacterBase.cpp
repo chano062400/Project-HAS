@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "NiagaraComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -12,7 +13,7 @@ AHASCharacterBase::AHASCharacterBase()
 	bReplicates = true;
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	
+
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
 	BurnDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Burn Debuff Component"));
@@ -31,6 +32,14 @@ AHASCharacterBase::AHASCharacterBase()
 UAbilitySystemComponent* AHASCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AHASCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AHASCharacterBase, WeaponMesh);
+
 }
 
 void AHASCharacterBase::InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level)
@@ -199,6 +208,15 @@ void AHASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Weapon->SetSkeletalMesh(WeaponMesh);
+}
+
+void AHASCharacterBase::OnRep_WeaponMesh()
+{
+	if (Weapon && WeaponMesh)
+	{
+		Weapon->SetSkeletalMesh(WeaponMesh);
+	}
 }
 
 FMontageInfo AHASCharacterBase::GetMontageInfoByTag_Implementation(const FGameplayTag& MontageTag)

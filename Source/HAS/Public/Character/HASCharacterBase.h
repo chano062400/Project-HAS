@@ -23,6 +23,8 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	UAttributeSet* GetAttributeSet() const { return AttributeSetComp; }
 
 	virtual void InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level);
@@ -80,6 +82,10 @@ public:
 
 	USkeletalMeshComponent* GetWeapon() { return Weapon; }
 
+	USkeletalMesh* GetWeaponMesh() { return WeaponMesh; }
+
+	void SetWeaponMesh(USkeletalMesh* NewMesh) { WeaponMesh = NewMesh; }
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -95,6 +101,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+	
+	// SkeletalMeshComponent는 컴포넌트라서 replicate X. 
+	UPROPERTY(EditDefaultsOnly, ReplicatedUsing = OnRep_WeaponMesh, BlueprintReadOnly)
+	TObjectPtr<USkeletalMesh> WeaponMesh;
+
+	UFUNCTION()
+	void OnRep_WeaponMesh();
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;

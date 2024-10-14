@@ -31,13 +31,19 @@ public:
 	virtual void OnRep_PlayerState() override;
 	
 	virtual void InitAbilityActorInfo() override;
-
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayLevelUpEffect();
+
+	UFUNCTION(Server, Reliable)
+	void ServerEquipmentUse(const FItemStruct& ItemStruct);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerPotionUse(const FItemStruct& ItemStruct);
 
 	/* Combat Interface */
 	
@@ -75,9 +81,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UHASInventoryComponent* GetInventoryComponent() { return Inventory; }
-
-	USceneCaptureComponent2D* GetSceneCaptureComponent2D() { return SceneCaptureComponent2D; }
-
+	
+	AHASCharacter* GetInventoryCharacter() { return InventoryCharacter; }
 
 protected:
 
@@ -100,7 +105,14 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UHASInventoryComponent> Inventory;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponent2D> SceneCaptureComponent2D;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASCharacter> InventoryCharacterClass;
+	
+	UPROPERTY()
+	TObjectPtr<AHASCharacter> InventoryCharacter;
+
 };
