@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "InputAction.h"
+#include "Actor/HASItem.h"
 #include "Interfaces/HASCombatInterface.h"
 #include "Interfaces/HASPlayerInterface.h"
 #include "HASPlayerController.generated.h"
@@ -14,6 +15,8 @@ class UDamageTextComponent;
 class AHASMagicCircle;
 class UHASInputInfo;
 class UHASAbilityInfo;
+class AHASCharacter;
+class AHASCharacterBase;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FEnemyInfoSignature, FEnemyInfo, /*ThisActor*/ int32 /*PlayerLevel*/);
 
@@ -156,4 +159,5 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AHASMagicCircle> MagicCircle;
+
 };

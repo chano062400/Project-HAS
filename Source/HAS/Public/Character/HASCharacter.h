@@ -13,6 +13,7 @@ class UNiagaraComponent;
 class AHASMagicCircle;
 class AHASItem;
 class USceneCaptureComponent2D;
+class AHASInventoryCharacter;
 
 /**
  * 
@@ -81,15 +82,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UHASInventoryComponent* GetInventoryComponent() { return Inventory; }
-	
-	AHASCharacter* GetInventoryCharacter() { return InventoryCharacter; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstanceDynamic> RenderTexture;
 
 protected:
 
 	virtual void BeginPlay() override;
-
-	UFUNCTION(Server, Reliable)
-	void ServerSpawnInventoryCharacter();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArm;
@@ -106,17 +105,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> RegenerationEffectClass;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UHASInventoryComponent> Inventory;
-	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USceneCaptureComponent2D> SceneCaptureComponent2D;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AHASCharacter> InventoryCharacterClass;
-	
-	UPROPERTY(Replicated)
-	TObjectPtr<AHASCharacter> InventoryCharacter;
+	//UPROPERTY(EditDefaultsOnly)
+	//TSubclassOf<AHASInventoryCharacter> InventoryCharacterClass;
+
+	//UPROPERTY(BlueprintReadWrite)
+	//TObjectPtr<AHASInventoryCharacter> InventoryCharacter;
 
 	FActiveGameplayEffectHandle PrevWeaponEffectHandle;
+	
+	void SetEffectLevelByRarity(const FItemStruct& ItemStruct, float& ApplyLevel);
+
+	void SetEquipmentMeshByType(const FItemStruct& ItemStruct);
 };

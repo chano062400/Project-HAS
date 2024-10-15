@@ -14,6 +14,10 @@
 #include "UI/Widget/DamageTextComponent.h"
 #include "Actor/HASMagicCircle.h"
 #include "Components/DecalComponent.h"
+#include "Character/HASCharacter.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Actor/HASItem.h"
+#include "Engine/TextureRenderTarget2D.h"
 
 AHASPlayerController::AHASPlayerController()
 {
@@ -72,7 +76,9 @@ void AHASPlayerController::BeginPlay()
 	InputMode.SetHideCursorDuringCapture(false);
 	SetInputMode(InputMode);
 	bShowMouseCursor = true;
+
 }
+
 
 void AHASPlayerController::Move(const FInputActionValue& Value)
 {

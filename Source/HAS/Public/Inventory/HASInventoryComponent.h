@@ -8,7 +8,7 @@
 class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct& ItemStruct);
+DECLARE_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct&);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), BlueprintType, Blueprintable)
 class HAS_API UHASInventoryComponent : public UActorComponent

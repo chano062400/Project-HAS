@@ -101,13 +101,33 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
-	
+
 	// SkeletalMeshComponent는 컴포넌트라서 replicate X. 
-	UPROPERTY(EditDefaultsOnly, ReplicatedUsing = OnRep_WeaponMesh, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_WeaponMesh, BlueprintReadOnly)
 	TObjectPtr<USkeletalMesh> WeaponMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> Hat;
+
+	// SkeletalMeshComponent는 컴포넌트라서 replicate X. 
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_HatMesh, BlueprintReadOnly)
+	TObjectPtr<UStaticMesh> HatMesh;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> Boots;
+
+	// SkeletalMeshComponent는 컴포넌트라서 replicate X. 
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_BootsMesh, BlueprintReadOnly)
+	TObjectPtr<UStaticMesh> BootsMesh;
 
 	UFUNCTION()
 	void OnRep_WeaponMesh();
+	
+	UFUNCTION()
+	void OnRep_HatMesh();
+	
+	UFUNCTION()
+	void OnRep_BootsMesh();
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;

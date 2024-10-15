@@ -14,7 +14,6 @@
 #include "Actor/HASItem.h"
 #include "Inventory/HASInventoryComponent.h"
 #include "UI/WIdget/HASUserWidget.h"
-#include "Components/SceneCaptureComponent2D.h"
 
 AHASCharacter::AHASCharacter()
 {
@@ -24,6 +23,8 @@ AHASCharacter::AHASCharacter()
 	Camera->SetupAttachment(SpringArm);
 	
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
+	Hat->SetupAttachment(GetMesh(), FName("HatSocket"));
+	Boots->SetupAttachment(GetMesh(), FName("BootSocket"));
 
 	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("HairGroom"));
 	Hair->SetupAttachment(GetMesh(), FName("HairGroom"));
@@ -32,12 +33,17 @@ AHASCharacter::AHASCharacter()
 	LevelUpEffectComponent->SetupAttachment(GetRootComponent());
 	LevelUpEffectComponent->bAutoActivate = false;
 
-	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCaptureComponent2D->SetupAttachment(GetMesh());
-	SceneCaptureComponent2D->SetIsReplicated(true);
-
 	Inventory = CreateDefaultSubobject<UHASInventoryComponent>(TEXT("Inventory"));
 	Inventory->SetIsReplicated(true);
+}
+
+void AHASCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Inventory->EquipmentUse.AddUObject(this, &AHASCharacter::ServerEquipmentUse);
+	Inventory->PotionUse.AddUObject(this, &AHASCharacter::ServerPotionUse);
+
 }
 
 void AHASCharacter::PossessedBy(AController* NewController)
@@ -47,9 +53,7 @@ void AHASCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 
 	AddStartAbilities();
-
-	//AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
-
+	
 }
 
 void AHASCharacter::OnRep_PlayerState()
@@ -57,8 +61,6 @@ void AHASCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
-
-	//AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Ability_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::HitReactTagEvent);
 
 }
 
@@ -96,7 +98,6 @@ void AHASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AHASCharacter, bCastIceBeamLoop);
-	DOREPLIFETIME_CONDITION(AHASCharacter, InventoryCharacter, COND_OwnerOnly);
 }
 
 void AHASCharacter::ApplyRegenerationEffect(TSubclassOf<UGameplayEffect> EffectClass)
@@ -129,12 +130,8 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
 	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
-		if (Weapon && WeaponMesh && InventoryCharacter)
-		{
-			WeaponMesh = Info->StaffMesh;
-			Weapon->SetSkeletalMesh(WeaponMesh);
-		}
-
+		SetEquipmentMeshByType(ItemStruct);
+		
 		for (const auto& Effect : Info->UseEffects)
 		{
 			if (PrevWeaponEffectHandle.IsValid())
@@ -147,23 +144,7 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 
 			float ApplyLevel = 1;
 
-			switch (ItemStruct.Rarity)
-			{
-			case EItemRarity::EIR_Common:
-				ApplyLevel *= 1.0f;
-				break;
-			case EItemRarity::EIR_Rare:
-				ApplyLevel *= 1.5f;
-				break;
-			case EItemRarity::EIR_Unique:
-				ApplyLevel *= 2.0f;
-				break;
-			case EItemRarity::EIR_Legendary:
-				ApplyLevel *= 3.0f;
-				break;
-			default:
-				break;
-			}
+			SetEffectLevelByRarity(ItemStruct, ApplyLevel);
 
 			if (SpecHandle.IsValid())
 			{
@@ -174,6 +155,62 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 			}
 
 			PrevWeaponEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+		}
+	}
+}
+
+void AHASCharacter::SetEffectLevelByRarity(const FItemStruct& ItemStruct, float& ApplyLevel)
+{
+	switch (ItemStruct.Rarity)
+	{
+	case EItemRarity::EIR_Common:
+		ApplyLevel *= 1.0f;
+		break;
+	case EItemRarity::EIR_Rare:
+		ApplyLevel *= 1.5f;
+		break;
+	case EItemRarity::EIR_Unique:
+		ApplyLevel *= 2.0f;
+		break;
+	case EItemRarity::EIR_Legendary:
+		ApplyLevel *= 3.0f;
+		break;
+	default:
+		break;
+	}
+}
+
+void AHASCharacter::SetEquipmentMeshByType(const FItemStruct& ItemStruct)
+{
+	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
+	{
+
+		switch (ItemStruct.EquipeMentType)
+		{
+		case EEquipmentType::EET_Staff:
+			if (Info->StaffMesh)
+			{
+				WeaponMesh = Info->StaffMesh;
+				Weapon->SetSkeletalMesh(WeaponMesh);
+			}
+			break;
+		case EEquipmentType::EET_Hat:
+			if (Info->Mesh)
+			{
+				HatMesh = Info->Mesh;
+				Hat->SetStaticMesh(HatMesh);
+			}
+			break;
+		case EEquipmentType::EET_Boots:
+			if (Info->Mesh)
+			{
+				BootsMesh = Info->Mesh;
+				Boots->SetStaticMesh(BootsMesh);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -292,35 +329,4 @@ void AHASCharacter::HideMagicCircle_Implementation()
 void AHASCharacter::SetCastIceBeamLoop_Implementation(bool bInCastIcemBeamLoop)
 {
 	bCastIceBeamLoop = bInCastIcemBeamLoop;
-}
-
-void AHASCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	Inventory->EquipmentUse.AddUObject(this, &AHASCharacter::ServerEquipmentUse);
-	Inventory->PotionUse.AddUObject(this, &AHASCharacter::ServerPotionUse);
-
-	ServerSpawnInventoryCharacter();
-}
-
-void AHASCharacter::ServerSpawnInventoryCharacter_Implementation()
-{
-	if (InventoryCharacterClass)
-	{
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(FVector(0.f, 0.f, 0.f));
-		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
-
-		InventoryCharacter = GetWorld()->SpawnActorDeferred<AHASCharacter>(InventoryCharacterClass,
-			SpawnTransform,
-			this,
-			this,
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-		);
-		InventoryCharacter->Weapon->SetSkeletalMesh(WeaponMesh);
-		InventoryCharacter->FinishSpawning(SpawnTransform);
-		// 생성된 이후 호출해야 함.
-		InventoryCharacter->SceneCaptureComponent2D->ShowOnlyActorComponents(this);
-	}
 }

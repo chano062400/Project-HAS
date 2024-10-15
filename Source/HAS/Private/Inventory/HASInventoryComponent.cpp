@@ -20,6 +20,7 @@ void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& Ite
 
 	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
+
 		EquipmentUse.Broadcast(ItemStruct);
 
 		Equipment[Index] = FItemStruct();

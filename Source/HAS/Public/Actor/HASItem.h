@@ -36,8 +36,8 @@ enum class EEquipmentType : uint8
 {
 	EET_None UMETA(DisplayName = "None"),
 	EET_Staff UMETA(DisplayName = "Staff"),
-	EET_Armor UMETA(DisplayName = "Armor"),
-	EET_Shoes UMETA(DisplayName = "Shoes"),
+	EET_Hat UMETA(DisplayName = "Hat"),
+	EET_Boots UMETA(DisplayName = "Boots"),
 	EET_Ring UMETA(DisplayName = "Ring"),
 	EET_MAX UMETA(DisplayName = "MAX")
 };
@@ -108,10 +108,6 @@ struct FItemInfo : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<UGameplayEffect>> UseEffects;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
-
 };
 UCLASS(BlueprintType, Blueprintable)
 class HAS_API AHASItem : public AActor
