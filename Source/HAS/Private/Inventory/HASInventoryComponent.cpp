@@ -16,25 +16,39 @@ UHASInventoryComponent::UHASInventoryComponent()
 void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
 {
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
-	FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
-
-	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
+	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
+		if (ItemStruct.ItemType == EItemType::EIT_Equipment)
+		{
+			Equipment[Index] = FItemStruct();
 
-		EquipmentUse.Broadcast(ItemStruct);
+			// Server / Client 자신의 EquipmentSlot Update.
+			ClientUseEquipment(ItemStruct);
 
-		Equipment[Index] = FItemStruct();
-		EquipmentUpdate.Broadcast();
+			EquipmentUpdate.Broadcast();
 
+		}
+		else
+		{
+			Potion[Index].Quantity -= 1;
+			if (Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
+			PotionUse.Broadcast(ItemStruct);
+			PotionUpdate.Broadcast();
+		}
 	}
-	else
+}
+
+void UHASInventoryComponent::ServerUnEquipItem_Implementation(const FItemStruct& ChangeItemStruct)
+{
+	if (ChangeItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
-		PotionUse.Broadcast(ItemStruct);
-
-		Potion[Index].Quantity -= 1;
-		if (Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
-		PotionUpdate.Broadcast();
+		AddEquipment(ChangeItemStruct);
 	}
+}
+
+void UHASInventoryComponent::ClientUseEquipment_Implementation(const FItemStruct& ItemStruct)
+{
+	EquipmentUse.Broadcast(ItemStruct);
 }
 
 void UHASInventoryComponent::BeginPlay()
@@ -46,6 +60,10 @@ void UHASInventoryComponent::BeginPlay()
 		FItemStruct ItemStruct;
 		Equipment.Init(ItemStruct, 33);
 		Potion.Init(ItemStruct, 33);
+
+		EquipmentUpdate.Broadcast();
+		PotionUpdate.Broadcast();
+		GoldUpdate.Broadcast();
 	}
 }
 
@@ -55,6 +73,7 @@ void UHASInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Equipment, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Potion, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Gold, COND_OwnerOnly);
 }
 
 void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct)
@@ -72,65 +91,77 @@ void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FI
 	DropItem->FinishSpawning(DropTransform);
 }
 
-void UHASInventoryComponent::OnRep_Equipment()
-{
-	EquipmentUpdate.Broadcast();
-}
-
-void UHASInventoryComponent::OnRep_Potion()
-{
-	PotionUpdate.Broadcast();
-}
-
 void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 {
-	int32 CanAddIdx;
-	int32 AmountToAdd = ItemToAdd->ItemStruct.Quantity;
-
-	if (ItemToAdd->ItemStruct.ItemType == EItemType::EIT_Equipment)
+	switch (ItemToAdd->ItemStruct.ItemType)
 	{
-		CanAddIdx = Equipment.Num();
-		for (int32 idx = 0; idx < Equipment.Num(); idx++)
-		{
-			if (Equipment[idx].Quantity == 0)
-			{
-				CanAddIdx = FMath::Min(CanAddIdx, idx);
-			}
-		}
-
-		Equipment[CanAddIdx] = ItemToAdd->ItemStruct;
-		EquipmentUpdate.Broadcast();
-	}
-	else if (ItemToAdd->ItemStruct.ItemType == EItemType::EIT_Potion)
-	{
-		CanAddIdx = Potion.Num();
-		for (int32 idx = 0; idx < Potion.Num(); idx++)
-		{
-			
-			if (Potion[idx].PotionType == EPotionType::EPT_None)
-			{
-				CanAddIdx = FMath::Min(CanAddIdx, idx);
-			}
-
-			// 같은 아이템이 있다면
-			if (ItemToAdd->ItemStruct.ItemHandle.RowName == Potion[idx].ItemHandle.RowName)
-			{
-				FItemInfo* ItemInfo = ItemToAdd->ItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(ItemToAdd->ItemStruct.ItemHandle.RowName, "");
-
-				int32 CanAddAmount = ItemInfo->MaxStackSize - Potion[idx].Quantity;
-				Potion[idx].Quantity = FMath::Min(ItemInfo->MaxStackSize, Potion[idx].Quantity + ItemToAdd->ItemStruct.Quantity);		
-				AmountToAdd = ItemToAdd->ItemStruct.Quantity  - CanAddAmount;
-			}
-		}
-		if (AmountToAdd > 0)
-		{
-			ItemToAdd->ItemStruct.Quantity = AmountToAdd;
-			Potion[CanAddIdx] = ItemToAdd->ItemStruct;
-		}
-		PotionUpdate.Broadcast();
+		case EItemType::EIT_Equipment:
+			AddEquipment(ItemToAdd->ItemStruct);
+			break;
+		case EItemType::EIT_Potion:
+			AddPotion(ItemToAdd->ItemStruct);
+			break;
+		case EItemType::EIT_Gold:
+			AddGold(ItemToAdd->ItemStruct);
+			break;
+		default:
+			break;
 	}
 
 	ItemToAdd->Destroy();
+}
+
+void UHASInventoryComponent::AddEquipment(const FItemStruct& ThisItemStruct)
+{
+	int32 CanAddIdx = Equipment.Num();
+	for (int32 idx = 0; idx < Equipment.Num(); idx++)
+	{
+		if (Equipment[idx].Quantity == 0)
+		{
+			CanAddIdx = FMath::Min(CanAddIdx, idx);
+		}
+	}
+
+	Equipment[CanAddIdx] = ThisItemStruct;
+	EquipmentUpdate.Broadcast();
+}
+
+void UHASInventoryComponent::AddPotion(FItemStruct& ThisItemStruct)
+{
+	int32 CanAddIdx = Potion.Num();
+	int32 AmountToAdd = ThisItemStruct.Quantity;
+
+	for (int32 idx = 0; idx < Potion.Num(); idx++)
+	{
+
+		if (Potion[idx].PotionType == EPotionType::EPT_None)
+		{
+			CanAddIdx = FMath::Min(CanAddIdx, idx);
+		}
+
+		// 같은 아이템이 있다면
+		if (ThisItemStruct.ItemHandle.RowName == Potion[idx].ItemHandle.RowName)
+		{
+			FItemInfo* ItemInfo = ThisItemStruct.ItemHandle.DataTable->FindRow<FItemInfo>(ThisItemStruct.ItemHandle.RowName, "");
+
+			int32 CanAddAmount = ItemInfo->MaxStackSize - Potion[idx].Quantity;
+			Potion[idx].Quantity = FMath::Min(ItemInfo->MaxStackSize, Potion[idx].Quantity + ThisItemStruct.Quantity);
+			AmountToAdd = ThisItemStruct.Quantity - CanAddAmount;
+		}
+	}
+	if (AmountToAdd > 0)
+	{
+		ThisItemStruct.Quantity = AmountToAdd;
+		Potion[CanAddIdx] = ThisItemStruct;
+	}
+	PotionUpdate.Broadcast();
+}
+
+void UHASInventoryComponent::AddGold(const FItemStruct& ThisItemStruct)
+{
+	int32 AmountToAdd = ThisItemStruct.Quantity;
+	Gold += AmountToAdd;
+	GoldUpdate.Broadcast();
 }
 
 void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
@@ -149,5 +180,20 @@ void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& It
 		SpawnItem(PotionClass, ItemStruct);
 		PotionUpdate.Broadcast();
 	}
+}
+
+void UHASInventoryComponent::OnRep_Equipment()
+{
+	EquipmentUpdate.Broadcast();
+}
+
+void UHASInventoryComponent::OnRep_Potion()
+{
+	PotionUpdate.Broadcast();
+}
+
+void UHASInventoryComponent::OnRep_Gold()
+{
+	GoldUpdate.Broadcast();
 }
 

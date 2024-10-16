@@ -13,7 +13,6 @@ AHASCharacterBase::AHASCharacterBase()
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Hat = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hat"));
-	Boots = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Boots"));
 
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
@@ -41,8 +40,6 @@ void AHASCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	DOREPLIFETIME(AHASCharacterBase, WeaponMesh);
 	DOREPLIFETIME(AHASCharacterBase, HatMesh);
-	DOREPLIFETIME(AHASCharacterBase, BootsMesh);
-
 }
 
 void AHASCharacterBase::InitializeDefaultAttributesByClass(ECharacterClass InCharacterClass, int32 Level)
@@ -227,14 +224,6 @@ void AHASCharacterBase::OnRep_HatMesh()
 	if (HatMesh)
 	{
 		Hat->SetStaticMesh(HatMesh);
-	}
-}
-
-void AHASCharacterBase::OnRep_BootsMesh()
-{
-	if (BootsMesh)
-	{
-		Boots->SetStaticMesh(BootsMesh);
 	}
 }
 

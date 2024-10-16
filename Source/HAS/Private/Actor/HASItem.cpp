@@ -7,6 +7,7 @@
 #include "Interfaces/HASCombatInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Inventory/HASInventoryComponent.h"
+#include "Character/HASCharacter.h"
 
 AHASItem::AHASItem()
 {
@@ -62,6 +63,13 @@ void AHASItem::BeginPlay()
 
 }
 
+void AHASItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AHASItem, ItemStruct);
+}
+
 void AHASItem::OnRep_ItemStruct()
 {
 	if (IsValid(ItemStruct.ItemHandle.DataTable))
@@ -74,40 +82,50 @@ void AHASItem::OnRep_ItemStruct()
 
 void AHASItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (ItemStruct.ItemType != EItemType::EIT_Potion || OtherActor->ActorHasTag(FName("Enemy"))) return;
-
-	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
-	FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
+	if (ItemStruct.ItemType == EItemType::EIT_Equipment || OtherActor->ActorHasTag(FName("Enemy"))) return;
 
 	if (HasAuthority())
 	{
-		if (ItemStruct.ItemType == EItemType::EIT_Potion && ItemStruct.PotionType != EPotionType::EPT_Elixir)
-		{
-			if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-			{
-				if (OtherActor->Implements<UHASCombatInterface>())
-				{
-					if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(OtherActor))
-					{
-						for (const auto& Effect : Info->UseEffects)
-						{
-							int32 PlayerLevel = Interface->Execute_GetLevel(OtherActor);
-							FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
-							FGameplayEffectSpecHandle EffectSpecHandle = ASC->MakeOutgoingSpec(Effect, PlayerLevel, EffectContextHandle);
-							ASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+		FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
+		FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, "");
 
-							Destroy();
-						}
-					}
-				}
+		if (isOverlapEquipPotion())
+		{
+			ApplyUseEffects(OtherActor, Info);
+		}
+		else if (ItemStruct.ItemType == EItemType::EIT_Gold)
+		{
+			if (AHASCharacter* Player = Cast<AHASCharacter>(OtherActor))
+			{
+				Player->GetInventoryComponent()->ServerAddItem(this);
 			}
 		}
 	}
 }
 
-void AHASItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+bool AHASItem::isOverlapEquipPotion()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	return ItemStruct.ItemType == EItemType::EIT_Potion && ItemStruct.PotionType > EPotionType::EPT_None && ItemStruct.PotionType < EPotionType::EPT_Elixir;
+}
 
-	DOREPLIFETIME(AHASItem, ItemStruct);
+void AHASItem::ApplyUseEffects(AActor* OverlapActor, const FItemInfo* ItemInfo)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OverlapActor))
+	{
+		if (OverlapActor->Implements<UHASCombatInterface>())
+		{
+			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(OverlapActor))
+			{
+				for (const auto& Effect : ItemInfo->UseEffects)
+				{
+					int32 PlayerLevel = Interface->Execute_GetLevel(OverlapActor);
+					FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
+					FGameplayEffectSpecHandle EffectSpecHandle = ASC->MakeOutgoingSpec(Effect, PlayerLevel, EffectContextHandle);
+					ASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+					Destroy();
+				}
+			}
+		}
+	}
 }

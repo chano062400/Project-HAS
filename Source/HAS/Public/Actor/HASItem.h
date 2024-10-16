@@ -37,7 +37,6 @@ enum class EEquipmentType : uint8
 	EET_None UMETA(DisplayName = "None"),
 	EET_Staff UMETA(DisplayName = "Staff"),
 	EET_Hat UMETA(DisplayName = "Hat"),
-	EET_Boots UMETA(DisplayName = "Boots"),
 	EET_Ring UMETA(DisplayName = "Ring"),
 	EET_MAX UMETA(DisplayName = "MAX")
 };
@@ -150,4 +149,7 @@ private:
 	UFUNCTION()
 	void OnRep_ItemStruct();
 
+	bool isOverlapEquipPotion();
+
+	void ApplyUseEffects(AActor* OverlapActor, const FItemInfo* ItemInfo);
 };

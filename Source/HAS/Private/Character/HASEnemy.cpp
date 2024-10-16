@@ -35,16 +35,89 @@ void AHASEnemy::Die()
 {
 	HealthBarWidget->SetVisibility(false);
 	/*if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);*/
-	if (HasAuthority()) HASAIController->BehaviorTree->StopTree();
-
-	bool bDrop = DropChance >= FMath::RandRange(0,100);
-	if (HasAuthority() && bDrop && SpawnItemClasses.Num() > 0)
+	if (HasAuthority())
 	{
-		int32 RandIdx = FMath::RandRange(0, SpawnItemClasses.Num() - 1);
-		FVector SpawnLocation = FVector(GetActorLocation().X, GetActorLocation().Y + 50.f, GetActorLocation().Z + 50.f);
-		AHASItem* SpawnedItem = GetWorld()->SpawnActor<AHASItem>(SpawnItemClasses[RandIdx], SpawnLocation, GetActorRotation());
+		HASAIController->BehaviorTree->StopTree();
+	
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(FVector(GetActorLocation().X, GetActorLocation().Y + 50.f, GetActorLocation().Z + 50.f));
+		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
+
+		SpawnGold(SpawnTransform);
+		SpawnPotionByChance(SpawnTransform);
+		SpawnItemByChance(SpawnTransform);
 	}
 	Super::Die();
+}
+
+void AHASEnemy::SpawnGold(const FTransform& SpawnTransform)
+{
+	if (SpawnGoldClass)
+	{
+		AHASItem* SpawnedGold = GetWorld()->SpawnActorDeferred<AHASItem>(SpawnGoldClass,
+			SpawnTransform,
+			nullptr,
+			this,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+		);
+		SpawnedGold->ItemStruct.Quantity = 10 * FMath::Pow(1.1, Level);
+		SpawnedGold->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AHASEnemy::SpawnItemByChance(const FTransform& SpawnTransform)
+{
+	bool bDrop = DropChance >= FMath::RandRange(0, 100);
+	if (bDrop && SpawnItemClasses.Num() > 0)
+	{
+		int32 RandIdx = FMath::RandRange(0, SpawnItemClasses.Num() - 1);
+		AHASItem* SpawnedItem = GetWorld()->SpawnActorDeferred<AHASItem>(SpawnItemClasses[RandIdx],
+			SpawnTransform,
+			nullptr,
+			this,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+		);
+
+		float RandomValue = FMath::RandRange(0.0f, 100.0f);
+		EItemRarity Rarity = EItemRarity::EIT_None;
+		// 확률에 따라 아이템 등급 결정
+		if (RandomValue <= 60.0f)
+		{
+			Rarity = EItemRarity::EIR_Common;
+		}
+		else if (RandomValue <= 85.0f)
+		{
+			Rarity = EItemRarity::EIR_Rare;
+		}
+		else if (RandomValue <= 95.0f)
+		{
+			Rarity = EItemRarity::EIR_Unique;
+		}
+		else
+		{
+			Rarity = EItemRarity::EIR_Legendary;
+		}
+
+		SpawnedItem->ItemStruct.Rarity = Rarity;
+		SpawnedItem->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AHASEnemy::SpawnPotionByChance(const FTransform& SpawnTransform)
+{
+	bool bDrop = DropChance >= FMath::RandRange(0, 100);
+	if (bDrop && SpawnPotionClasses.Num() > 0)
+	{
+		int32 RandIdx = FMath::RandRange(0, SpawnPotionClasses.Num() - 1);
+		AHASItem* SpawnedItem = GetWorld()->SpawnActorDeferred<AHASItem>(SpawnPotionClasses[RandIdx],
+			SpawnTransform,
+			nullptr,
+			this,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+		);
+
+		SpawnedItem->FinishSpawning(SpawnTransform);
+	}
 }
 
 void AHASEnemy::HitReactTagEvent(const FGameplayTag Tag, int32 NewCount)

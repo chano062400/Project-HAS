@@ -15,7 +15,7 @@ class HAS_API UHASInventoryWidget : public UHASUserWidget
 	
 public:
 
-	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Inventory")
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = "true"), Category = "Inventory")
 	FItemStruct ThisItemStruct;
 
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Inventory")

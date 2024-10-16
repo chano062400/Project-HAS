@@ -60,6 +60,12 @@ protected:
 
 private:
 
+	void SpawnGold(const FTransform& SpawnTransform);
+
+	void SpawnItemByChance(const FTransform& SpawnTransform);
+
+	void SpawnPotionByChance(const FTransform& SpawnTransform);
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HealthBarWidget;
 
@@ -71,6 +77,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<AHASItem>> SpawnItemClasses;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<AHASItem>> SpawnPotionClasses;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AHASItem> SpawnGoldClass;
 
 	UPROPERTY()
 	AActor* CombatTarget = nullptr;

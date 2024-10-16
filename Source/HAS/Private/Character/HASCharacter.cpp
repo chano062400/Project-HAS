@@ -24,7 +24,6 @@ AHASCharacter::AHASCharacter()
 	
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
 	Hat->SetupAttachment(GetMesh(), FName("HatSocket"));
-	Boots->SetupAttachment(GetMesh(), FName("BootSocket"));
 
 	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("HairGroom"));
 	Hair->SetupAttachment(GetMesh(), FName("HairGroom"));
@@ -41,8 +40,8 @@ void AHASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Inventory->EquipmentUse.AddUObject(this, &AHASCharacter::ServerEquipmentUse);
-	Inventory->PotionUse.AddUObject(this, &AHASCharacter::ServerPotionUse);
+	Inventory->EquipmentUse.AddDynamic(this, &AHASCharacter::ServerEquipmentUse);
+	Inventory->PotionUse.AddDynamic(this, &AHASCharacter::ServerPotionUse);
 
 }
 
@@ -164,16 +163,16 @@ void AHASCharacter::SetEffectLevelByRarity(const FItemStruct& ItemStruct, float&
 	switch (ItemStruct.Rarity)
 	{
 	case EItemRarity::EIR_Common:
-		ApplyLevel *= 1.0f;
+		ApplyLevel = 1.0f;
 		break;
 	case EItemRarity::EIR_Rare:
-		ApplyLevel *= 1.5f;
+		ApplyLevel = 1.5f;
 		break;
 	case EItemRarity::EIR_Unique:
-		ApplyLevel *= 2.0f;
+		ApplyLevel = 2.0f;
 		break;
 	case EItemRarity::EIR_Legendary:
-		ApplyLevel *= 3.0f;
+		ApplyLevel = 3.0f;
 		break;
 	default:
 		break;
@@ -200,13 +199,6 @@ void AHASCharacter::SetEquipmentMeshByType(const FItemStruct& ItemStruct)
 			{
 				HatMesh = Info->Mesh;
 				Hat->SetStaticMesh(HatMesh);
-			}
-			break;
-		case EEquipmentType::EET_Boots:
-			if (Info->Mesh)
-			{
-				BootsMesh = Info->Mesh;
-				Boots->SetStaticMesh(BootsMesh);
 			}
 			break;
 		default:

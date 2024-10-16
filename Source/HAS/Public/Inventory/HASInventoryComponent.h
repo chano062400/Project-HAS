@@ -8,7 +8,7 @@
 class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct&, ItemStruct);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), BlueprintType, Blueprintable)
 class HAS_API UHASInventoryComponent : public UActorComponent
@@ -24,9 +24,14 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FInventoryUpdateSignature PotionUpdate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FInventoryUpdateSignature GoldUpdate;
 
+	UPROPERTY(BlueprintAssignable)
 	FItemUsetSignature EquipmentUse;
 
+	UPROPERTY(BlueprintAssignable)
 	FItemUsetSignature PotionUse;
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -37,12 +42,21 @@ public:
 	
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerUseItem(const FItemStruct& ItemStruct, int32 Index);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUseEquipment(const FItemStruct& ItemStruct);
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerUnEquipItem(const FItemStruct& ChangeItemStruct);
 
 	UPROPERTY(ReplicatedUsing = OnRep_Equipment, BlueprintReadOnly)
 	TArray<FItemStruct> Equipment;
 
 	UPROPERTY(ReplicatedUsing = OnRep_Potion, BlueprintReadOnly)
 	TArray<FItemStruct> Potion;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Gold, BlueprintReadOnly)
+	int32 Gold = 0;
 
 protected:
 	
@@ -54,11 +68,20 @@ protected:
 
 private:
 
+	void AddEquipment(const FItemStruct& ThisItemStruct);
+
+	void AddPotion(FItemStruct& ThisItemStruct);
+	
+	void AddGold(const FItemStruct& ThisItemStruct);
+
 	UFUNCTION()
 	void OnRep_Equipment();
 
 	UFUNCTION()
 	void OnRep_Potion();
+
+	UFUNCTION()
+	void OnRep_Gold();
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASItem> EquipmentClass;
