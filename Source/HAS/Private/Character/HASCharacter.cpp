@@ -41,6 +41,7 @@ void AHASCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Inventory->EquipmentUse.AddDynamic(this, &AHASCharacter::ServerEquipmentUse);
+	Inventory->EquipmentUnEquip.AddDynamic(this, &AHASCharacter::ServerEquipmentUnEquip);
 	Inventory->PotionUse.AddDynamic(this, &AHASCharacter::ServerPotionUse);
 
 }
@@ -130,9 +131,10 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
 		SetEquipmentMeshByType(ItemStruct);
-		
+
 		for (const auto& Effect : Info->UseEffects)
 		{
+			// 장착했던 아이템 효과 제거.
 			if (PrevWeaponEffectHandle.IsValid())
 			{
 				AbilitySystemComponent->RemoveActiveGameplayEffect(PrevWeaponEffectHandle);
@@ -153,6 +155,7 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 				}
 			}
 
+			// 새로운 장착 아이템 효과 저장.
 			PrevWeaponEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
 		}
 	}
@@ -218,6 +221,29 @@ void AHASCharacter::ServerPotionUse_Implementation(const FItemStruct& ItemStruct
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
 			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
 		}
+	}
+}
+
+void AHASCharacter::ServerEquipmentUnEquip_Implementation(const FItemStruct& ItemStruct)
+{
+	// 장착했던 장비 효과 제거.
+	if (PrevWeaponEffectHandle.IsValid())
+	{
+		AbilitySystemComponent->RemoveActiveGameplayEffect(PrevWeaponEffectHandle);
+	}
+
+	switch (ItemStruct.EquipeMentType)
+	{
+	case EEquipmentType::EET_Staff:
+		WeaponMesh = nullptr;
+		Weapon->SetSkeletalMesh(nullptr);
+		break;
+	case EEquipmentType::EET_Hat:
+		HatMesh = nullptr;
+		Hat->SetStaticMesh(nullptr);
+		break;
+	default:
+		break;
 	}
 }
 

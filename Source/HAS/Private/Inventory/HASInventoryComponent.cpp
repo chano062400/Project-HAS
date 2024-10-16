@@ -15,14 +15,17 @@ UHASInventoryComponent::UHASInventoryComponent()
 
 void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
 {
+	if (ItemStruct.Quantity == 0) return;
+
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
 	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
 		if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 		{
+			// 장착 먼저(EquipmentUse) -> EquipmentSlot에 장착한 장비가 있으면 해제 순서.
 			Equipment[Index] = FItemStruct();
 
-			// Server / Client 자신의 EquipmentSlot Update.
+			// Server / Client 자신의 EquipmentSlot, Mesh, Effect Update.
 			ClientUseEquipment(ItemStruct);
 
 			EquipmentUpdate.Broadcast();
@@ -38,17 +41,65 @@ void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& Ite
 	}
 }
 
-void UHASInventoryComponent::ServerUnEquipItem_Implementation(const FItemStruct& ChangeItemStruct)
+void UHASInventoryComponent::ServerUnEquipItem_Implementation(const FItemStruct& UnEquipItemStruct, bool IsChangeEquipment)
 {
-	if (ChangeItemStruct.ItemType == EItemType::EIT_Equipment)
+	// 장착 먼저(EquipmentUse) -> 장착 해제. 
+	// 다른 장비와 교체했다면 UseItem에서 이미 EquipmnetUse를 Broadcast했기 때문에 HASCharacter->ServerUseItem 호출해서 Mesh, Effect Update.
+	// 따라서 다른 장비와 교체할 경우에는 UnEquipEquipment Broadcast할 필요 X
+	
+	// 장비만 해제했다면 UnEquipEquipment를 Broadcast해서 EquipmentMesh, PrevItemEffect 제거함.
+	AddEquipment(UnEquipItemStruct);
+
+	if(!IsChangeEquipment)
 	{
-		AddEquipment(ChangeItemStruct);
+		ClientUnEquipEquipment(UnEquipItemStruct);
 	}
 }
 
 void UHASInventoryComponent::ClientUseEquipment_Implementation(const FItemStruct& ItemStruct)
 {
 	EquipmentUse.Broadcast(ItemStruct);
+}
+
+void UHASInventoryComponent::ClientUnEquipEquipment_Implementation(const FItemStruct& ItemStruct)
+{
+	EquipmentUnEquip.Broadcast(ItemStruct);
+}
+
+void UHASInventoryComponent::ServerChangeItem_Implementation(const FItemStruct& ItemStruct, int32 ThisItemIndex, int32 ChangeItemIndex)
+{
+	if (ItemStruct.Quantity == 0) return;
+
+	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
+	{
+		if (Equipment[ChangeItemIndex].Quantity > 0)
+		{
+			FItemStruct TempItemStruct = Equipment[ThisItemIndex];
+			Equipment[ThisItemIndex] = Equipment[ChangeItemIndex];
+			Equipment[ChangeItemIndex] = TempItemStruct;
+		}
+		else
+		{
+			Equipment[ThisItemIndex] = FItemStruct();
+			Equipment[ChangeItemIndex] = ItemStruct;
+		}
+		EquipmentUpdate.Broadcast();
+	}
+	else
+	{
+		if (Potion[ChangeItemIndex].Quantity > 0)
+		{
+			FItemStruct TempItemStruct = Potion[ThisItemIndex];
+			Potion[ThisItemIndex] = Potion[ChangeItemIndex];
+			Potion[ChangeItemIndex] = TempItemStruct;
+		}
+		else
+		{
+			Potion[ThisItemIndex] = FItemStruct();
+			Potion[ChangeItemIndex] = ItemStruct;
+		}
+		PotionUpdate.Broadcast();
+	}
 }
 
 void UHASInventoryComponent::BeginPlay()
@@ -113,6 +164,8 @@ void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 
 void UHASInventoryComponent::AddEquipment(const FItemStruct& ThisItemStruct)
 {
+	if (ThisItemStruct.Quantity == 0) return;
+
 	int32 CanAddIdx = Equipment.Num();
 	for (int32 idx = 0; idx < Equipment.Num(); idx++)
 	{
@@ -134,7 +187,7 @@ void UHASInventoryComponent::AddPotion(FItemStruct& ThisItemStruct)
 	for (int32 idx = 0; idx < Potion.Num(); idx++)
 	{
 
-		if (Potion[idx].PotionType == EPotionType::EPT_None)
+		if (Potion[idx].Quantity == 0)
 		{
 			CanAddIdx = FMath::Min(CanAddIdx, idx);
 		}
@@ -168,16 +221,17 @@ void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& It
 {
 	if (ItemStruct.Quantity == 0) return;
 
+	// Default HASItem Actor를 Spawn후 ItemStruct 적용.
 	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
 		Equipment[Index] = FItemStruct();
-		SpawnItem(EquipmentClass, ItemStruct);
+		SpawnItem(DefaultEquipmentClass, ItemStruct);
 		EquipmentUpdate.Broadcast();
 	}
 	else
 	{
 		Potion[Index] = FItemStruct();
-		SpawnItem(PotionClass, ItemStruct);
+		SpawnItem(DefaultPotionClass, ItemStruct);
 		PotionUpdate.Broadcast();
 	}
 }

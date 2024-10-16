@@ -46,6 +46,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerPotionUse(const FItemStruct& ItemStruct);
 
+	UFUNCTION(Server, Reliable)
+	void ServerEquipmentUnEquip(const FItemStruct& ItemStruct);
+
 	/* Combat Interface */
 	
 	virtual int32 GetLevel_Implementation() override;

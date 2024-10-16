@@ -8,7 +8,7 @@
 class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdateSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemUsetSignature, const FItemStruct&, ItemStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemUpdatetSignature, const FItemStruct&, ItemStruct);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), BlueprintType, Blueprintable)
 class HAS_API UHASInventoryComponent : public UActorComponent
@@ -29,10 +29,13 @@ public:
 	FInventoryUpdateSignature GoldUpdate;
 
 	UPROPERTY(BlueprintAssignable)
-	FItemUsetSignature EquipmentUse;
+	FItemUpdatetSignature EquipmentUse;
+	
+	UPROPERTY(BlueprintAssignable)
+	FItemUpdatetSignature EquipmentUnEquip;
 
 	UPROPERTY(BlueprintAssignable)
-	FItemUsetSignature PotionUse;
+	FItemUpdatetSignature PotionUse;
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerAddItem(AHASItem* ItemToAdd);
@@ -45,9 +48,15 @@ public:
 	
 	UFUNCTION(Client, Reliable)
 	void ClientUseEquipment(const FItemStruct& ItemStruct);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUnEquipEquipment(const FItemStruct& ItemStruct);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerUnEquipItem(const FItemStruct& ChangeItemStruct);
+	void ServerUnEquipItem(const FItemStruct& UnEquipItemStruct, bool IsChangeEquipment);
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerChangeItem(const FItemStruct& ItemStruct, int32 ThisItemIndex, int32 ChangeItemIndex);
 
 	UPROPERTY(ReplicatedUsing = OnRep_Equipment, BlueprintReadOnly)
 	TArray<FItemStruct> Equipment;
@@ -84,9 +93,9 @@ private:
 	void OnRep_Gold();
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AHASItem> EquipmentClass;
+	TSubclassOf<AHASItem> DefaultEquipmentClass;
 		
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AHASItem> PotionClass;
+	TSubclassOf<AHASItem> DefaultPotionClass;
 
 };

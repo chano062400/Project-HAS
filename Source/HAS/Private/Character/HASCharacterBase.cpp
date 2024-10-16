@@ -213,18 +213,12 @@ void AHASCharacterBase::BeginPlay()
 
 void AHASCharacterBase::OnRep_WeaponMesh()
 {
-	if (WeaponMesh)
-	{
-		Weapon->SetSkeletalMesh(WeaponMesh);
-	}
+	Weapon->SetSkeletalMesh(WeaponMesh);	
 }
 
 void AHASCharacterBase::OnRep_HatMesh()
 {
-	if (HatMesh)
-	{
-		Hat->SetStaticMesh(HatMesh);
-	}
+	Hat->SetStaticMesh(HatMesh);
 }
 
 FMontageInfo AHASCharacterBase::GetMontageInfoByTag_Implementation(const FGameplayTag& MontageTag)
