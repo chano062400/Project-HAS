@@ -117,8 +117,12 @@ protected:
 	//UPROPERTY(BlueprintReadWrite)
 	//TObjectPtr<AHASInventoryCharacter> InventoryCharacter;
 
-	FActiveGameplayEffectHandle PrevWeaponEffectHandle;
+	TMap<EEquipmentType, FActiveGameplayEffectHandle> PrevEquipmentEffectHandle;
 	
+	void ReduceAbilityCoolTime(const FItemStruct& itemStruct);
+
+	void RemovePrevEquipmentEffect(const FItemStruct& ItemStruct);
+
 	void SetEffectLevelByRarity(const FItemStruct& ItemStruct, float& ApplyLevel);
 
 	void SetEquipmentMeshByType(const FItemStruct& ItemStruct);

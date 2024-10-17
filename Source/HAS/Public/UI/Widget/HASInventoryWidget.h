@@ -28,4 +28,6 @@ public:
 	FString GetInformationDescription(const FItemStruct& ItemStruct);
 
 	FString GetRarityAsString(EItemRarity Rarity);
+
+	FString GetItemEffectDescription(const FItemInfo* ItemInfo, float InLevel);
 };

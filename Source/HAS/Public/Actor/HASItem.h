@@ -37,7 +37,8 @@ enum class EEquipmentType : uint8
 	EET_None UMETA(DisplayName = "None"),
 	EET_Staff UMETA(DisplayName = "Staff"),
 	EET_Hat UMETA(DisplayName = "Hat"),
-	EET_Ring UMETA(DisplayName = "Ring"),
+	EET_Ring1 UMETA(DisplayName = "Ring1"),
+	EET_Ring2 UMETA(DisplayName = "Ring2"),
 	EET_MAX UMETA(DisplayName = "MAX")
 };
 
@@ -48,7 +49,7 @@ enum class EPotionType : uint8
 	EPT_Health UMETA(DisplayName = "Health"),
 	EPT_Mana UMETA(DisplayName = "Mana"),
 	EPT_Elixir UMETA(DisplayName = "Elixir"),
-	EPT_Speed UMETA(DisplayName = "Speed"),
+	EPT_Critical UMETA(DisplayName = "Critical"),
 	EPT_MAX UMETA(DisplayName = "MAX")
 };
 
@@ -67,7 +68,7 @@ struct FItemStruct
 	EItemType ItemType = EItemType::EIT_None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EEquipmentType EquipeMentType = EEquipmentType::EET_None;
+	EEquipmentType EquipmentType = EEquipmentType::EET_None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EItemRarity Rarity = EItemRarity::EIT_None;
@@ -108,6 +109,7 @@ struct FItemInfo : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<UGameplayEffect>> UseEffects;
 };
+
 UCLASS(BlueprintType, Blueprintable)
 class HAS_API AHASItem : public AActor
 {

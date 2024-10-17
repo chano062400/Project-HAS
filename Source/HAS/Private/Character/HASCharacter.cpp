@@ -132,19 +132,17 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 	{
 		SetEquipmentMeshByType(ItemStruct);
 
+		// 전에 장착했던 아이템 효과 모두 제거.
+		RemovePrevEquipmentEffect(ItemStruct);
+
 		for (const auto& Effect : Info->UseEffects)
 		{
-			// 장착했던 아이템 효과 제거.
-			if (PrevWeaponEffectHandle.IsValid())
-			{
-				AbilitySystemComponent->RemoveActiveGameplayEffect(PrevWeaponEffectHandle);
-			}
-
 			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
 
 			float ApplyLevel = 1;
 
+			// 아이템 등급에 따라 Effect 레벨 설정
 			SetEffectLevelByRarity(ItemStruct, ApplyLevel);
 
 			if (SpecHandle.IsValid())
@@ -155,8 +153,28 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 				}
 			}
 
-			// 새로운 장착 아이템 효과 저장.
-			PrevWeaponEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+			FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+
+			// 현재 아이템 효과들 저장.
+			if (EffectHandle.IsValid())
+			{
+				FActiveGameplayEffectHandle& PrevHandle = PrevEquipmentEffectHandle.FindOrAdd(ItemStruct.EquipmentType);
+				PrevHandle = EffectHandle;
+			}
+		}
+	}
+}
+
+void AHASCharacter::RemovePrevEquipmentEffect(const FItemStruct& ItemStruct)
+{
+	if (PrevEquipmentEffectHandle.Contains(ItemStruct.EquipmentType))
+	{
+		FActiveGameplayEffectHandle& EffectHandle = PrevEquipmentEffectHandle[ItemStruct.EquipmentType];
+
+		if (EffectHandle.IsValid())
+		{
+			AbilitySystemComponent->RemoveActiveGameplayEffect(PrevEquipmentEffectHandle[ItemStruct.EquipmentType]);
+			PrevEquipmentEffectHandle.Remove(ItemStruct.EquipmentType);
 		}
 	}
 }
@@ -187,8 +205,7 @@ void AHASCharacter::SetEquipmentMeshByType(const FItemStruct& ItemStruct)
 	FDataTableRowHandle ItemHandle = ItemStruct.ItemHandle;
 	if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
 	{
-
-		switch (ItemStruct.EquipeMentType)
+		switch (ItemStruct.EquipmentType)
 		{
 		case EEquipmentType::EET_Staff:
 			if (Info->StaffMesh)
@@ -227,12 +244,9 @@ void AHASCharacter::ServerPotionUse_Implementation(const FItemStruct& ItemStruct
 void AHASCharacter::ServerEquipmentUnEquip_Implementation(const FItemStruct& ItemStruct)
 {
 	// 장착했던 장비 효과 제거.
-	if (PrevWeaponEffectHandle.IsValid())
-	{
-		AbilitySystemComponent->RemoveActiveGameplayEffect(PrevWeaponEffectHandle);
-	}
+	RemovePrevEquipmentEffect(ItemStruct);
 
-	switch (ItemStruct.EquipeMentType)
+	switch (ItemStruct.EquipmentType)
 	{
 	case EEquipmentType::EET_Staff:
 		WeaponMesh = nullptr;

@@ -111,6 +111,7 @@ void UHASInventoryComponent::BeginPlay()
 		FItemStruct ItemStruct;
 		Equipment.Init(ItemStruct, 33);
 		Potion.Init(ItemStruct, 33);
+		Gold = 0;
 
 		EquipmentUpdate.Broadcast();
 		PotionUpdate.Broadcast();
