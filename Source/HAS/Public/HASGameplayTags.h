@@ -105,6 +105,10 @@ public:
 	/* Effect Tag */
 
 	FGameplayTag Effect_HitReact;
+	
+	/* Potion Tag */
+	FGameplayTag Potion_Elixir;
+	FGameplayTag Potion_Critical;
 
 	/* Damage Tag */
 

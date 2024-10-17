@@ -15,6 +15,8 @@ class AHASItem;
 class USceneCaptureComponent2D;
 class AHASInventoryCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPotionAppliedSignature, const FGameplayTag&, PotionTag);
+
 /**
  * 
  */
@@ -88,6 +90,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstanceDynamic> RenderTexture;
+
+	UPROPERTY(BlueprintAssignable)
+	FPotionAppliedSignature PotionApplied;
 
 protected:
 

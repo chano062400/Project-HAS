@@ -128,21 +128,6 @@ void UHASInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME_CONDITION(UHASInventoryComponent, Gold, COND_OwnerOnly);
 }
 
-void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct)
-{
-	FTransform DropTransform = FTransform(GetOwner()->GetActorRotation(), GetOwner()->GetActorLocation(), FVector(1.f, 1.f, 1.f));
-
-	AHASItem* DropItem = GetWorld()->SpawnActorDeferred<AHASItem>(
-		ItemClass,
-		DropTransform,
-		nullptr,
-		nullptr,
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-	);
-	DropItem->ItemStruct = InItemStruct;
-	DropItem->FinishSpawning(DropTransform);
-}
-
 void UHASInventoryComponent::ServerAddItem_Implementation(AHASItem* ItemToAdd)
 {
 	switch (ItemToAdd->ItemStruct.ItemType)
@@ -235,6 +220,21 @@ void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& It
 		SpawnItem(DefaultPotionClass, ItemStruct);
 		PotionUpdate.Broadcast();
 	}
+}
+
+void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct)
+{
+	FTransform DropTransform = FTransform(GetOwner()->GetActorRotation(), GetOwner()->GetActorLocation(), FVector(1.f, 1.f, 1.f));
+
+	AHASItem* DropItem = GetWorld()->SpawnActorDeferred<AHASItem>(
+		ItemClass,
+		DropTransform,
+		nullptr,
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+	);
+	if(DropItem) DropItem->ItemStruct = InItemStruct;
+	DropItem->FinishSpawning(DropTransform);
 }
 
 void UHASInventoryComponent::OnRep_Equipment()

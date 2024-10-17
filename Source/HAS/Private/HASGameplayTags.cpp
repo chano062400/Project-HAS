@@ -349,6 +349,18 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Effect.HitReact"),
 		FString("HitReact Effect Tag")
 	);
+	
+	/* Potion Tag */
+
+	GameplayTags.Potion_Elixir = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Potion.Elixir"),
+		FString("Elixir Potion  Tag")
+	);
+	
+	GameplayTags.Potion_Critical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Potion.Critical"),
+		FString("Critical Potion Tag")
+	);
 
 	/* Damage Tag */
 

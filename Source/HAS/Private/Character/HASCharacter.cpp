@@ -53,7 +53,27 @@ void AHASCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 
 	AddStartAbilities();
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Potion_Critical, EGameplayTagEventType::NewOrRemoved).AddLambda(
+		[this](const FGameplayTag Tag, int32 NewCount)
+		{
+			if (NewCount > 0) 
+			{
+				PotionApplied.Broadcast(Tag);
+			}
+		}
+	);
 	
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Potion_Elixir, EGameplayTagEventType::NewOrRemoved).AddLambda(
+		[this](const FGameplayTag Tag, int32 NewCount)
+		{
+			if (NewCount > 0) 
+			{
+				PotionApplied.Broadcast(Tag);
+			}
+		}
+	);
+
 }
 
 void AHASCharacter::OnRep_PlayerState()
@@ -62,6 +82,25 @@ void AHASCharacter::OnRep_PlayerState()
 
 	InitAbilityActorInfo();
 
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Potion_Critical, EGameplayTagEventType::NewOrRemoved).AddLambda(
+		[this](const FGameplayTag Tag, int32 NewCount)
+		{
+			if (NewCount > 0)
+			{
+				PotionApplied.Broadcast(Tag);
+			}
+		}
+	);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Potion_Elixir, EGameplayTagEventType::NewOrRemoved).AddLambda(
+		[this](const FGameplayTag Tag, int32 NewCount)
+		{
+			if (NewCount > 0)
+			{
+				PotionApplied.Broadcast(Tag);
+			}
+		}
+	);
 }
 
 void AHASCharacter::InitAbilityActorInfo()
