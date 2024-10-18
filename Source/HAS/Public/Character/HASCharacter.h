@@ -124,9 +124,13 @@ protected:
 
 	TMap<EEquipmentType, FActiveGameplayEffectHandle> PrevEquipmentEffectHandle;
 	
+	TMap<EPotionType, FActiveGameplayEffectHandle> PrevPotionEffectHandle;
+
 	void ReduceAbilityCoolTime(const FItemStruct& itemStruct);
 
 	void RemovePrevEquipmentEffect(const FItemStruct& ItemStruct);
+
+	void RemovePrevPotionEffect(const FItemStruct& ItemStruct);
 
 	void SetEffectLevelByRarity(const FItemStruct& ItemStruct, float& ApplyLevel);
 

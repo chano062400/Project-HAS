@@ -50,6 +50,18 @@ public:
 	void ClientUseEquipment(const FItemStruct& ItemStruct);
 	
 	UFUNCTION(Client, Reliable)
+	void ClientUsePotion(const FItemStruct& ItemStruct);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateEquipment();
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdatePotion();
+	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateGold();
+	
+	UFUNCTION(Client, Reliable)
 	void ClientUnEquipEquipment(const FItemStruct& ItemStruct);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -57,6 +69,9 @@ public:
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerChangeItem(const FItemStruct& ItemStruct, int32 ThisItemIndex, int32 ChangeItemIndex);
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerSortByItemType(EItemType ItemType, bool IsGreater);
 
 	UPROPERTY(ReplicatedUsing = OnRep_Equipment, BlueprintReadOnly)
 	TArray<FItemStruct> Equipment;

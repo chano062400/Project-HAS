@@ -13,6 +13,23 @@ UHASInventoryComponent::UHASInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;	
 }
 
+void UHASInventoryComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (GetOwner()->HasAuthority())
+	{
+		FItemStruct ItemStruct;
+		Equipment.Init(ItemStruct, 33);
+		Potion.Init(ItemStruct, 33);
+		Gold = 0;
+
+		//EquipmentUpdate.Broadcast();
+		//PotionUpdate.Broadcast();
+		//GoldUpdate.Broadcast();
+	}
+}
+
 void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
 {
 	if (ItemStruct.Quantity == 0) return;
@@ -28,15 +45,17 @@ void UHASInventoryComponent::ServerUseItem_Implementation(const FItemStruct& Ite
 			// Server / Client 자신의 EquipmentSlot, Mesh, Effect Update.
 			ClientUseEquipment(ItemStruct);
 
-			EquipmentUpdate.Broadcast();
+			ClientUpdateEquipment();
 
 		}
 		else
 		{
 			Potion[Index].Quantity -= 1;
 			if (Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
-			PotionUse.Broadcast(ItemStruct);
-			PotionUpdate.Broadcast();
+			
+			ClientUsePotion(ItemStruct);
+			
+			ClientUpdatePotion();
 		}
 	}
 }
@@ -56,16 +75,6 @@ void UHASInventoryComponent::ServerUnEquipItem_Implementation(const FItemStruct&
 	}
 }
 
-void UHASInventoryComponent::ClientUseEquipment_Implementation(const FItemStruct& ItemStruct)
-{
-	EquipmentUse.Broadcast(ItemStruct);
-}
-
-void UHASInventoryComponent::ClientUnEquipEquipment_Implementation(const FItemStruct& ItemStruct)
-{
-	EquipmentUnEquip.Broadcast(ItemStruct);
-}
-
 void UHASInventoryComponent::ServerChangeItem_Implementation(const FItemStruct& ItemStruct, int32 ThisItemIndex, int32 ChangeItemIndex)
 {
 	if (ItemStruct.Quantity == 0) return;
@@ -83,7 +92,7 @@ void UHASInventoryComponent::ServerChangeItem_Implementation(const FItemStruct& 
 			Equipment[ThisItemIndex] = FItemStruct();
 			Equipment[ChangeItemIndex] = ItemStruct;
 		}
-		EquipmentUpdate.Broadcast();
+		ClientUpdateEquipment();
 	}
 	else
 	{
@@ -98,24 +107,62 @@ void UHASInventoryComponent::ServerChangeItem_Implementation(const FItemStruct& 
 			Potion[ThisItemIndex] = FItemStruct();
 			Potion[ChangeItemIndex] = ItemStruct;
 		}
-		PotionUpdate.Broadcast();
+		ClientUpdatePotion();
 	}
 }
 
-void UHASInventoryComponent::BeginPlay()
+void UHASInventoryComponent::ServerSortByItemType_Implementation(EItemType ItemType, bool IsGreater)
 {
-	Super::BeginPlay();
-	
-	if (GetOwner()->HasAuthority())
+	if (ItemType == EItemType::EIT_Equipment)
 	{
-		FItemStruct ItemStruct;
-		Equipment.Init(ItemStruct, 33);
-		Potion.Init(ItemStruct, 33);
-		Gold = 0;
 
-		EquipmentUpdate.Broadcast();
-		PotionUpdate.Broadcast();
-		GoldUpdate.Broadcast();
+		Equipment.Sort([IsGreater](const FItemStruct& A, const FItemStruct& B)
+			{
+				// EquipmentType이 None인 항목은 스킵
+				if (A.EquipmentType == EEquipmentType::EET_None)
+				{
+					return false;  // A가 None이면 뒤로 보냄
+				}
+				if (B.EquipmentType == EEquipmentType::EET_None)
+				{
+					return true;  // B가 None이면 A가 앞으로 옴
+				}
+
+				if (IsGreater)
+				{
+					if (A.EquipmentType == B.EquipmentType)
+					{
+						return A.Rarity > B.Rarity;
+					}
+					return A.EquipmentType > B.EquipmentType;
+				}
+				else
+				{
+					if (A.EquipmentType == B.EquipmentType)
+					{
+						return A.Rarity < B.Rarity;
+					}
+					return A.EquipmentType < B.EquipmentType;
+				}
+			}
+		);
+		ClientUpdateEquipment();
+	}
+	else
+	{
+		Potion.Sort([IsGreater](const FItemStruct& A, const FItemStruct& B)
+			{
+				if (IsGreater)
+				{
+					return A.PotionType == B.PotionType ? A.Quantity > B.Quantity : A.PotionType > B.PotionType;
+				}
+				else
+				{
+					return A.PotionType == B.PotionType ? A.Quantity > B.Quantity : A.PotionType < B.PotionType;
+				}
+			}
+		);
+		ClientUpdatePotion();
 	}
 }
 
@@ -162,7 +209,8 @@ void UHASInventoryComponent::AddEquipment(const FItemStruct& ThisItemStruct)
 	}
 
 	Equipment[CanAddIdx] = ThisItemStruct;
-	EquipmentUpdate.Broadcast();
+	
+	ClientUpdateEquipment();
 }
 
 void UHASInventoryComponent::AddPotion(FItemStruct& ThisItemStruct)
@@ -193,14 +241,14 @@ void UHASInventoryComponent::AddPotion(FItemStruct& ThisItemStruct)
 		ThisItemStruct.Quantity = AmountToAdd;
 		Potion[CanAddIdx] = ThisItemStruct;
 	}
-	PotionUpdate.Broadcast();
+	ClientUpdatePotion();
 }
 
 void UHASInventoryComponent::AddGold(const FItemStruct& ThisItemStruct)
 {
 	int32 AmountToAdd = ThisItemStruct.Quantity;
 	Gold += AmountToAdd;
-	GoldUpdate.Broadcast();
+	ClientUpdateGold();
 }
 
 void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
@@ -212,13 +260,13 @@ void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& It
 	{
 		Equipment[Index] = FItemStruct();
 		SpawnItem(DefaultEquipmentClass, ItemStruct);
-		EquipmentUpdate.Broadcast();
+		ClientUpdateEquipment();
 	}
 	else
 	{
 		Potion[Index] = FItemStruct();
 		SpawnItem(DefaultPotionClass, ItemStruct);
-		PotionUpdate.Broadcast();
+		ClientUpdatePotion();
 	}
 }
 
@@ -252,3 +300,44 @@ void UHASInventoryComponent::OnRep_Gold()
 	GoldUpdate.Broadcast();
 }
 
+// ClientUse 함수는 ItemStruct를 매개변수로 하여 바로 업데이트 가능.
+void UHASInventoryComponent::ClientUseEquipment_Implementation(const FItemStruct& ItemStruct)
+{
+	EquipmentUse.Broadcast(ItemStruct);
+}
+
+void UHASInventoryComponent::ClientUnEquipEquipment_Implementation(const FItemStruct& ItemStruct)
+{
+	EquipmentUnEquip.Broadcast(ItemStruct);
+}
+
+void UHASInventoryComponent::ClientUsePotion_Implementation(const FItemStruct& ItemStruct)
+{
+	PotionUse.Broadcast(ItemStruct);
+}
+
+// 그냥 Broadcast하면 클라이언트에 Replicate되기 전에 Broadcast하기 때문에 한박자 빠르게 업데이트함.
+// ClientRPC에서 서버 로컬플레이어 Broadcast / 클라이언트는 OnRep에서 Broadcast하도록 함.
+void UHASInventoryComponent::ClientUpdateEquipment_Implementation()
+{
+	if (GetOwner()->HasAuthority())
+	{
+		EquipmentUpdate.Broadcast();
+	}
+}
+
+void UHASInventoryComponent::ClientUpdatePotion_Implementation()
+{
+	if (GetOwner()->HasAuthority())
+	{
+		PotionUpdate.Broadcast();
+	}
+}
+
+void UHASInventoryComponent::ClientUpdateGold_Implementation()
+{
+	if (GetOwner()->HasAuthority())
+	{
+		GoldUpdate.Broadcast();
+	}
+}

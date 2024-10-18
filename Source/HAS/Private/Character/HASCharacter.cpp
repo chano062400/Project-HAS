@@ -218,6 +218,20 @@ void AHASCharacter::RemovePrevEquipmentEffect(const FItemStruct& ItemStruct)
 	}
 }
 
+void AHASCharacter::RemovePrevPotionEffect(const FItemStruct& ItemStruct)
+{
+	if (PrevPotionEffectHandle.Contains(ItemStruct.PotionType))
+	{
+		FActiveGameplayEffectHandle& EffectHandle = PrevPotionEffectHandle[ItemStruct.PotionType];
+
+		if (EffectHandle.IsValid())
+		{
+			AbilitySystemComponent->RemoveActiveGameplayEffect(PrevPotionEffectHandle[ItemStruct.PotionType]);
+			PrevPotionEffectHandle.Remove(ItemStruct.PotionType);
+		}
+	}
+}
+
 void AHASCharacter::SetEffectLevelByRarity(const FItemStruct& ItemStruct, float& ApplyLevel)
 {
 	switch (ItemStruct.Rarity)
@@ -273,9 +287,20 @@ void AHASCharacter::ServerPotionUse_Implementation(const FItemStruct& ItemStruct
 	{
 		for (const auto& Effect : Info->UseEffects)
 		{
+			// Stack Limit = 1
+			// Elixir, Critical 모두 효과를 1번씩만 얻을 수 있음. 더 먹을 경우 적용했던 Effect 제거하고 다시 적용하여 지속시간만 초기화.
+			RemovePrevPotionEffect(ItemStruct);
+
 			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
-			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+
+			FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+
+			if (EffectHandle.IsValid())
+			{
+				FActiveGameplayEffectHandle& PrevHandle = PrevPotionEffectHandle.FindOrAdd(ItemStruct.PotionType);
+				PrevHandle = EffectHandle;
+			}
 		}
 	}
 }
