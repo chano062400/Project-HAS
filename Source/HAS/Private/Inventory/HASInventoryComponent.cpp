@@ -115,34 +115,35 @@ void UHASInventoryComponent::ServerSortByItemType_Implementation(EItemType ItemT
 {
 	if (ItemType == EItemType::EIT_Equipment)
 	{
-
 		Equipment.Sort([IsGreater](const FItemStruct& A, const FItemStruct& B)
 			{
-				// EquipmentType이 None인 항목은 스킵
-				if (A.EquipmentType == EEquipmentType::EET_None)
-				{
-					return false;  // A가 None이면 뒤로 보냄
-				}
-				if (B.EquipmentType == EEquipmentType::EET_None)
-				{
-					return true;  // B가 None이면 A가 앞으로 옴
-				}
+				// 빈 칸은 뒤로.
+				if (A.ItemHandle.IsNull()) return false; // A가 None이면 뒤로 보냄
+				if (B.ItemHandle.IsNull()) return true; // B가 None이면 A가 앞으로 옴
 
+				FItemInfo* AInfo = A.ItemHandle.DataTable->FindRow<FItemInfo>(A.ItemHandle.RowName, "");
+				FItemInfo* BInfo = B.ItemHandle.DataTable->FindRow<FItemInfo>(B.ItemHandle.RowName, "");
 				if (IsGreater)
 				{
 					if (A.EquipmentType == B.EquipmentType)
 					{
-						return A.Rarity > B.Rarity;
+						return AInfo->Name == BInfo->Name ? A.Rarity > B.Rarity : AInfo->Name > BInfo->Name;
 					}
-					return A.EquipmentType > B.EquipmentType;
+					else
+					{
+						return A.EquipmentType > B.EquipmentType;
+					}
 				}
 				else
 				{
 					if (A.EquipmentType == B.EquipmentType)
 					{
-						return A.Rarity < B.Rarity;
+						return AInfo->Name == BInfo->Name ? A.Rarity > B.Rarity : AInfo->Name < BInfo->Name;
 					}
-					return A.EquipmentType < B.EquipmentType;
+					else
+					{
+						return A.EquipmentType < B.EquipmentType;
+					}
 				}
 			}
 		);
@@ -152,6 +153,10 @@ void UHASInventoryComponent::ServerSortByItemType_Implementation(EItemType ItemT
 	{
 		Potion.Sort([IsGreater](const FItemStruct& A, const FItemStruct& B)
 			{
+				// 빈 칸은 뒤로.
+				if (A.ItemHandle.IsNull()) return false; // A가 None이면 뒤로 보냄
+				if (B.ItemHandle.IsNull()) return true; // B가 None이면 A가 앞으로 옴
+
 				if (IsGreater)
 				{
 					return A.PotionType == B.PotionType ? A.Quantity > B.Quantity : A.PotionType > B.PotionType;
@@ -251,7 +256,7 @@ void UHASInventoryComponent::AddGold(const FItemStruct& ThisItemStruct)
 	ClientUpdateGold();
 }
 
-void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& ItemStruct, int32 Index)
+void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& ItemStruct, int32 Index, int32 AmountToDrop)
 {
 	if (ItemStruct.Quantity == 0) return;
 
@@ -259,18 +264,19 @@ void UHASInventoryComponent::ServerDropItem_Implementation(const FItemStruct& It
 	if (ItemStruct.ItemType == EItemType::EIT_Equipment)
 	{
 		Equipment[Index] = FItemStruct();
-		SpawnItem(DefaultEquipmentClass, ItemStruct);
+		SpawnItem(DefaultEquipmentClass, ItemStruct, AmountToDrop);
 		ClientUpdateEquipment();
 	}
 	else
 	{
-		Potion[Index] = FItemStruct();
-		SpawnItem(DefaultPotionClass, ItemStruct);
+		Potion[Index].Quantity -= AmountToDrop;
+		if(Potion[Index].Quantity == 0) Potion[Index] = FItemStruct();
+		SpawnItem(DefaultPotionClass, ItemStruct, AmountToDrop);
 		ClientUpdatePotion();
 	}
 }
 
-void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct)
+void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct, int32 AmountToDrop)
 {
 	FTransform DropTransform = FTransform(GetOwner()->GetActorRotation(), GetOwner()->GetActorLocation(), FVector(1.f, 1.f, 1.f));
 
@@ -281,7 +287,13 @@ void UHASInventoryComponent::SpawnItem(TSubclassOf<AHASItem> ItemClass, const FI
 		nullptr,
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 	);
-	if(DropItem) DropItem->ItemStruct = InItemStruct;
+	if (DropItem && AmountToDrop > 0)
+	{
+		FItemStruct TempStruct;
+		TempStruct = InItemStruct;
+		TempStruct.Quantity = AmountToDrop;
+		DropItem->ItemStruct = TempStruct;
+	}
 	DropItem->FinishSpawning(DropTransform);
 }
 

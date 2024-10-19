@@ -41,7 +41,7 @@ public:
 	void ServerAddItem(AHASItem* ItemToAdd);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerDropItem(const FItemStruct& ItemStruct, int32 Index);
+	void ServerDropItem(const FItemStruct& ItemStruct, int32 Index, int32 AmountToDrop = -1);
 	
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ServerUseItem(const FItemStruct& ItemStruct, int32 Index);
@@ -88,7 +88,7 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	void SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct);
+	void SpawnItem(TSubclassOf<AHASItem> ItemClass, const FItemStruct& InItemStruct, int32 AmountToDrop);
 
 private:
 

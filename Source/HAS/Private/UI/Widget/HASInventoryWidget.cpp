@@ -11,7 +11,7 @@ FString UHASInventoryWidget::GetInformationDescription(const FItemStruct& ItemSt
 		{
 			return FString::Printf(
 				TEXT(
-					"<Title> %s </> \n\n"
+					"<Common> %s </> \n\n"
 
 					"<Item> Rarity : </> <Rarity> %s </> \n\n"
 

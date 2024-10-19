@@ -174,31 +174,44 @@ void AHASCharacter::ServerEquipmentUse_Implementation(const FItemStruct& ItemStr
 		// 전에 장착했던 아이템 효과 모두 제거.
 		RemovePrevEquipmentEffect(ItemStruct);
 
-		for (const auto& Effect : Info->UseEffects)
+		if (ItemStruct.EquipmentType < EEquipmentType::EET_Ring1)
 		{
-			FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
-			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
-
-			float ApplyLevel = 1;
-
-			// 아이템 등급에 따라 Effect 레벨 설정
-			SetEffectLevelByRarity(ItemStruct, ApplyLevel);
-
-			if (SpecHandle.IsValid())
+			for (const auto& Effect : Info->UseEffects)
 			{
-				if (FGameplayEffectSpec* EffectSpec = SpecHandle.Data.Get())
+				FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+				FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1.f, ContextHandle);
+
+				float ApplyLevel = 1;
+
+				// 아이템 등급에 따라 Effect 레벨 설정
+				SetEffectLevelByRarity(ItemStruct, ApplyLevel);
+
+				if (SpecHandle.IsValid())
 				{
-					EffectSpec->SetLevel(ApplyLevel);
+					if (FGameplayEffectSpec* EffectSpec = SpecHandle.Data.Get())
+					{
+						EffectSpec->SetLevel(ApplyLevel);
+					}
+				}
+
+				FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
+
+				// 현재 아이템 효과들 저장.
+				if (EffectHandle.IsValid())
+				{
+					FActiveGameplayEffectHandle& PrevHandle = PrevEquipmentEffectHandle.FindOrAdd(ItemStruct.EquipmentType);
+					PrevHandle = EffectHandle;
 				}
 			}
-
-			FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), AbilitySystemComponent->GetPredictionKeyForNewAction());
-
-			// 현재 아이템 효과들 저장.
-			if (EffectHandle.IsValid())
+		}
+		else
+		{
+			for (auto& Ability : AbilitySystemComponent->GetActivatableAbilities())
 			{
-				FActiveGameplayEffectHandle& PrevHandle = PrevEquipmentEffectHandle.FindOrAdd(ItemStruct.EquipmentType);
-				PrevHandle = EffectHandle;
+				if (UGameplayEffect* CooldownEffect = Ability.Ability->GetCooldownGameplayEffect())
+				{
+					
+				}
 			}
 		}
 	}
