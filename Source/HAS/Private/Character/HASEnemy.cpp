@@ -79,26 +79,41 @@ void AHASEnemy::SpawnItemByChance(const FTransform& SpawnTransform)
 		);
 
 		float RandomValue = FMath::RandRange(0.0f, 100.0f);
-		EItemRarity Rarity = EItemRarity::EIT_None;
-		// 확률에 따라 아이템 등급 결정
-		if (RandomValue <= 60.0f)
+		// 장비 드랍 - 레어도 결정.
+		if (SpawnedItem->ItemStruct.ItemType == EItemType::EIT_Equipment)
 		{
-			Rarity = EItemRarity::EIR_Common;
+			EItemRarity Rarity = EItemRarity::EIT_None;
+			// 확률에 따라 아이템 등급 결정
+			if (RandomValue <= 60.0f)
+			{
+				Rarity = EItemRarity::EIR_Common;
+			}
+			else if (RandomValue <= 85.0f)
+			{
+				Rarity = EItemRarity::EIR_Rare;
+			}
+			else if (RandomValue <= 95.0f)
+			{
+				Rarity = EItemRarity::EIR_Unique;
+			}
+			else
+			{
+				Rarity = EItemRarity::EIR_Legendary;
+			}
+
+			SpawnedItem->ItemStruct.Rarity = Rarity;
 		}
-		else if (RandomValue <= 85.0f)
-		{
-			Rarity = EItemRarity::EIR_Rare;
-		}
-		else if (RandomValue <= 95.0f)
-		{
-			Rarity = EItemRarity::EIR_Unique;
-		}
+		// 포션 드랍 - 드랍 수량 결정.
 		else
 		{
-			Rarity = EItemRarity::EIR_Legendary;
-		}
+			FDataTableRowHandle ItemHandle = SpawnedItem->ItemStruct.ItemHandle;
+			if (FItemInfo* Info = ItemHandle.DataTable->FindRow<FItemInfo>(ItemHandle.RowName, ""))
+			{
+				int32 AmountToDrop = FMath::RandRange(1, Info->MaxStackSize);
 
-		SpawnedItem->ItemStruct.Rarity = Rarity;
+				SpawnedItem->ItemStruct.Quantity = AmountToDrop;
+			}
+		}
 		SpawnedItem->FinishSpawning(SpawnTransform);
 	}
 }

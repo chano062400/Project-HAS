@@ -291,6 +291,7 @@ void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
 		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical); 
 		if (Props.SourceAvatarActor->Implements<UHASCombatInterface>())
 		{
+			// 공격한 플레이어에게 EnemyInfo가 뜨도록.
 			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.SourceAvatarActor))
 			{
 				int32 PlayerLevel = Interface->Execute_GetLevel(Props.SourceAvatarActor);
@@ -306,6 +307,7 @@ void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
 		PC->ClientShowFloatingDamageText(Damage, Props.TargetAvatarActor, bIsCritical); 
 		if (Props.TargetAvatarActor->Implements<UHASCombatInterface>())
 		{
+			// 공격받은 플레이어에게 EnemyInfo가 뜨도록.
 			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
 			{
 				int32 PlayerLevel = Interface->Execute_GetLevel(Props.TargetAvatarActor);
