@@ -229,6 +229,8 @@ void UHASAbilitySystemBlueprintLibrary::SpawnFireSphere(UObject* WorldContextObj
 
 FGameplayEffectContextHandle UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(const FHASDamageEffectParams& Params)
 {
+	if (IsFriend(Params.SourceASC->GetAvatarActor(), Params.TargetASC->GetAvatarActor())) return FGameplayEffectContextHandle();
+
 	const AActor* SourceAvatarActor = Params.SourceASC->GetAvatarActor();
 
 	FGameplayEffectContextHandle EffectContextHandle = Params.SourceASC->MakeEffectContext();

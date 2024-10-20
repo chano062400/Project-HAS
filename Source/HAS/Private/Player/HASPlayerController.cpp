@@ -18,6 +18,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Actor/HASItem.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "NiagaraFunctionLibrary.h"
 
 AHASPlayerController::AHASPlayerController()
 {
@@ -332,6 +333,7 @@ void AHASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				{
 					CachedDestination = Path->PathPoints.Last();
 					bAutoRun = true;
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickEffect, CachedDestination);
 				}
 			}
 		}

@@ -11,7 +11,7 @@ FString UHASAbility_FireWall::GetAbilityDescription(int32 InAbilityLevel)
 		
 		"<Level> Rank : %d / 5 </> \n\n"
 		
-		"Summons walls of fire around the player.\n When it overlaps a wall, it deals <Damage>%.2f</> damage and applies a debuff with a <Debuff>%.2f</> chance.</>\n\n"
+		"Summons walls of fire around the player.\n When it overlaps a wall, it deals <Damage>%.2f</> damage and applies a debuff with a <Debuff>%.2f</> chance.\n\n"
 	
 		" Cost : <Cost>%.2f</> \n"
 

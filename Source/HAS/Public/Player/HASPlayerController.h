@@ -17,8 +17,10 @@ class UHASInputInfo;
 class UHASAbilityInfo;
 class AHASCharacter;
 class AHASCharacterBase;
+class UNiagaraSystem;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FEnemyInfoSignature, FEnemyInfo, /*ThisActor*/ int32 /*PlayerLevel*/);
+
 
 /**
  * 
@@ -159,5 +161,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AHASMagicCircle> MagicCircle;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> ClickEffect;
 
 };

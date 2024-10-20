@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "HASAbilityTypes.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 
 void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bIsHoming)
 {
@@ -41,6 +42,8 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 
 void UHASGameplayDamageAbility::ApplyDamage(AActor* CombatTarget, int32 Level)
 {
+	if (UHASAbilitySystemBlueprintLibrary::IsFriend(CombatTarget, GetAvatarActorFromActorInfo())) return;
+
 	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 	{
 		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.f);

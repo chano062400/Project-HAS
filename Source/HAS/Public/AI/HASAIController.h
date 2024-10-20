@@ -20,6 +20,6 @@ public:
 
 	AHASAIController();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTree;
 };

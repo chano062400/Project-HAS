@@ -44,7 +44,7 @@ void UHASAbility_IceBeam::BeamTrace(float BeamRadius, float BeamLength)
 	FCollisionQueryParams Params(NAME_None, false, GetAvatarActorFromActorInfo());
 	
 	if (GetAvatarActorFromActorInfo()->Implements<UHASCombatInterface>())
-	{
+	{	
 		const FVector StaffLoc = IHASCombatInterface::Execute_GetWeaponSocketLocation(GetAvatarActorFromActorInfo(), FHASGameplayTags::Get().WeaponSocket_Staff);
 		StaffLoc.Rotation() = UKismetMathLibrary::MakeRotFromZ(GetAvatarActorFromActorInfo()->GetActorForwardVector());
 

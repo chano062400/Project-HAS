@@ -78,10 +78,11 @@ void AHASEnemy::SpawnItemByChance(const FTransform& SpawnTransform)
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 		);
 
-		float RandomValue = FMath::RandRange(0.0f, 100.0f);
 		// 장비 드랍 - 레어도 결정.
 		if (SpawnedItem->ItemStruct.ItemType == EItemType::EIT_Equipment)
 		{
+			float RandomValue = FMath::RandRange(0.0f, 100.0f);
+
 			EItemRarity Rarity = EItemRarity::EIT_None;
 			// 확률에 따라 아이템 등급 결정
 			if (RandomValue <= 60.0f)
