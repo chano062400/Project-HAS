@@ -214,8 +214,8 @@ void AHASEnemy::BeginPlay()
 	case ECharacterClass::ECC_Archer:
 		SocketName = FName("BowSocket");
 		break;
-	case ECharacterClass::ECC_Mage:
-		SocketName = FName("StaffSocket");
+	case ECharacterClass::ECC_Dragon:
+		SocketName = FName("BreathSocket");
 		break;
 	}
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);

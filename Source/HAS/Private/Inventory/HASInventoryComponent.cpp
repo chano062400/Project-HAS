@@ -23,10 +23,6 @@ void UHASInventoryComponent::BeginPlay()
 		Equipment.Init(ItemStruct, 33);
 		Potion.Init(ItemStruct, 33);
 		Gold = 0;
-
-		//EquipmentUpdate.Broadcast();
-		//PotionUpdate.Broadcast();
-		//GoldUpdate.Broadcast();
 	}
 }
 
@@ -328,7 +324,7 @@ void UHASInventoryComponent::ClientUsePotion_Implementation(const FItemStruct& I
 	PotionUse.Broadcast(ItemStruct);
 }
 
-// 그냥 Broadcast하면 클라이언트에 Replicate되기 전에 Broadcast하기 때문에 한박자 빠르게 업데이트함.
+// 그냥 Broadcast하면 클라이언트에선 Replicate되기 전에 Broadcast하기 때문에 한박자 빠르게 업데이트됨.
 // ClientRPC에서 서버 로컬플레이어 Broadcast / 클라이언트는 OnRep에서 Broadcast하도록 함.
 void UHASInventoryComponent::ClientUpdateEquipment_Implementation()
 {

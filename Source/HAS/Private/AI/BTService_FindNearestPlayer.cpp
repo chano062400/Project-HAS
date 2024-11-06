@@ -58,7 +58,7 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 					},
 					AggroTime,
 					false);
-				Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+				Enemy->GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 			}
 		);
 	}
@@ -81,18 +81,18 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		}
 
 		// 범위 안에 있다면 Chase.
-		if (MinDistance <= CriteriaDIstance) Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		if (MinDistance <= CriteriaDIstance) Enemy->GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		else // 범위 밖
 		{
 			// 범위 밖에서 공격 당했다면 Chase
 			if (BBComp->GetValueAsBool(FName("IsHit")))
 			{
-				Enemy->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+				Enemy->GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 			}
 			else
 			{
 				// 공격당하지 않았다면 Patrol.
-				Enemy->GetCharacterMovement()->MaxWalkSpeed = 200.f;
+				Enemy->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 			}
 		}
 	}

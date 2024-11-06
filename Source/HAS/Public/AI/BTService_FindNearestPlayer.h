@@ -24,6 +24,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	float AggroTime = 3.f;
 
+	UPROPERTY(EditAnywhere)
+	float RunSpeed;
+	
+	UPROPERTY(EditAnywhere)
+	float WalkSpeed;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FBlackboardKeySelector TargetActorSelector;
 

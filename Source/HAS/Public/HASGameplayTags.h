@@ -99,6 +99,7 @@ public:
 	FGameplayTag Montage_IceBeam;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
+	FGameplayTag Montage_JumpAttack;
 	FGameplayTag Montage_RangedAttack;
 	FGameplayTag Montage_Dodge;
 
@@ -132,6 +133,7 @@ public:
 	/* GameplayCue Tag */
 	
 	FGameplayTag GameplayCue_HitReact;
+	FGameplayTag GameplayCue_BossHitReact;
 	FGameplayTag GameplayCue_FireWall;
 	FGameplayTag GameplayCue_LightningBlast;
 	FGameplayTag GameplayCue_Teleport;

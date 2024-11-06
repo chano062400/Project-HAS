@@ -333,6 +333,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("MeleeAttack Montage Tag")
 	);
 	
+	GameplayTags.Montage_JumpAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.JumpAttack"),
+		FString("JumpAttack Montage Tag")
+	);
+	
 	GameplayTags.Montage_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.RangedAttack"),
 		FString("RangedAttack Montage Tag")
@@ -428,6 +433,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 
 	/* GameplayCue Tag */
 
+	GameplayTags.GameplayCue_BossHitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.BossHitReact"),
+		FString("BossHitReact GameplayCue Tag")
+	);
+	
 	GameplayTags.GameplayCue_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.HitReact"),
 		FString("HitReact GameplayCue Tag")
