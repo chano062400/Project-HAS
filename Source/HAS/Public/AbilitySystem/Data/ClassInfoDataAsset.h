@@ -15,7 +15,7 @@ enum class ECharacterClass : uint8
 	ECC_Archer,
 	ECC_Warrior,
 	ECC_Hound,
-	ECC_Dragon
+	ECC_Boss
 };
 
 USTRUCT(BlueprintType)

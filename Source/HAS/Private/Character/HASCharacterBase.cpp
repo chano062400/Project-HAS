@@ -130,9 +130,13 @@ FVector AHASCharacterBase::GetWeaponSocketLocation_Implementation(const FGamepla
 	{
 		return Weapon->GetSocketLocation(FName("Staff"));
 	}
-	if (SocketTag.MatchesTagExact(FHASGameplayTags::Get().WeaponSocket_Bow))
+	else if (SocketTag.MatchesTagExact(FHASGameplayTags::Get().WeaponSocket_Bow))
 	{
 		return Weapon->GetSocketLocation(FName("Bow"));
+	}
+	else
+	{
+		return GetMesh()->GetSocketLocation(FName("TwoHand"));
 	}
 	return FVector();
 }

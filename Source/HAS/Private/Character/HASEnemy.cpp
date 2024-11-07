@@ -214,7 +214,7 @@ void AHASEnemy::BeginPlay()
 	case ECharacterClass::ECC_Archer:
 		SocketName = FName("BowSocket");
 		break;
-	case ECharacterClass::ECC_Dragon:
+	case ECharacterClass::ECC_Boss:
 		SocketName = FName("BreathSocket");
 		break;
 	}

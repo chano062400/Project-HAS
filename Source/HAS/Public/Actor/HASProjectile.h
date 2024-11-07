@@ -72,6 +72,9 @@ protected:
 	FGameplayTag ImpactGameplayCueTag;
 
 	bool bHit = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool IsOverlapDestroy = true;
 };
 
 

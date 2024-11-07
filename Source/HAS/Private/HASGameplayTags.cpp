@@ -141,6 +141,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("WeaponSocket.Bow"),
 		FString("Bow Socket Tag")
 	);
+		
+	GameplayTags.WeaponSocket_TwoHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("WeaponSocket.TwoHand"),
+		FString("TwoHand Socket Tag")
+	);
 
 	/* Ability Tag */
 
@@ -199,6 +204,31 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("MeleeAttack Ability Tag")
 	);
 		
+	GameplayTags.Ability_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.RangedAttack"),
+		FString("RangedAttack Ability Tag")
+	);
+					
+	GameplayTags.Ability_ThrowRock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.ThrowRock"),
+		FString("ThrowRock Ability Tag")
+	);
+					
+	GameplayTags.Ability_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Rush"),
+		FString("Rush Ability Tag")
+	);
+						
+	GameplayTags.Ability_JumpAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.JumpAttack"),
+		FString("JumpAttack Ability Tag")
+	);
+						
+	GameplayTags.Ability_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.Summon"),
+		FString("Summon Ability Tag")
+	);
+					
 	GameplayTags.Ability_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Ability.RangedAttack"),
 		FString("RangedAttack Ability Tag")
@@ -270,6 +300,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.IceBeam"),
 		FString("IceBeam Cooldown Tag")
 	);
+			
+	GameplayTags.Cooldown_ThrowRock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.ThrowRock"),
+		FString("ThrowRock Cooldown Tag")
+	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.None"),
@@ -333,9 +368,29 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("MeleeAttack Montage Tag")
 	);
 	
-	GameplayTags.Montage_JumpAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.JumpAttack"),
-		FString("JumpAttack Montage Tag")
+	GameplayTags.Montage_JumpStart = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.JumpStart"),
+		FString("JumpStart Montage Tag")
+	);
+	
+	GameplayTags.Montage_JumpEnd = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.JumpEnd"),
+		FString("JumpEnd Montage Tag")
+	);
+	
+	GameplayTags.Montage_LiftRock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.LiftRock"),
+		FString("LiftRock Montage Tag")
+	);
+	
+	GameplayTags.Montage_ThrowRock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.ThrowRock"),
+		FString("ThrowRock Montage Tag")
+	);
+	
+	GameplayTags.Montage_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Rush"),
+		FString("Rush Montage Tag")
 	);
 	
 	GameplayTags.Montage_RangedAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -466,6 +521,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_MagicCircle_FireMeteor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.MagicCircle_FireMeteor"),
 		FString("FireMeteor MagicCircle GameplayCue Tag")
+	);
+
+	GameplayTags.GameplayCue_Impact_Rock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Impact.Rock"),
+		FString("Rock Impact GameplayCue Tag")
 	);
 
 	GameplayTags.GameplayCue_Impact_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(

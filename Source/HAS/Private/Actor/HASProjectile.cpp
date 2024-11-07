@@ -62,7 +62,11 @@ void AHASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 			DamageEffectParams.TargetASC = TargetASC;
 			UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
 		}
-		Destroy();
+		if(IsOverlapDestroy) Destroy();
+		else
+		{
+			Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 	// 클라이언트에서 Overlap이 먼저 발생한 경우.
 	else bHit = true;

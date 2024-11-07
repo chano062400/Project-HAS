@@ -53,6 +53,7 @@ public:
 
 	FGameplayTag WeaponSocket_Staff;
 	FGameplayTag WeaponSocket_Bow;
+	FGameplayTag WeaponSocket_TwoHand;
 
 	/* Ability Tag */
 
@@ -68,6 +69,10 @@ public:
 	FGameplayTag Ability_HitReact;
 	FGameplayTag Ability_MeleeAttack;
 	FGameplayTag Ability_RangedAttack;
+	FGameplayTag Ability_ThrowRock;
+	FGameplayTag Ability_Rush;
+	FGameplayTag Ability_JumpAttack;
+	FGameplayTag Ability_Summon;
 	FGameplayTag Ability_Dodge;
 	FGameplayTag Ability_XP;
 	FGameplayTag Ability_None;
@@ -84,6 +89,7 @@ public:
 	FGameplayTag Cooldown_FrostNova;
 	FGameplayTag Cooldown_IceTornado;
 	FGameplayTag Cooldown_IceBeam;
+	FGameplayTag Cooldown_ThrowRock;
 	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */
@@ -99,8 +105,12 @@ public:
 	FGameplayTag Montage_IceBeam;
 	FGameplayTag Montage_HitReact;
 	FGameplayTag Montage_MeleeAttack;
-	FGameplayTag Montage_JumpAttack;
 	FGameplayTag Montage_RangedAttack;
+	FGameplayTag Montage_Rush;
+	FGameplayTag Montage_JumpStart;
+	FGameplayTag Montage_JumpEnd;
+	FGameplayTag Montage_LiftRock;
+	FGameplayTag Montage_ThrowRock;
 	FGameplayTag Montage_Dodge;
 
 	/* Effect Tag */
@@ -139,7 +149,8 @@ public:
 	FGameplayTag GameplayCue_Teleport;
 	FGameplayTag GameplayCue_IceBeam;
 	FGameplayTag GameplayCue_MagicCircle_FireMeteor;
-	FGameplayTag GameplayCue_Impact_FireBall;;
+	FGameplayTag GameplayCue_Impact_Rock;
+	FGameplayTag GameplayCue_Impact_FireBall;
 	FGameplayTag GameplayCue_Impact_FireMeteor;
 	FGameplayTag GameplayCue_Impact_ElectricArrow;
 	
