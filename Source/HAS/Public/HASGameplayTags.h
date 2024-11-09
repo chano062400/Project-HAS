@@ -111,6 +111,7 @@ public:
 	FGameplayTag Montage_JumpEnd;
 	FGameplayTag Montage_LiftRock;
 	FGameplayTag Montage_ThrowRock;
+	FGameplayTag Montage_Summon;
 	FGameplayTag Montage_Dodge;
 
 	/* Effect Tag */

@@ -186,10 +186,15 @@ void AHASEnemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	HASAIController = Cast<AHASAIController>(NewController);
+	// BehaviorTree 로드 및 실행.
+	InitializeBehaviorTree();
+}
+
+void AHASEnemy::InitializeBehaviorTree()
+{
+	HASAIController = Cast<AHASAIController>(Controller);
 	check(HASAIController);
 
-	// BehaviorTree 로드 및 실행.
 	HASAIController->RunBehaviorTree(BehaviorTree);
 	HASAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->GetBlackboardAsset());
 	HASAIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), nullptr);
@@ -204,6 +209,8 @@ void AHASEnemy::PossessedBy(AController* NewController)
 void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+
 
 	FName SocketName;
 	switch (CharacterClass)
@@ -227,6 +234,7 @@ void AHASEnemy::BeginPlay()
 	AddCommonAbilities();
 
 	if (HasAuthority()) InitializeDefaultAttributesByClass(CharacterClass, Level);
+
 
 	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
 	{

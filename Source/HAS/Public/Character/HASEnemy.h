@@ -25,10 +25,9 @@ public:
 
 	virtual void InitAbilityActorInfo() override;
 
-	UPROPERTY(EditAnywhere)
-	int32 Level = 1;
-
 	virtual int32 GetLevel_Implementation() override { return Level; }
+
+	void SetLevel(int32 InLevel) { Level = InLevel; }
 
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedSignature MaxHealthChangedDelegate;
@@ -57,6 +56,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void PossessedBy(AController* NewController) override;
+
+	void InitializeBehaviorTree();
 
 private:
 
@@ -89,5 +90,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float DropChance = 75.f;
+
+	UPROPERTY(EditAnywhere)
+	int32 Level = 1;
 
 };

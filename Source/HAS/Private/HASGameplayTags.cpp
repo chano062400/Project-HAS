@@ -388,6 +388,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("ThrowRock Montage Tag")
 	);
 	
+	GameplayTags.Montage_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Summon"),
+		FString("Summon Montage Tag")
+	);
+	
 	GameplayTags.Montage_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.Rush"),
 		FString("Rush Montage Tag")
