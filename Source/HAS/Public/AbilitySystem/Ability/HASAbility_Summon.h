@@ -23,7 +23,7 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AHASEnemy> SummonActorClass;
+	TArray<TSubclassOf<AHASEnemy>> SummonActorClasses;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> SummonEffect;

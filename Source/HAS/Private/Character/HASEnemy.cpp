@@ -169,6 +169,9 @@ FEnemyInfo AHASEnemy::GetTargetInfo_Implementation()
 		case ECharacterClass::ECC_Warrior:
 			EnemyInfo.Name = FName("Skeleton Warrior");
 			break;
+		case ECharacterClass::ECC_Boss:
+			EnemyInfo.Name = FName("Rampage");
+			break;
 	}
 
 	EnemyInfo.Level = Level;

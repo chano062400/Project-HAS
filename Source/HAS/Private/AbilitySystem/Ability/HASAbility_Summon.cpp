@@ -28,11 +28,12 @@ void UHASAbility_Summon::Summon()
 			);
 
 			FTransform SpawnTransform;
-			SpawnTransform.SetLocation(HitResult.ImpactPoint + FVector(0.f, 0.f, 100.f));
+			SpawnTransform.SetLocation(FVector(HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, 0.f));
 			SpawnTransform.SetRotation(GetAvatarActorFromActorInfo()->GetActorRotation().Quaternion());
 
+			int32 RandIdx = FMath::RandRange(0, SummonActorClasses.Num() - 1);
 			AHASEnemy* SpawnedEnemy = GetWorld()->SpawnActorDeferred<AHASEnemy>(
-				SummonActorClass,
+				SummonActorClasses[RandIdx],
 				SpawnTransform,
 				GetAvatarActorFromActorInfo(),
 				nullptr,
