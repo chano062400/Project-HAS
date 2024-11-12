@@ -70,8 +70,20 @@ FHASDamageEffectParams UHASGameplayDamageAbility::MakeDamageEffectParams(AActor*
 	Params.DebuffDuration = DebuffDuration;
 	Params.DebuffFrequency = DebuffFrequency;
 	Params.DebuffDamage = DebuffDamage;
+	Params.KnockbackForceMagnitude = KnockbackForceMagnitude;
 	Params.KnockbackChance = KnockbackChance;
-	Params.KnockbackForce = KnockbackForce;
+
+	if (IsValid(TargetActor))
+	{
+		const bool bKnockback = FMath::RandRange(1, 100) < KnockbackChance;
+		if (bKnockback)
+		{
+			FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+			Rotation.Pitch = 45.f;
+
+			Params.KnockbackForce = Rotation.Vector() * KnockbackForceMagnitude;
+		}
+	}
 
 	return Params;
 }

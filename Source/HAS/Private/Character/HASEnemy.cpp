@@ -13,6 +13,8 @@
 
 AHASEnemy::AHASEnemy()
 {
+	PrimaryActorTick.bCanEverTick = false;
+
 	AbilitySystemComponent = CreateDefaultSubobject<UHASAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);

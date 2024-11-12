@@ -61,7 +61,7 @@ bool FHASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, boo
 		{
 			RepBits |= 1 << 13;
 		}
-		if (KnockbackForce > 0.f)
+		if (!KnockbackForce.IsZero())
 		{
 			RepBits |= 1 << 14;
 		}
@@ -146,7 +146,7 @@ bool FHASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, boo
 	}
 	if (RepBits & (1 << 14))
 	{
-		Ar << KnockbackForce;
+		KnockbackForce.NetSerialize(Ar, Map, bOutSuccess);
 	}
 	if (Ar.IsLoading())
 	{

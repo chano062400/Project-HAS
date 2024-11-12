@@ -135,16 +135,16 @@ void UHASAbilitySystemBlueprintLibrary::SetDebuffDamage(UPARAM(ref)FGameplayEffe
 	}
 }
 
-float UHASAbilitySystemBlueprintLibrary::GetKnockbackForce(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
+FVector UHASAbilitySystemBlueprintLibrary::GetKnockbackForce(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
 		return HASEffectContext->GetKnockbackForce();
 	}
-	return 0.f;
+	return FVector::ZeroVector;
 }
 
-void UHASAbilitySystemBlueprintLibrary::SetKnockbackForce(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, float InKnockbackForce)
+void UHASAbilitySystemBlueprintLibrary::SetKnockbackForce(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockbackForce)
 {
 	if (FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{

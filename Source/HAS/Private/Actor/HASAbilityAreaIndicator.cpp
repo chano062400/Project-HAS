@@ -5,7 +5,7 @@
 
 AHASAbilityAreaIndicator::AHASAbilityAreaIndicator()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -51,7 +51,7 @@ void AHASAbilityAreaIndicator::InitializeMaterial()
 	}
 }
 
-void AHASAbilityAreaIndicator::TimelineStart()
+void AHASAbilityAreaIndicator::InitializeTimeline()
 {
 	if (TimelineCurve)
 	{
@@ -60,9 +60,7 @@ void AHASAbilityAreaIndicator::TimelineStart()
 		Timeline->AddInterpFloat(TimelineCurve, TimelineUpdate);
 		TimelineFinished.BindUFunction(this, FName("Finish"));
 		Timeline->SetTimelineFinishedFunc(TimelineFinished);
-		Timeline->SetTimelineLength(TimelineLength);
-
-		Timeline->PlayFromStart();
+		Timeline->SetTimelineLength(IndicatorLength);
 	}
 }
 
@@ -80,12 +78,14 @@ void AHASAbilityAreaIndicator::BeginPlay()
 
 		InitializeMaterial();
 
-		TimelineStart();
+		InitializeTimeline();
+
+		Timeline->PlayFromStart();
 	}
 	else
 	{
 		BorderDecal->SetMaterial(0, IndicatorMaterial);
-		AreaDecal->Deactivate();
+		AreaDecal->DestroyComponent();
 
 		if (GetOwner()->Implements<UHASCombatInterface>())
 		{
@@ -94,18 +94,15 @@ void AHASAbilityAreaIndicator::BeginPlay()
 				AActor* TargetActor = Interface->Execute_GetCombatTarget(GetOwner());
 				float Distance = GetOwner()->GetDistanceTo(TargetActor);
 				FVector ToEnemy = TargetActor->GetActorLocation() - GetOwner()->GetActorLocation();
-				
+
 				SetActorLocation(GetActorLocation() + ToEnemy);
 				SetActorRotation(ToEnemy.ToOrientationQuat());
 				BorderDecal->DecalSize = FVector(1.f, IndicatorDecalSize.Y, Distance);
 			}
 		}
+		FTimerHandle IndicatorTimer;
+		GetWorld()->GetTimerManager().SetTimer(IndicatorTimer, [this]() { Destroy(); }, IndicatorLength, false);
 	}
-}
-
-void AHASAbilityAreaIndicator::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AHASAbilityAreaIndicator::UpdateArea(float Value)

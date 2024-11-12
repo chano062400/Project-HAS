@@ -27,13 +27,11 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	void TimelineStart();
+	void InitializeTimeline();
 
 	void InitializeMaterial();
 
 	void SetIndicatorMaterial();
-
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
 	FVector IndicatorDecalSize = FVector(100.f, 100.f, 100.f);
@@ -81,7 +79,7 @@ private:
 	FOnTimelineEvent TimelineFinished;
 
 	UPROPERTY(EditDefaultsOnly)
-	float TimelineLength = 1.f;
+	float IndicatorLength = 1.f;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DynamicBorderMaterialInstance;

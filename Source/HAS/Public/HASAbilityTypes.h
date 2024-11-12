@@ -45,10 +45,13 @@ struct FHASDamageEffectParams
 	float DebuffDamage = 0.f;
 
 	UPROPERTY(BlueprintReadWrite)
-	float KnockbackForce = 0.f;
-	
+	float KnockbackForceMagnitude = 0.f;
+
 	UPROPERTY(BlueprintReadWrite)
 	float KnockbackChance = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector KnockbackForce = FVector::ZeroVector;
 
 };
 
@@ -115,9 +118,9 @@ public:
 
 	void SetDebuffDamage(float InDebuffDamage) { DebuffDamage = InDebuffDamage; }
 
-	float GetKnockbackForce() { return KnockbackForce; }
+	FVector GetKnockbackForce() { return KnockbackForce; }
 
-	void SetKnockbackForce(float InKnockbackForce) { KnockbackForce = InKnockbackForce; }
+	void SetKnockbackForce(const FVector& InKnockbackForce) { KnockbackForce = InKnockbackForce; }
 
 protected:
 
@@ -142,7 +145,7 @@ protected:
 	TSharedPtr<FGameplayTag> DamageType;
 
 	UPROPERTY()
-	float KnockbackForce = 0.f;
+	FVector KnockbackForce = FVector::ZeroVector;
 
 };	
 

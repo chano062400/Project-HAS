@@ -52,12 +52,12 @@ void UHASAbility_LightningBlast::LightningBlast()
 				FVector EnemyLoc = OverlapActors[i]->GetActorLocation();
 				FVector ToEnemy = (OverlapActors[i]->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).GetSafeNormal();
 				ToEnemy.Z = 0.f;
-				FVector NewEnemyLoc = EnemyLoc + ToEnemy * KnockbackForce;
+				FVector NewEnemyLoc = EnemyLoc + ToEnemy * KnockbackForceMagnitude;
 				
 				OverlapActors[i]->SetActorLocation(NewEnemyLoc);
 			}
 
-			UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
+			ApplyDamage(OverlapActors[i], GetAbilityLevel());
 		}
 	}
 }

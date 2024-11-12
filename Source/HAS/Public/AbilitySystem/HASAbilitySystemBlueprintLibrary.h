@@ -62,10 +62,10 @@ public:
 	static void SetDebuffDamage(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDamage);
 	
 	UFUNCTION(BlueprintCallable)
-	static float GetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle);
+	static FVector GetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle);
 
 	UFUNCTION(BlueprintCallable)
-	static void SetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InKnockbackForce);
+	static void SetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockbackForce);
 	
 	UFUNCTION(BlueprintCallable)
 	static void GetActorsWithinRadius(UObject* WorldContextObject, TArray<AActor*>& OutOverlapingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);

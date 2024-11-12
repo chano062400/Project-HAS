@@ -181,6 +181,12 @@ void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FHASGameplayTags::Get().Ability_HitReact);
 
+			const FVector& KnockbackForce = UHASAbilitySystemBlueprintLibrary::GetKnockbackForce(Props.EffectContextHandle);
+			if (!KnockbackForce.IsNearlyZero(1.f))
+			{
+				Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+			}
+
 			OnAttackedDelegate.Broadcast(Props.SourceAvatarActor);
 
 			// TagContainer에 추가된 Tag와 맞는 Ability를 Activate.
