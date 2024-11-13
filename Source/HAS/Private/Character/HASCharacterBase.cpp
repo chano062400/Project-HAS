@@ -5,8 +5,6 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Interfaces/HASEnemyInterface.h"
-#include "Player/HASPlayerController.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
@@ -208,6 +206,10 @@ void AHASCharacterBase::MulticastHandleDie_Implementation()
 
 	PlayDieEffect(DieEffectMaterialIndex);
 	bDead = true;
+
+	FTimerHandle DestroyTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, [this]() {this->Destroy(); }, 2.5f, false);
+
 }
 
 void AHASCharacterBase::BeginPlay()

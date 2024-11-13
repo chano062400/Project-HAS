@@ -458,7 +458,7 @@ void AHASPlayerController::ClientShowFloatingDamageText_Implementation(float Dam
 		DamageText->SetDamageText(Damage, bIsCritical);
 		
 		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [DamageText]() {DamageText->DestroyComponent(); }, false, 1.f);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [DamageText]() {DamageText->DestroyComponent(); }, 1.f, false);
 	}
 }
 
@@ -467,13 +467,12 @@ void AHASPlayerController::ClientShowFloatingImmnueText_Implementation(AActor* T
 	if (IsValid(TargetActor) && DamageTextComponentClass)
 	{
 		UWidgetComponent* ImmuneText = NewObject<UWidgetComponent>(TargetActor, ImmuneTextComponentClass);
-	
 		ImmuneText->RegisterComponent();
 		ImmuneText->AttachToComponent(TargetActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		ImmuneText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
 		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ImmuneText]() {ImmuneText->DestroyComponent(); }, false, 1.f);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ImmuneText]() {ImmuneText->DestroyComponent(); }, 1.f, false);
 	}
 }
 
