@@ -71,7 +71,7 @@ public:
 	FGameplayTag Ability_RangedAttack;
 	FGameplayTag Ability_ThrowRock;
 	FGameplayTag Ability_Rush;
-	FGameplayTag Ability_JumpAttack;
+	FGameplayTag Ability_ChargeScream;
 	FGameplayTag Ability_Summon;
 	FGameplayTag Ability_Dodge;
 	FGameplayTag Ability_XP;
@@ -111,6 +111,7 @@ public:
 	FGameplayTag Montage_JumpEnd;
 	FGameplayTag Montage_LiftRock;
 	FGameplayTag Montage_ThrowRock;
+	FGameplayTag Montage_Scream;
 	FGameplayTag Montage_Summon;
 	FGameplayTag Montage_Dodge;
 

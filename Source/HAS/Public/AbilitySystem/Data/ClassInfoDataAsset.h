@@ -14,7 +14,6 @@ enum class ECharacterClass : uint8
 	ECC_None,
 	ECC_Archer,
 	ECC_Warrior,
-	ECC_Hound,
 	ECC_Boss
 };
 

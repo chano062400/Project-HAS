@@ -1,6 +1,8 @@
 #include "AbilitySystem/Ability/HASAbility_RushAttack.h"
 #include "Interfaces/HASCombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
+#include "HASAbilityTypes.h"
 
 void UHASAbility_RushAttack::Rush()
 {
@@ -35,5 +37,26 @@ void UHASAbility_RushAttack::Rush()
 
 void UHASAbility_RushAttack::OnMoveCompleted()
 {
+	TArray<AActor*> OverlapActors;
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.AddUnique(GetAvatarActorFromActorInfo());
+
+	UHASAbilitySystemBlueprintLibrary::GetActorsWithinRadius(GetAvatarActorFromActorInfo(), OverlapActors, ActorsToIgnore, KnockBackRadius, GetAvatarActorFromActorInfo()->GetActorLocation());
+
+	if (OverlapActors.Num() > 0)
+	{
+		for (int i = 0; i < OverlapActors.Num(); i++)
+		{
+			if (UHASAbilitySystemBlueprintLibrary::IsFriend(GetAvatarActorFromActorInfo(), OverlapActors[i])) continue;
+
+			FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(OverlapActors[i]);
+
+			const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+			if (bKnockback)
+			{
+				UHASAbilitySystemBlueprintLibrary::ApplyDamageEffectParams(DamageEffectParams);
+			}
+		}
+	}
 	EndAbility(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, true, false);
 }

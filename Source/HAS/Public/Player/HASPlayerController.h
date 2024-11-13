@@ -42,6 +42,9 @@ public:
 	void ClientShowFloatingDamageText(float Damage, AActor* TargetActor, bool bIsCritical);
 	
 	UFUNCTION(Client, Reliable)
+	void ClientShowFloatingImmnueText(AActor* TargetActor);
+
+	UFUNCTION(Client, Reliable)
 	void ClientShowEnemyInfo(FEnemyInfo Info, int32 PlayerLevel);
 
 	UFUNCTION(BlueprintCallable)
@@ -153,8 +156,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Combat|Movement")
 	float AutoRunAcceptance = 50.f;
 
-	UPROPERTY(EditDefaultsOnly, Category ="Combat|DamageText")
+	UPROPERTY(EditDefaultsOnly, Category ="Combat|Text")
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category ="Combat|Text")
+	TSubclassOf<UWidgetComponent> ImmuneTextComponentClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHASMagicCircle> MagicCircleDecalComponent;

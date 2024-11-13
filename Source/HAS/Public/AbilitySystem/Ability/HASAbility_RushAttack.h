@@ -24,4 +24,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float TargetReachTime = 1.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float KnockBackRadius = 500.f;
 };

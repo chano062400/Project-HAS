@@ -219,9 +219,9 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FString("Rush Ability Tag")
 	);
 						
-	GameplayTags.Ability_JumpAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Ability.JumpAttack"),
-		FString("JumpAttack Ability Tag")
+	GameplayTags.Ability_ChargeScream = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.ChargeScream"),
+		FString("ChargeScream Ability Tag")
 	);
 						
 	GameplayTags.Ability_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -391,6 +391,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.Summon"),
 		FString("Summon Montage Tag")
+	);
+	
+	GameplayTags.Montage_Scream = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Scream"),
+		FString("Scream Montage Tag")
 	);
 	
 	GameplayTags.Montage_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(

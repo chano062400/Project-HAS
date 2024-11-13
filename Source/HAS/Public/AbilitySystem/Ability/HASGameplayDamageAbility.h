@@ -17,6 +17,8 @@ class HAS_API UHASGameplayDamageAbility : public UHASGameplayAbility
 
 public:
 
+protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 

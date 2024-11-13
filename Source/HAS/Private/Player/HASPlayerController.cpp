@@ -454,9 +454,26 @@ void AHASPlayerController::ClientShowFloatingDamageText_Implementation(float Dam
 		//NewObject로 생성한 Component는 반드시 등록(Register)절차를 거쳐야 함
 		DamageText->RegisterComponent();
 		DamageText->AttachToComponent(TargetActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		DamageText->SetDamageText(Damage, bIsCritical);
+		
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [DamageText]() {DamageText->DestroyComponent(); }, false, 1.f);
+	}
+}
+
+void AHASPlayerController::ClientShowFloatingImmnueText_Implementation(AActor* TargetActor)
+{
+	if (IsValid(TargetActor) && DamageTextComponentClass)
+	{
+		UWidgetComponent* ImmuneText = NewObject<UWidgetComponent>(TargetActor, ImmuneTextComponentClass);
+	
+		ImmuneText->RegisterComponent();
+		ImmuneText->AttachToComponent(TargetActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		ImmuneText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [ImmuneText]() {ImmuneText->DestroyComponent(); }, false, 1.f);
 	}
 }
 

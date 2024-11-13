@@ -23,6 +23,8 @@ public:
 
 	AHASAbilityAreaIndicator();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -33,16 +35,34 @@ protected:
 
 	void SetIndicatorMaterial();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_IndicatorDecalSize, EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
 	FVector IndicatorDecalSize = FVector(100.f, 100.f, 100.f);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
+	UFUNCTION()
+	void OnRep_IndicatorDecalSize();
+
+	UPROPERTY(ReplicatedUsing = OnRep_IndicatorShape, EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
 	EIndicatorShape IndicatorShape;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
+	UFUNCTION()
+	void OnRep_IndicatorShape();
+
+	UPROPERTY(ReplicatedUsing = OnRep_TimelineCurve, EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
 	TObjectPtr<UCurveFloat> TimelineCurve;
 
+	UFUNCTION()
+	void OnRep_TimelineCurve();
+
+	UPROPERTY(ReplicatedUsing = OnRep_IndicatorLength, EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
+	float IndicatorLength = 1.f;
+
+	UFUNCTION()
+	void OnRep_IndicatorLength();
+
 private:
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiSpawnIndicator();
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USceneComponent> Root;
@@ -77,9 +97,6 @@ private:
 	FOnTimelineFloat TimelineUpdate;
 	
 	FOnTimelineEvent TimelineFinished;
-
-	UPROPERTY(EditDefaultsOnly)
-	float IndicatorLength = 1.f;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DynamicBorderMaterialInstance;

@@ -2,11 +2,13 @@
 #include "Components/TimelineComponent.h"
 #include "Components/DecalComponent.h"
 #include "Interfaces/HASCombatInterface.h"
+#include "Net/UnrealNetwork.h"
 
 AHASAbilityAreaIndicator::AHASAbilityAreaIndicator()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
+	SetReplicateMovement(true);
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
@@ -18,6 +20,16 @@ AHASAbilityAreaIndicator::AHASAbilityAreaIndicator()
 	AreaDecal->SetupAttachment(Root);
 
 	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+}
+
+void AHASAbilityAreaIndicator::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AHASAbilityAreaIndicator, IndicatorDecalSize);
+	DOREPLIFETIME(AHASAbilityAreaIndicator, TimelineCurve);
+	DOREPLIFETIME(AHASAbilityAreaIndicator, IndicatorShape);
+	DOREPLIFETIME(AHASAbilityAreaIndicator, IndicatorLength);
 }
 
 void AHASAbilityAreaIndicator::SetIndicatorMaterial()
@@ -33,6 +45,50 @@ void AHASAbilityAreaIndicator::SetIndicatorMaterial()
 	case EIndicatorShape::EIS_Box:
 		IndicatorMaterial = BoxMaterial;
 		break;
+	}
+}
+
+void AHASAbilityAreaIndicator::OnRep_IndicatorDecalSize()
+{
+	if (IsValid(BorderDecal))
+	{
+		BorderDecal->DecalSize = IndicatorDecalSize;
+	}
+
+	if (IsValid(AreaDecal))
+	{
+		AreaDecal->DecalSize = IndicatorDecalSize;
+	}
+}
+
+void AHASAbilityAreaIndicator::OnRep_IndicatorShape()
+{
+	SetIndicatorMaterial();
+
+	if (IsValid(BorderDecal))
+	{
+		BorderDecal->SetMaterial(0, IndicatorMaterial);
+	}
+
+	if (IsValid(AreaDecal))
+	{
+		AreaDecal->SetMaterial(0, IndicatorMaterial);
+	}
+}
+
+void AHASAbilityAreaIndicator::OnRep_TimelineCurve()
+{
+	if (IsValid(Timeline) && IsValid(TimelineCurve))
+	{
+		Timeline->AddInterpFloat(TimelineCurve, TimelineUpdate);
+	}
+}
+
+void AHASAbilityAreaIndicator::OnRep_IndicatorLength()
+{
+	if (IsValid(Timeline))
+	{
+		Timeline->SetTimelineLength(IndicatorLength);
 	}
 }
 
@@ -64,10 +120,8 @@ void AHASAbilityAreaIndicator::InitializeTimeline()
 	}
 }
 
-void AHASAbilityAreaIndicator::BeginPlay()
+void AHASAbilityAreaIndicator::MultiSpawnIndicator_Implementation()
 {
-	Super::BeginPlay();
-	
 	SetIndicatorMaterial();
 
 	if (IndicatorShape != EIndicatorShape::EIS_Box)
@@ -92,17 +146,33 @@ void AHASAbilityAreaIndicator::BeginPlay()
 			if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(GetOwner()))
 			{
 				AActor* TargetActor = Interface->Execute_GetCombatTarget(GetOwner());
-				float Distance = GetOwner()->GetDistanceTo(TargetActor);
-				FVector ToEnemy = TargetActor->GetActorLocation() - GetOwner()->GetActorLocation();
+				if (IsValid(TargetActor))
+				{
+					float Distance = GetOwner()->GetDistanceTo(TargetActor);
+					FVector ToEnemy = TargetActor->GetActorLocation() - GetOwner()->GetActorLocation();
 
-				SetActorLocation(GetActorLocation() + ToEnemy);
-				SetActorRotation(ToEnemy.ToOrientationQuat());
-				BorderDecal->DecalSize = FVector(1.f, IndicatorDecalSize.Y, Distance);
+
+					SetActorLocation(GetActorLocation() + ToEnemy);
+					SetActorRotation(ToEnemy.ToOrientationQuat());
+
+					// Replicate 시키기 위해 
+					IndicatorDecalSize = FVector(1.f, IndicatorDecalSize.Y, Distance);
+					BorderDecal->DecalSize = IndicatorDecalSize;
+				}
 			}
 		}
+
 		FTimerHandle IndicatorTimer;
 		GetWorld()->GetTimerManager().SetTimer(IndicatorTimer, [this]() { Destroy(); }, IndicatorLength, false);
 	}
+}
+
+void AHASAbilityAreaIndicator::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (HasAuthority()) MultiSpawnIndicator();
+	
 }
 
 void AHASAbilityAreaIndicator::UpdateArea(float Value)

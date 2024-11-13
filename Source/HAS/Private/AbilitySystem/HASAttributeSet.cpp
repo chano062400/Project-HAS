@@ -277,13 +277,31 @@ void UHASAttributeSet::HandleDebuff(FEffectProperties& Props)
 	ModifierInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);
 	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
 
-	if (FGameplayEffectSpec* Spec = new FGameplayEffectSpec(Effect, EffectContextHandle, 1.f))
+	// 보스 몹은 디버프 면역
+	if (Props.TargetAvatarActor->Implements<UHASEnemyInterface>())
 	{
-		FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get());
-		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
-		HASEffectContext->SetDamageType(DebuffDamageType);
+		if (IHASEnemyInterface* Interface = Cast<IHASEnemyInterface>(Props.TargetAvatarActor))
+		{
+			ECharacterClass EnemyClass = Interface->GetCharacterClass();
+			if (EnemyClass == ECharacterClass::ECC_Boss)
+			{
+				if (AHASPlayerController* PC = Cast<AHASPlayerController>(Props.SourceASC->AbilityActorInfo.Get()->PlayerController))
+				{
+					PC->ClientShowFloatingImmnueText(Props.TargetAvatarActor);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (FGameplayEffectSpec* Spec = new FGameplayEffectSpec(Effect, EffectContextHandle, 1.f))
+		{
+			FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get());
+			TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
+			HASEffectContext->SetDamageType(DebuffDamageType);
 
-		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
+			Props.TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
+		}
 	}
 }
 

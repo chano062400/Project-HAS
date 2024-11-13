@@ -5,6 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Interfaces/HASEnemyInterface.h"
+#include "Player/HASPlayerController.h"
 
 AHASCharacterBase::AHASCharacterBase()
 {
