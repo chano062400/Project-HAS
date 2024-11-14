@@ -537,6 +537,11 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("GameplayCue.Impact.Rock"),
 		FString("Rock Impact GameplayCue Tag")
 	);
+	
+	GameplayTags.GameplayCue_Impact_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Impact.Rush"),
+		FString("Rush Impact GameplayCue Tag")
+	);
 
 	GameplayTags.GameplayCue_Impact_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.Impact.FireBall"),

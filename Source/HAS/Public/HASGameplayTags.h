@@ -152,6 +152,7 @@ public:
 	FGameplayTag GameplayCue_IceBeam;
 	FGameplayTag GameplayCue_MagicCircle_FireMeteor;
 	FGameplayTag GameplayCue_Impact_Rock;
+	FGameplayTag GameplayCue_Impact_Rush;
 	FGameplayTag GameplayCue_Impact_FireBall;
 	FGameplayTag GameplayCue_Impact_FireMeteor;
 	FGameplayTag GameplayCue_Impact_ElectricArrow;

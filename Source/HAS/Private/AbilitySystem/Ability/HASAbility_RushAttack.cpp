@@ -3,7 +3,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystem/HASAbilitySystemBlueprintLibrary.h"
 #include "HASAbilityTypes.h"
-
+#include "GameplayCueManager.h"
+#include "HASGameplayTags.h"
+#include "AbilitySystemComponent.h"
 void UHASAbility_RushAttack::Rush()
 {
 	if (GetAvatarActorFromActorInfo()->Implements<UHASCombatInterface>())
@@ -58,5 +60,8 @@ void UHASAbility_RushAttack::OnMoveCompleted()
 			}
 		}
 	}
+	FGameplayCueParameters Params;
+	Params.SourceObject = GetAvatarActorFromActorInfo();
+	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(FHASGameplayTags::Get().GameplayCue_Impact_Rush, Params);
 	EndAbility(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, true, false);
 }
