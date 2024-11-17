@@ -130,6 +130,8 @@ void AHASAbilityAreaIndicator::MultiSpawnIndicator_Implementation()
 
 		AreaDecal->DecalSize = IndicatorDecalSize;
 
+		SetSpawnZ();
+
 		InitializeMaterial();
 
 		InitializeTimeline();
@@ -151,12 +153,12 @@ void AHASAbilityAreaIndicator::MultiSpawnIndicator_Implementation()
 					float Distance = GetOwner()->GetDistanceTo(TargetActor);
 					FVector ToEnemy = TargetActor->GetActorLocation() - GetOwner()->GetActorLocation();
 
-
 					SetActorLocation(GetActorLocation() + ToEnemy);
 					SetActorRotation(ToEnemy.ToOrientationQuat());
+					SetSpawnZ();
 
 					// Replicate 시키기 위해 
-					IndicatorDecalSize = FVector(1.f, IndicatorDecalSize.Y, Distance);
+					IndicatorDecalSize = FVector(IndicatorDecalSize.X, IndicatorDecalSize.Y, Distance);
 					BorderDecal->DecalSize = IndicatorDecalSize;
 				}
 			}
@@ -167,11 +169,30 @@ void AHASAbilityAreaIndicator::MultiSpawnIndicator_Implementation()
 	}
 }
 
+void AHASAbilityAreaIndicator::SetSpawnZ()
+{
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, -100.f),
+		FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, 100.f),
+		ECollisionChannel::ECC_Visibility
+	);
+	
+	if (HitResult.bBlockingHit)
+	{
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, HitResult.ImpactPoint.Z));
+	}
+}
+
 void AHASAbilityAreaIndicator::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (HasAuthority()) MultiSpawnIndicator();
+	if (HasAuthority())
+	{
+		MultiSpawnIndicator();
+	}
 	
 }
 

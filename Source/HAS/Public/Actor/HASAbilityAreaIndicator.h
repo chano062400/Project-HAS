@@ -64,6 +64,8 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiSpawnIndicator();
 
+	void SetSpawnZ();
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USceneComponent> Root;
 
