@@ -8,6 +8,7 @@
 AHASSequenceTriggerBox::AHASSequenceTriggerBox()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
 	TriggerBox->SetGenerateOverlapEvents(true);
@@ -22,7 +23,10 @@ void AHASSequenceTriggerBox::BeginPlay()
 
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AHASSequenceTriggerBox::BeginOverlap);
 
-	UGameplayStatics::GetActorOfClass(GetWorld(), PlayEnemy)->SetActorHiddenInGame(true);
+	if (HasAuthority())
+	{
+		UGameplayStatics::GetActorOfClass(GetWorld(), PlayEnemy)->SetActorHiddenInGame(true);
+	}
 }
 
 void AHASSequenceTriggerBox::Tick(float DeltaTime)
@@ -32,29 +36,48 @@ void AHASSequenceTriggerBox::Tick(float DeltaTime)
 
 void AHASSequenceTriggerBox::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ALevelSequenceActor* LevelSequenceActor;
-	FMovieSceneSequencePlaybackSettings PlayBackSettings;
-	PlayBackSettings.bDisableLookAtInput = true;
-	PlayBackSettings.bDisableMovementInput = true;
-	PlayBackSettings.bHideHud = true;
-	PlayBackSettings.bHidePlayer = true;
-
-	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, PlayBackSettings, LevelSequenceActor);
-	LevelSequencePlayer->OnFinished.AddDynamic(this, &AHASSequenceTriggerBox::SequenceFinished);
-	LevelSequencePlayer->Play();
+	ServerBeginOverlap();
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void AHASSequenceTriggerBox::ServerBeginOverlap_Implementation()
+{
+	if (LevelSequence)
+	{
+		MultiPlaySequence();
+	}
+}
+
+void AHASSequenceTriggerBox::MultiPlaySequence_Implementation()
+{
+	if (LevelSequence)
+	{
+		ALevelSequenceActor* LevelSequenceActor;
+		FMovieSceneSequencePlaybackSettings PlayBackSettings;
+		PlayBackSettings.bDisableLookAtInput = true;
+		PlayBackSettings.bDisableMovementInput = true;
+		PlayBackSettings.bHideHud = true;
+		PlayBackSettings.bHidePlayer = true;
+
+		LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, PlayBackSettings, LevelSequenceActor);
+		LevelSequencePlayer->OnFinished.AddDynamic(this, &AHASSequenceTriggerBox::SequenceFinished);
+		LevelSequencePlayer->Play();
+	}
+}
+
 void AHASSequenceTriggerBox::SequenceFinished()
 {
-	UGameplayStatics::GetActorOfClass(GetWorld(), SequenceEnemy)->Destroy();
-	
-	if(AHASEnemy* Enemy = Cast<AHASEnemy>(UGameplayStatics::GetActorOfClass(GetWorld(), PlayEnemy)))
+	if (HasAuthority())
 	{
-		Enemy->SetActorHiddenInGame(false);
-		Enemy->InitializeBehaviorTree();
-	}
+		UGameplayStatics::GetActorOfClass(GetWorld(), SequenceEnemy)->Destroy();
 
-	Destroy();
+		if (AHASEnemy* Enemy = Cast<AHASEnemy>(UGameplayStatics::GetActorOfClass(GetWorld(), PlayEnemy)))
+		{
+			Enemy->SetActorHiddenInGame(false);
+			Enemy->InitializeBehaviorTree();
+		}
+
+		Destroy();
+	}
 }
