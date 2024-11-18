@@ -51,13 +51,13 @@ public:
 
 	virtual ECharacterClass GetCharacterClass() override { return CharacterClass; }
 
+	void InitializeBehaviorTree();
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	virtual void PossessedBy(AController* NewController) override;
-
-	void InitializeBehaviorTree();
 
 private:
 

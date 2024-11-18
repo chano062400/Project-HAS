@@ -215,8 +215,6 @@ void AHASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
 	FName SocketName;
 	switch (CharacterClass)
 	{
