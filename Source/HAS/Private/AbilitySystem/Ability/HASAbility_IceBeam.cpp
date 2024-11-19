@@ -80,13 +80,14 @@ void UHASAbility_IceBeam::BeamTrace(float BeamRadius, float BeamLength)
 //
 //#endif
 
-		FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);
 
 		if (OutOverlaps.Num() > 0)
 		{
 			for (FOverlapResult Result : OutOverlaps)
 			{
 				if (UHASAbilitySystemBlueprintLibrary::IsFriend(GetAvatarActorFromActorInfo(), Result.GetActor())) continue;
+
+				FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);
 
 				DamageEffectParams.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Result.GetActor());
 

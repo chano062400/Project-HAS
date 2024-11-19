@@ -28,19 +28,14 @@ AHASEnemy::AHASEnemy()
 	BaseWalkSpeed = 500.f;
 }
 
-void AHASEnemy::InitAbilityActorInfo()
-{
-
-}
-
 void AHASEnemy::Die()
 {
 	HealthBarWidget->SetVisibility(false);
-	/*if (HasAuthority()) HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), true);*/
+
 	if (HasAuthority())
 	{
 		HASAIController->BehaviorTree->StopTree();
-	
+
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(FVector(GetActorLocation().X, GetActorLocation().Y + 50.f, GetActorLocation().Z + 50.f));
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
@@ -191,8 +186,10 @@ void AHASEnemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	// BehaviorTree 로드 및 실행.
-	InitializeBehaviorTree();
+	if (CharacterClass != ECharacterClass::ECC_Boss)
+	{
+		InitializeBehaviorTree();
+	}
 }
 
 void AHASEnemy::InitializeBehaviorTree()
@@ -209,41 +206,11 @@ void AHASEnemy::InitializeBehaviorTree()
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsHit"), false);
 	HASAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsTargetDead"), false);
 	HASAIController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolLocation"), FVector::ZeroVector);
+	HASAIController->GetBlackboardComponent()->SetValueAsFloat(FName("HealthRatio"), 100.f);
 }
 
-void AHASEnemy::BeginPlay()
+void AHASEnemy::BindAttributeSetCallbacks()
 {
-	Super::BeginPlay();
-
-	FName SocketName;
-	switch (CharacterClass)
-	{
-	case ECharacterClass::ECC_Warrior:
-		SocketName = FName("SwordSocket");
-		break;
-	case ECharacterClass::ECC_Archer:
-		SocketName = FName("BowSocket");
-		break;
-	case ECharacterClass::ECC_Boss:
-		SocketName = FName("BreathSocket");
-		break;
-	}
-	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);
-
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
-	AddDefaultAbilitiesByClass(CharacterClass, Level);
-
-	AddCommonAbilities();
-
-	if (HasAuthority()) InitializeDefaultAttributesByClass(CharacterClass, Level);
-
-
-	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
-	{
-		HASWidget->SetWidgetController(this);
-	}
-
 	if (UHASAttributeSet* AS = Cast<UHASAttributeSet>(AttributeSetComp))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddLambda(
@@ -264,13 +231,61 @@ void AHASEnemy::BeginPlay()
 		MaxHealthChangedDelegate.Broadcast(AS->GetMaxHealth());
 		HealthChangedDelegate.Broadcast(AS->GetHealth());
 	}
+}
 
-	AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASEnemy::HitReactTagEvent);
-	
-	for (TTuple<FGameplayTag, UNiagaraComponent*> pair : DebuffTagToNiagara)
+void AHASEnemy::InitializeAbilitiesAndAttributes()
+{
+
+	AddDefaultAbilitiesByClass(CharacterClass, Level);
+
+	AddCommonAbilities();
+
+	InitializeDefaultAttributesByClass(CharacterClass, Level);
+}
+
+void AHASEnemy::SetSocketName(FName& SocketName)
+{
+	switch (CharacterClass)
 	{
-		AbilitySystemComponent->RegisterGameplayTagEvent(pair.Key, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::DebuffTagEvent);
+	case ECharacterClass::ECC_Warrior:
+		SocketName = FName("SwordSocket");
+		break;
+	case ECharacterClass::ECC_Archer:
+		SocketName = FName("BowSocket");
+		break;
+	case ECharacterClass::ECC_Boss:
+		SocketName = FName("BreathSocket");
+		break;
+	}
+}
+
+void AHASEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FName SocketName;
+	SetSocketName(SocketName);
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);
+
+	if (HasAuthority())
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+		
+		InitializeAbilitiesAndAttributes();
+
+		BindAttributeSetCallbacks();
+
+		AbilitySystemComponent->RegisterGameplayTagEvent(FHASGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASEnemy::HitReactTagEvent);
+
+		for (TTuple<FGameplayTag, UNiagaraComponent*> pair : DebuffTagToNiagara)
+		{
+			AbilitySystemComponent->RegisterGameplayTagEvent(pair.Key, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::DebuffTagEvent);
+		}
 	}
 
+	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
+	{
+		HASWidget->SetWidgetController(this);
+	}
 }
 

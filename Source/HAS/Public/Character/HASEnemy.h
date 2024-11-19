@@ -23,8 +23,6 @@ public:
 
 	AHASEnemy();
 
-	virtual void InitAbilityActorInfo() override;
-
 	virtual int32 GetLevel_Implementation() override { return Level; }
 
 	void SetLevel(int32 InLevel) { Level = InLevel; }
@@ -53,9 +51,16 @@ public:
 
 	void InitializeBehaviorTree();
 
+
 protected:
 
 	virtual void BeginPlay() override;
+
+	void BindAttributeSetCallbacks();
+
+	void InitializeAbilitiesAndAttributes();
+
+	void SetSocketName(FName& SocketName);
 
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -93,5 +98,4 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 Level = 1;
-
 };

@@ -5,6 +5,8 @@
 #include "AbilitySystemComponent.h"
 #include "HASGameplayTags.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/HASEnemyInterface.h"
+#include "Player/HASPlayerController.h"
 
 FString UHASAbility_LightningBlast::GetAbilityDescription(int32 InAbilityLevel)
 {
@@ -42,22 +44,36 @@ void UHASAbility_LightningBlast::LightningBlast()
 	{
 		for (int i = 0; i < OverlapActors.Num(); i++)
 		{
-			if(UHASAbilitySystemBlueprintLibrary::IsFriend(GetAvatarActorFromActorInfo(), OverlapActors[i])) continue;
+			if (UHASAbilitySystemBlueprintLibrary::IsFriend(GetAvatarActorFromActorInfo(), OverlapActors[i])) continue;
 
-			FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(OverlapActors[i]);
-
-			const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
-			if(bKnockback)
+			if (IHASEnemyInterface* Interface = Cast<IHASEnemyInterface>(OverlapActors[i]))
 			{
-				FVector EnemyLoc = OverlapActors[i]->GetActorLocation();
-				FVector ToEnemy = (OverlapActors[i]->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).GetSafeNormal();
-				ToEnemy.Z = 0.f;
-				FVector NewEnemyLoc = EnemyLoc + ToEnemy * KnockbackForceMagnitude;
-				
-				OverlapActors[i]->SetActorLocation(NewEnemyLoc);
-			}
+				ECharacterClass EnemyClass = Interface->GetCharacterClass();
+				if (EnemyClass == ECharacterClass::ECC_Boss)
+				{
+					if (AHASPlayerController* PC = Cast<AHASPlayerController>(CurrentActorInfo->PlayerController))
+					{
+						PC->ClientShowFloatingImmnueText(OverlapActors[i]);
+					}
+				}
+				else
+				{
 
-			ApplyDamage(OverlapActors[i], GetAbilityLevel());
+					FHASDamageEffectParams DamageEffectParams = MakeDamageEffectParams(OverlapActors[i]);
+
+					const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+					if (bKnockback)
+					{
+						FVector EnemyLoc = OverlapActors[i]->GetActorLocation();
+						FVector ToEnemy = (OverlapActors[i]->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).GetSafeNormal();
+						ToEnemy.Z = 0.f;
+						FVector NewEnemyLoc = EnemyLoc + ToEnemy * KnockbackForceMagnitude;
+
+						OverlapActors[i]->SetActorLocation(NewEnemyLoc);
+					}
+				}
+				ApplyDamage(OverlapActors[i], GetAbilityLevel());
+			}
 		}
 	}
 }

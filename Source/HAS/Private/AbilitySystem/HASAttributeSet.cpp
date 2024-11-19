@@ -290,6 +290,17 @@ void UHASAttributeSet::HandleDebuff(FEffectProperties& Props)
 					PC->ClientShowFloatingImmnueText(Props.TargetAvatarActor);
 				}
 			}
+			else
+			{
+				if (FGameplayEffectSpec* Spec = new FGameplayEffectSpec(Effect, EffectContextHandle, 1.f))
+				{
+					FHASGameplayEffectContext* HASEffectContext = static_cast<FHASGameplayEffectContext*>(EffectContextHandle.Get());
+					TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
+					HASEffectContext->SetDamageType(DebuffDamageType);
+
+					Props.TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
+				}
+			}
 		}
 	}
 	else
