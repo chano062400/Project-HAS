@@ -160,6 +160,13 @@ void UHASAttributeSet::SetEffectProps(const FGameplayEffectModCallbackData& Data
 void UHASAttributeSet::HandleIncomingDamage(FEffectProperties& Props)
 {
 	if (Props.SourceAvatarActor == Props.TargetAvatarActor) return;
+	if (Props.TargetAvatarActor->Implements<UHASCombatInterface>())
+	{
+		if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(Props.TargetAvatarActor))
+		{
+			if (Interface->Execute_IsDead(Props.TargetAvatarActor)) return;
+		}
+	}
 
 	const float LocalIncomingDamage = GetInComingDamage();
 	SetInComingDamage(0.f);
@@ -318,6 +325,8 @@ void UHASAttributeSet::HandleDebuff(FEffectProperties& Props)
 
 void UHASAttributeSet::ShowDamageText(FEffectProperties& Props, float Damage)
 {
+	if (!IsValid(Props.SourceAvatarActor)) return;
+
 	bool bIsCritical = UHASAbilitySystemBlueprintLibrary::IsCriticalHit(Props.EffectContextHandle);
 
 	// Player가 공격할 때

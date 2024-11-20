@@ -89,7 +89,10 @@ public:
 	FGameplayTag Cooldown_FrostNova;
 	FGameplayTag Cooldown_IceTornado;
 	FGameplayTag Cooldown_IceBeam;
+	FGameplayTag Cooldown_ChargeScream;
+	FGameplayTag Cooldown_Summon;
 	FGameplayTag Cooldown_ThrowRock;
+	FGameplayTag Cooldown_Rush;
 	FGameplayTag Cooldown_None;
 	
 	/* Montage Tag */

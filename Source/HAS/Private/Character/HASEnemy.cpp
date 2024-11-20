@@ -235,7 +235,6 @@ void AHASEnemy::BindAttributeSetCallbacks()
 
 void AHASEnemy::InitializeAbilitiesAndAttributes()
 {
-
 	AddDefaultAbilitiesByClass(CharacterClass, Level);
 
 	AddCommonAbilities();
@@ -266,12 +265,17 @@ void AHASEnemy::BeginPlay()
 	FName SocketName;
 	SetSocketName(SocketName);
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);
-
+	
 	if (HasAuthority())
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-		
+
 		InitializeAbilitiesAndAttributes();
+
+		if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
+		{
+			HASWidget->SetWidgetController(this);
+		}
 
 		BindAttributeSetCallbacks();
 
@@ -281,11 +285,6 @@ void AHASEnemy::BeginPlay()
 		{
 			AbilitySystemComponent->RegisterGameplayTagEvent(pair.Key, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AHASCharacterBase::DebuffTagEvent);
 		}
-	}
-
-	if (UHASUserWidget* HASWidget = Cast<UHASUserWidget>(HealthBarWidget->GetUserWidgetObject()))
-	{
-		HASWidget->SetWidgetController(this);
 	}
 }
 

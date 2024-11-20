@@ -300,10 +300,25 @@ void FHASGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.IceBeam"),
 		FString("IceBeam Cooldown Tag")
 	);
-			
+					
+	GameplayTags.Cooldown_ChargeScream = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.ChargeScream"),
+		FString("ChargeScream Cooldown Tag")
+	);
+					
+	GameplayTags.Cooldown_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Summon"),
+		FString("Summon Cooldown Tag")
+	);
+					
 	GameplayTags.Cooldown_ThrowRock = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.ThrowRock"),
 		FString("ThrowRock Cooldown Tag")
+	);
+			
+	GameplayTags.Cooldown_Rush = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Rush"),
+		FString("Rush Cooldown Tag")
 	);
 		
 	GameplayTags.Cooldown_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
