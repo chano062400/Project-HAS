@@ -158,7 +158,7 @@ void AHASAbilityAreaIndicator::MultiSpawnIndicator_Implementation()
 					SetSpawnZ();
 
 					// Replicate 시키기 위해 
-					IndicatorDecalSize = FVector(IndicatorDecalSize.X, IndicatorDecalSize.Y, Distance);
+					IndicatorDecalSize = FVector(IndicatorDecalSize.X, IndicatorDecalSize.Y, Distance + 500.f);
 					BorderDecal->DecalSize = IndicatorDecalSize;
 				}
 			}

@@ -81,7 +81,7 @@ FHASDamageEffectParams UHASGameplayDamageAbility::MakeDamageEffectParams(AActor*
 			FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
 			Rotation.Pitch = 45.f;
 
-			Params.KnockbackForce = Rotation.Vector() * KnockbackForceMagnitude;
+			Params.KnockbackForce = FVector(Rotation.Vector().X + KnockbackForceMagnitude, Rotation.Vector().Y +KnockbackForceMagnitude, Rotation.Vector().Z + KnockbackForceMagnitude);
 		}
 	}
 
