@@ -8,7 +8,8 @@ void UHASAbility_ChargeScream::KnockbackEnemiesWithinRadius()
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.AddUnique(GetAvatarActorFromActorInfo());
 
-	UHASAbilitySystemBlueprintLibrary::GetActorsWithinRadius(GetAvatarActorFromActorInfo(), OverlapActors, ActorsToIgnore, KnockBackRadius, GetAvatarActorFromActorInfo()->GetActorLocation());
+	FVector SphereOrigin = GetAvatarActorFromActorInfo()->GetActorLocation();
+	UHASAbilitySystemBlueprintLibrary::GetActorsWithinRadius(GetAvatarActorFromActorInfo(), OverlapActors, ActorsToIgnore, KnockBackRadius, SphereOrigin);
 
 	if (OverlapActors.Num() > 0)
 	{

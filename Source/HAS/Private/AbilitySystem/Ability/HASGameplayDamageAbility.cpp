@@ -16,27 +16,30 @@ void UHASGameplayDamageAbility::SpawnProjectile(const FVector& TargetLocation, c
 
 	if (GetAvatarActorFromActorInfo()->Implements<UHASCombatInterface>())
 	{
-		FVector SocketLocation = IHASCombatInterface::Execute_GetWeaponSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+		if (IHASCombatInterface* Interface = Cast<IHASCombatInterface>(GetAvatarActorFromActorInfo()))
+		{
+			FVector SocketLocation = Interface->Execute_GetWeaponSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 
-		FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
-		Rotation.Pitch = 0.f;
+			FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
+			Rotation.Pitch = 0.f;
 
-		FTransform SpawnTransform;
-		SpawnTransform.SetRotation(Rotation.Quaternion());
-		SpawnTransform.SetLocation(SocketLocation);
+			FTransform SpawnTransform;
+			SpawnTransform.SetRotation(Rotation.Quaternion());
+			SpawnTransform.SetLocation(SocketLocation);
 
-		Projectile = GetWorld()->SpawnActorDeferred<AHASProjectile>(
-			ProjectileClass,
-			SpawnTransform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetAvatarActorFromActorInfo()),
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			Projectile = GetWorld()->SpawnActorDeferred<AHASProjectile>(
+				ProjectileClass,
+				SpawnTransform,
+				GetOwningActorFromActorInfo(),
+				Cast<APawn>(GetAvatarActorFromActorInfo()),
+				ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 
-		Projectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
-		Projectile->DamageEffectParams.SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		
-		Projectile->FinishSpawning(SpawnTransform);
+			Projectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
+			Projectile->DamageEffectParams.SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+
+			Projectile->FinishSpawning(SpawnTransform);
+		}
 	}
 }
 
