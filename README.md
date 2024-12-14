@@ -4,13 +4,14 @@
 
 #### 언리얼 엔진에서 제공하는 GameplayAbilitySystem을 이용하여 제작한 핵앤슬래시 장르의 개인 게임 프로젝트
 
-- **전투를 통해 성장하는 RPG 게임**
-- **나만의 스킬 트리를 조합해 다양한 스킬을 이용한 전투**
-- **Diablo4를 레퍼런스로 제작.**
+- **레벨 업으로 얻는 포인트를 사용하여 스텟, 스펠 업그레이드 시스템.**
+- **3 가지 속성 총 9 가지의 다양한 스킬을 조합한 전투.**
+- **능력치를 올려주는 아이템을 관리하는 인벤토리 시스템.**
+- **Listen Server 를 이용한 멀티 플레이 구현**
 ---
 ### 개요
 
-#### 제작 기간 - 2개월
+#### 제작 기간 - 약 4개월
 
 #### 참여 프로젝트 - Project HAS
 
@@ -22,4 +23,4 @@
 
 ---
 ### 플레이 영상
-[![Video Label](http://img.youtube.com/vi/scsbTQn3Xc0/0.jpg)](https://youtu.be/scsbTQn3Xc0) 
+[![Video Label](http://img.youtube.com/vi/c0Cu_u4GZxg/0.jpg)](https://youtu.be/c0Cu_u4GZxg) 
